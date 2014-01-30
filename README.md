@@ -8,7 +8,7 @@ MVP
 * User can see a list of exhibits order by distance (beacons in range)
 * User can see a basic detail view of artwork: Author, Date, Origin, Description...
 * User receives notifications when there are exhibits (beacons) nearby. 
-* User is able to add Social Share widget for exhibits
+* User is able to share an exhibit or museum on his social networks
 
 
 Maybe MVP

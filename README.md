@@ -3,25 +3,25 @@ Android
 
 MVP
 
-* List view of Galleries sorted by Distance from you
-* Detail view of Gallery: Gallery profile showing profile pic, name, opening hours, ticket prices, description...
-* List of artworks order by distance (beacons in range)
-* Basic detail view of artwork: Author, Date, Origin, Description...
-* Notifications when there are artworks (beacons) nearby. 
-* Add Social Share widget for artworks
+* User can see a list of Galleries sorted by Distance from his geolocation
+* User can see a detailed view, a Gallery profile showing profile pic, name, opening hours, ticket prices, description...
+* User can see a list of exhibits order by distance (beacons in range)
+* User can see a basic detail view of artwork: Author, Date, Origin, Description...
+* User receives notifications when there are exhibits (beacons) nearby. 
+* User is able to add Social Share widget for exhibits
 
 
 Maybe MVP
 
-* Audio for detail view of artwork
+* User can rate exhibits
+* User has audio available for detail view of artwork
 
-Todo if there is time (in priority order)
+Todo IF there is time (in priority order)
 
-* Support for multilanguage
-* Download Gallery data for offline use
-* Search Gallery Functionality
-* Rate on artworks
-* Delete/Update Gallery data
-* Suggest new language
-* Comment on artworks
-* Track audio listens to indicate popularity of an artwork
+* User can choose from multiple languages
+* User can download a particular Gallery data for offline use
+* User is able to Search Galleries
+* User can manage (Delete/Update) his Gallery data
+* User can Suggest new language
+* User can comment on exhibits
+* Museum Admin sees analytics of audio listens 

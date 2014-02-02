@@ -26,3 +26,11 @@ Todo IF there is time (in priority order)
 * User can **Suggest new language**
 * User can **comment** on exhibits
 * Museum Admin has **analytics** of audio listens
+
+Wireframes with [fluidui](https://www.fluidui.com/editor/live/preview/p_mRpzT3gfKXHfUKTFlfZtI11cEBcJfxba.1391367234090)
+
+![gallery_list](http://i.imgur.com/NkvfpYWl.png)
+![gallery_detail](http://i.imgur.com/NYG7eEml.png)
+![exhibit_list](http://i.imgur.com/8EoMNfVl.png)
+![exhibit_detail](http://i.imgur.com/GT5Z5nSl.png)
+

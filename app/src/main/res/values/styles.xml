@@ -5,4 +5,32 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="LE"/>
+
+    <style name="LE.HeadlineText">
+        <item name="android:textColor">@color/le_black</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="LE.HeadlineText.Normal">
+        <item name="android:textColor">@color/le_black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="LE.ProfileTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/LE.HeadlineText</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="LE.ProfileBody">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/LE.HeadlineText.Normal</item>
+        <item name="android:freezesText">true</item>
+    </style>
+
 </resources>

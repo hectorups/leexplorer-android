@@ -9,6 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.leexplorer.app.R;
+import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.util.FakeData;
+import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -21,14 +24,12 @@ public class ArtworkFragment extends Fragment {
     @InjectView(R.id.tvAuthorAndDate)
     TextView tvAuthorAndDate;
 
-    @InjectView(R.id.tvDescriptionHeader)
-    TextView tvDescriptionHeader;
-
     @InjectView(R.id.tvDescription)
     TextView tvDescription;
 
     @InjectView(R.id.ivArtwork)
     ImageView ivArtwork;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,6 +38,17 @@ public class ArtworkFragment extends Fragment {
 
         ButterKnife.inject(this, rootView);
 
+        Artwork artwork = FakeData.getArtworks().get(0);
+
+        tvAuthorAndDate.setText(artwork.getName());
+        tvDescription.setText(artwork.getDescription());
+
+        Picasso.with(getActivity())
+                .load(artwork.getImageUrl())
+                .fit()
+                .into(ivArtwork);
+
         return rootView;
     }
+
 }

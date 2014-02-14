@@ -28,6 +28,7 @@
                 android:id="@+id/tvDescription"
                 android:text="text"
                 style="@style/LE.ProfileBody"/>
+
         </LinearLayout>
 
     </LinearLayout>

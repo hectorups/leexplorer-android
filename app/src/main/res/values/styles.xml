@@ -14,7 +14,7 @@
     </style>
 
     <style name="LE.HeadlineText.Normal">
-        <item name="android:textColor">@color/le_black</item>
+        <item name="android:textColor">@color/le_dark_grey</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
     </style>

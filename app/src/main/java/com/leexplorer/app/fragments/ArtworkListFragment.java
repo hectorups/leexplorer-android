@@ -23,10 +23,14 @@ import butterknife.InjectView;
 
 
 public class ArtworkListFragment extends Fragment {
+    private static final String ARTWORK_LIST = "arwork_list";
+    private static final String TAG = "com.leexplorer.artworklistfragement";
 
     @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
 
     protected ArtworkAdapter artworkAdapter;
+
+    private ArrayList<Artwork> artworks;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,11 +39,22 @@ public class ArtworkListFragment extends Fragment {
 
         ButterKnife.inject(this, rootView);
 
-        ArrayList<Artwork> artworks = FakeData.getArtworks();
+        if (savedInstanceState != null) {
+            artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST);
+
+        } else {
+            artworks = FakeData.getArtworks();
+        }
 
         artworkAdapter = new ArtworkAdapter(this, artworks);
         sgvArtworks.setAdapter(artworkAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelableArrayList(ARTWORK_LIST, artworks);
     }
 }

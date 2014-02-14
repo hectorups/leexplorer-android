@@ -2,6 +2,7 @@ package com.leexplorer.app.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import butterknife.InjectView;
  * Created by hectormonserrate on 11/02/14.
  */
 public class ArtworkFragment extends Fragment {
+    private static final String ARTWORK_SAVED = "tweet_results";
+    private static final String TAG = "com.leexplorer.artworkfragment";
 
     @InjectView(R.id.tvAuthorAndDate)
     TextView tvAuthorAndDate;
@@ -30,6 +33,8 @@ public class ArtworkFragment extends Fragment {
     @InjectView(R.id.ivArtwork)
     ImageView ivArtwork;
 
+    Artwork artwork;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,7 +43,12 @@ public class ArtworkFragment extends Fragment {
 
         ButterKnife.inject(this, rootView);
 
-        Artwork artwork = FakeData.getArtworks().get(0);
+        if (savedInstanceState != null) {
+            artwork = savedInstanceState.getParcelable(ARTWORK_SAVED);
+
+        } else {
+            artwork = FakeData.getArtworks().get(0);
+        }
 
         tvAuthorAndDate.setText(artwork.getName());
         tvDescription.setText(artwork.getDescription());
@@ -48,6 +58,13 @@ public class ArtworkFragment extends Fragment {
                 .into(ivArtwork);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putParcelable(ARTWORK_SAVED, artwork);
     }
 
 }

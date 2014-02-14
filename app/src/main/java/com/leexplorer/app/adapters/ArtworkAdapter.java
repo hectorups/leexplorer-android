@@ -18,7 +18,6 @@ import com.leexplorer.app.models.Artwork;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -50,7 +49,7 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         holder.tvName.setText(aw.getName());
         holder.tvAuthorAndDate.setText(aw.getAuthor());
 
-        holder.ivArtworkThumb.setHeightRatio(getRandomHeightRatio());
+        holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));
         Picasso.with(getContext())
                 .load(aw.getImageUrl())
                 .into(holder.ivArtworkThumb);
@@ -70,8 +69,15 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         }
     }
 
-    private double getRandomHeightRatio() {
-        return ((new Random()).nextDouble() / 2.0) + 1.0; // height will be 1.0 - 1.5 the width
+    private double getHeightRatioFromPopularity(Artwork aw) {
+        long factor;
+        if(aw.getLikesCount() > 100){
+            factor = 1;
+        } else {
+            factor = aw.getLikesCount() / 100;
+        }
+
+        return (( factor / 2.0) + 1.0); // height will be 1.0 - 1.5 the width
     }
 
 }

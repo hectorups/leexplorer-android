@@ -45,7 +45,6 @@ public class ArtworkFragment extends Fragment {
 
         Picasso.with(getActivity())
                 .load(artwork.getImageUrl())
-                .fit()
                 .into(ivArtwork);
 
         return rootView;

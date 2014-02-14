@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <com.etsy.android.grid.util.DynamicHeightImageView
         android:id="@+id/ivArtworkThumb"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

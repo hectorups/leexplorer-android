@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.models.Artwork;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,8 +27,8 @@ import butterknife.InjectView;
 public class ArtworkAdapter extends ArrayAdapter<Artwork> {
     protected Fragment fragment;
 
-    public ArtworkAdapter(Fragment fragment, Context context, List<Artwork> objects) {
-        super(context, 0, objects);
+    public ArtworkAdapter(Fragment fragment, List<Artwork> objects) {
+        super(fragment.getActivity(), 0, objects);
         this.fragment = fragment;
     }
 
@@ -42,18 +45,33 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
             view.setTag(holder);
         }
 
+        Artwork aw = getItem(position);
+
+        holder.tvName.setText(aw.getName());
+        holder.tvAuthorAndDate.setText(aw.getAuthor());
+
+        holder.ivArtworkThumb.setHeightRatio(getRandomHeightRatio());
+        Picasso.with(getContext())
+                .load(aw.getImageUrl())
+                .into(holder.ivArtworkThumb);
+
+
         return view;
     }
 
 
     static class ViewHolder {
-        @InjectView(R.id.tvAuthorAndDate) TextView name;
+        @InjectView(R.id.tvName) TextView tvName;
         @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
-        @InjectView(R.id.ivArtworkThumb) TextView ivArtworkThumb;
+        @InjectView(R.id.ivArtworkThumb) DynamicHeightImageView ivArtworkThumb;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);
         }
+    }
+
+    private double getRandomHeightRatio() {
+        return ((new Random()).nextDouble() / 2.0) + 1.0; // height will be 1.0 - 1.5 the width
     }
 
 }

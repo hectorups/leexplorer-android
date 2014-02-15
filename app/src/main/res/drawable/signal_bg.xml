@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid
+        android:color="@color/le_black_very_transparent"/>
 
-</selector>
+</shape>

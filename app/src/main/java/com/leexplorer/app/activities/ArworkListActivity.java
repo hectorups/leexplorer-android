@@ -1,5 +1,6 @@
 package com.leexplorer.app.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -7,8 +8,9 @@ import android.view.MenuItem;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
+import com.leexplorer.app.models.Artwork;
 
-public class ArworkListActivity extends ActionBarActivity {
+public class ArworkListActivity extends ActionBarActivity implements ArtworkListFragment.Callbacks {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,18 +27,13 @@ public class ArworkListActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.arwork_list, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+         int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
         }
@@ -44,5 +41,17 @@ public class ArworkListActivity extends ActionBarActivity {
     }
 
 
+    /*
+     * Implement ArtworkListFragment.Callbacks
+     */
+    public void onLoading(boolean loading){
+
+    }
+
+    public void onArtworkClicked(Artwork aw){
+        Intent i = new Intent(this, ArtworkActivity.class);
+        i.putExtra(ArtworkActivity.EXTRA_ARTWORK, aw);
+        startActivity(i);
+    }
 
 }

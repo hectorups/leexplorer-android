@@ -4,6 +4,7 @@ package com.leexplorer.app.fragments;
  * Created by hectormonserrate on 10/02/14.
  */
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -32,6 +33,33 @@ public class ArtworkListFragment extends Fragment {
 
     private ArrayList<Artwork> artworks;
 
+    public interface Callbacks {
+        public void onLoading(boolean loading);
+        public void onArtworkClicked(Artwork aw);
+    }
+
+    public Callbacks callbacks;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        super.onAttach(activity);
+        if (activity instanceof Callbacks) {
+            callbacks = (Callbacks)activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement ArtworkListFragment.Callbacks");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callbacks = null;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,4 +85,5 @@ public class ArtworkListFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putParcelableArrayList(ARTWORK_LIST, artworks);
     }
+
 }

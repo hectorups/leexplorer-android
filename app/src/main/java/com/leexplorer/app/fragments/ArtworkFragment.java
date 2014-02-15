@@ -2,7 +2,6 @@ package com.leexplorer.app.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.TextView;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.models.Artwork;
-import com.leexplorer.app.util.FakeData;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -23,6 +21,7 @@ import butterknife.InjectView;
 public class ArtworkFragment extends Fragment {
     private static final String ARTWORK_SAVED = "tweet_results";
     private static final String TAG = "com.leexplorer.artworkfragment";
+    private static final String EXTRA_ARTWORK = "extra_artwork";
 
     @InjectView(R.id.tvAuthorAndDate)
     TextView tvAuthorAndDate;
@@ -35,6 +34,24 @@ public class ArtworkFragment extends Fragment {
 
     Artwork artwork;
 
+    public static ArtworkFragment newInstance(Artwork aw){
+        Bundle args = new Bundle();
+        args.putParcelable(EXTRA_ARTWORK, aw);
+
+        ArtworkFragment fragment = new ArtworkFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //setRetainInstance(true);
+
+        artwork = getArguments().getParcelable(EXTRA_ARTWORK);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,13 +59,6 @@ public class ArtworkFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_artwork, container, false);
 
         ButterKnife.inject(this, rootView);
-
-        if (savedInstanceState != null) {
-            artwork = savedInstanceState.getParcelable(ARTWORK_SAVED);
-
-        } else {
-            artwork = FakeData.getArtworks().get(0);
-        }
 
         tvAuthorAndDate.setText(artwork.getName());
         tvDescription.setText(artwork.getDescription());
@@ -58,13 +68,6 @@ public class ArtworkFragment extends Fragment {
                 .into(ivArtwork);
 
         return rootView;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        Log.i(TAG, "onSaveInstanceState");
-        savedInstanceState.putParcelable(ARTWORK_SAVED, artwork);
     }
 
 }

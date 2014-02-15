@@ -4,10 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
+    <!-- BACKGROUND -->
+    
     <com.etsy.android.grid.util.DynamicHeightImageView
         android:id="@+id/ivArtworkThumb"
         android:layout_width="match_parent"
         android:layout_height="100dp"/>
+    
+    <!-- SIGNAL INDICATOR -->
+    
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_gravity="right|top">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/signal_bg"/>
+        
+        <ImageView
+            android:layout_gravity="center"
+            android:src="@drawable/ic_signal_close"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+    
+    </FrameLayout>
+
+    <!-- ARTWORK INFO -->
 
     <FrameLayout
         android:layout_gravity="bottom"

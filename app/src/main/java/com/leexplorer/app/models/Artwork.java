@@ -44,6 +44,11 @@ public class Artwork extends Model implements Parcelable {
     @Column(name="known")
     private boolean known;
 
+    public enum Distance {
+        CLOSE, MEDIUM, FAR, OUT_OF_RANGE
+    }
+    private Distance distance;
+
     public String getName() {
         return name;
     }
@@ -108,7 +113,10 @@ public class Artwork extends Model implements Parcelable {
         this.likesCount = likesCount;
     }
 
-    public Artwork(){super();}
+    public Artwork(){
+        super();
+        distance = Distance.OUT_OF_RANGE;
+    }
 
     public static Artwork fromJson(JSONObject json){
         Artwork aw = null;

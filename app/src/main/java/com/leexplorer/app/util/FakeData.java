@@ -5,6 +5,10 @@ import com.leexplorer.app.models.Artwork;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by hectormonserrate on 13/02/14.
@@ -19,17 +23,25 @@ public class FakeData {
         "{\"name\":\"paint4\",\"mac\":\"5\",\"description\":\"lala\",\"image_url\":\"http://www.glenwoodnyc.com/manhattan-living/wp-content/uploads/2011/06/gagosian-picasso-femme-nue-couchee-painting.jpeg\",\"author\":\"picasso\",\"likes_count\":30,\"published_at\":\"1822-10-10\"}"
     };
 
+    private static final List<Artwork.Distance> DISTANCE_VALUES =
+            Collections.unmodifiableList(Arrays.asList(Artwork.Distance.values()));
+    private static final Random RANDOM = new Random();
 
+    // Gets all fake artworks
     public static ArrayList<Artwork> getArtworks(){
         ArrayList<Artwork> artworks = new ArrayList<>();
-        for(String aw: ARTWORKS_JSON){
+        for(String awj: ARTWORKS_JSON){
            try{
-            artworks.add(Artwork.fromJson(new JSONObject(aw)));
+                Artwork aw = Artwork.fromJson(new JSONObject(awj));
+                // Random distance
+                aw.setDistance( DISTANCE_VALUES.get(RANDOM.nextInt(DISTANCE_VALUES.size())) );
+                artworks.add(aw);
            } catch(Exception e){
             e.printStackTrace();
            }
         }
 
+        Collections.sort(artworks);
         return artworks;
     }
 }

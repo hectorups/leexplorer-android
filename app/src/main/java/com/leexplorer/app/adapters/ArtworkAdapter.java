@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.etsy.android.grid.util.DynamicHeightImageView;
@@ -58,15 +60,17 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
                 .centerCrop()
                 .into(holder.ivArtworkThumb);
 
+        setSignalIndicator(holder, aw);
 
         return view;
     }
-
 
     static class ViewHolder {
         @InjectView(R.id.tvName) TextView tvName;
         @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
         @InjectView(R.id.ivArtworkThumb) DynamicHeightImageView ivArtworkThumb;
+        @InjectView(R.id.flSignalIndicator) FrameLayout flSignalIndicator;
+        @InjectView(R.id.ivSignalIcon) ImageView ivSignalIcon;
 
         private ArtworkListFragment fragment;
 
@@ -82,6 +86,27 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         }
     }
 
+    private void setSignalIndicator(ViewHolder holder, Artwork aw){
+        if( aw.getDistance() == Artwork.Distance.OUT_OF_RANGE ){
+            holder.flSignalIndicator.setVisibility(View.INVISIBLE);
+            return;
+        }
+
+        int drawable = R.drawable.ic_signal_close;
+
+        if(aw.getDistance() == Artwork.Distance.MEDIUM) {
+            drawable = R.drawable.ic_signal_medium;
+        } else if(aw.getDistance() == Artwork.Distance.MEDIUM) {
+            drawable = R.drawable.ic_signal_far;
+        }
+
+        holder.ivSignalIcon.setImageResource(drawable);
+        holder.flSignalIndicator.setVisibility(View.VISIBLE);
+    }
+
+
+    // @todo: this is for testing, needs to be implemted depending on
+    // the overal gallery score
     private double getHeightRatioFromPopularity(Artwork aw) {
         long factor;
         if(aw.getLikesCount() > 100){

@@ -15,6 +15,7 @@
     <!-- SIGNAL INDICATOR -->
     
     <FrameLayout
+        android:id="@+id/flSignalIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
@@ -27,6 +28,7 @@
             android:src="@drawable/signal_bg"/>
         
         <ImageView
+            android:id="@+id/ivSignalIcon"
             android:layout_gravity="center"
             android:src="@drawable/ic_signal_close"
             android:layout_width="30dp"

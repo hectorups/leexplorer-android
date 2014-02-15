@@ -17,7 +17,7 @@ import java.util.Date;
  * Created by hectormonserrate on 12/02/14.
  */
 @Table(name = "artworks")
-public class Artwork extends Model implements Parcelable {
+public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
 
     @Column(name="name")
     private String name;
@@ -44,7 +44,7 @@ public class Artwork extends Model implements Parcelable {
     @Column(name="known")
     private boolean known;
 
-    public enum Distance {
+    public static enum Distance {
         CLOSE, MEDIUM, FAR, OUT_OF_RANGE
     }
     private Distance distance;
@@ -113,6 +113,14 @@ public class Artwork extends Model implements Parcelable {
         this.likesCount = likesCount;
     }
 
+    public Distance getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Distance distance) {
+        this.distance = distance;
+    }
+
     public Artwork(){
         super();
         distance = Distance.OUT_OF_RANGE;
@@ -148,6 +156,10 @@ public class Artwork extends Model implements Parcelable {
             return sf.parse(date);
         } catch (ParseException e) { e.printStackTrace(); }
         return null;
+    }
+
+    public int compareTo(Artwork aw2) {
+        return this.distance.ordinal() - aw2.distance.ordinal();
     }
 
 

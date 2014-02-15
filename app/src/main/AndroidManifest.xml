@@ -34,6 +34,9 @@
         <activity
             android:name=".activities.ArtworkActivity"
             android:label="@string/title_activity_artwork" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.leexplorer.app.activities.ArworkListActivity" />
         </activity>
 
     </application>

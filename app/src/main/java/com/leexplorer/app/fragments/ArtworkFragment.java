@@ -2,7 +2,10 @@ package com.leexplorer.app.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -48,6 +51,8 @@ public class ArtworkFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         artwork = getArguments().getParcelable(EXTRA_ARTWORK);
+
+        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 
@@ -69,6 +74,23 @@ public class ArtworkFragment extends Fragment {
                 .into(ivArtwork);
 
         return rootView;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case android.R.id.home:
+                navigateBack();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void navigateBack(){
+        if(NavUtils.getParentActivityName(getActivity()) != null){
+            NavUtils.navigateUpFromSameTask(getActivity());
+        }
     }
 
 }

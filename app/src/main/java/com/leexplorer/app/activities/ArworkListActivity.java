@@ -12,14 +12,17 @@ import com.leexplorer.app.models.Artwork;
 
 public class ArworkListActivity extends ActionBarActivity implements ArtworkListFragment.Callbacks {
 
+    private ArtworkListFragment fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_arwork_list);
 
         if (savedInstanceState == null) {
+            fragment = new ArtworkListFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new ArtworkListFragment())
+                    .add(R.id.container, fragment)
                     .commit();
         }
     }
@@ -51,6 +54,7 @@ public class ArworkListActivity extends ActionBarActivity implements ArtworkList
     public void onArtworkClicked(Artwork aw){
         Intent i = new Intent(this, ArtworkActivity.class);
         i.putExtra(ArtworkActivity.EXTRA_ARTWORK, aw);
+        i.putExtra(ArtworkActivity.EXTRA_ARTWORKS, fragment.getArtworks());
         startActivity(i);
     }
 

@@ -162,6 +162,9 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         return this.distance.ordinal() - aw2.distance.ordinal();
     }
 
+    public boolean equals(Artwork aw2){
+        return this.mac.equals(aw2.mac);
+    }
 
     /*
      *  Parcelable Overrides

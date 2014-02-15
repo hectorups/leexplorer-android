@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">leexplorer</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="app_name">leExplorer</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_artwork">ArtworkActivity</string>
+    <string name="title_activity_artwork">Exhibit</string>
 
     <!--ARWORK SCREEN-->
     <string name="artwork_description_header">Description</string>

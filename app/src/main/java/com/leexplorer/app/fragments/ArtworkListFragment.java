@@ -86,4 +86,8 @@ public class ArtworkListFragment extends Fragment {
         savedInstanceState.putParcelableArrayList(ARTWORK_LIST, artworks);
     }
 
+    public ArrayList<Artwork> getArtworks(){
+        return artworks;
+    }
+
 }

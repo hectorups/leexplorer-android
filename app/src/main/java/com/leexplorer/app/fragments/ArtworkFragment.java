@@ -3,7 +3,6 @@ package com.leexplorer.app.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,7 +51,6 @@ public class ArtworkFragment extends Fragment {
         super.onCreate(savedInstanceState);
         artwork = getArguments().getParcelable(EXTRA_ARTWORK);
 
-        ((ActionBarActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
 

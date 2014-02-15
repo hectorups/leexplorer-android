@@ -47,8 +47,6 @@ public class ArtworkFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setRetainInstance(true);
-
         artwork = getArguments().getParcelable(EXTRA_ARTWORK);
     }
 
@@ -63,8 +61,11 @@ public class ArtworkFragment extends Fragment {
         tvAuthorAndDate.setText(artwork.getName());
         tvDescription.setText(artwork.getDescription());
 
+
         Picasso.with(getActivity())
                 .load(artwork.getImageUrl())
+                .fit()
+                .centerCrop()
                 .into(ivArtwork);
 
         return rootView;

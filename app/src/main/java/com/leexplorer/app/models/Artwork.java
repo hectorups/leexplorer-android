@@ -45,8 +45,12 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     private boolean known;
 
     public static enum Distance {
-        CLOSE, MEDIUM, FAR, OUT_OF_RANGE
+        CLOSE,
+        MEDIUM,
+        FAR,
+        OUT_OF_RANGE
     }
+
     private Distance distance;
 
     public String getName() {

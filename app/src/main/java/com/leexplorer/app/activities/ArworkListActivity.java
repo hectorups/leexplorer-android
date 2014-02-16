@@ -2,6 +2,8 @@ package com.leexplorer.app.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,20 +14,22 @@ import com.leexplorer.app.models.Artwork;
 
 public class ArworkListActivity extends ActionBarActivity implements ArtworkListFragment.Callbacks {
 
-    private ArtworkListFragment fragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_arwork_list);
 
-        if (savedInstanceState == null) {
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.container);
+
+        if(fragment == null){
             fragment = new ArtworkListFragment();
-            getSupportFragmentManager().beginTransaction()
+            fm.beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();
         }
     }
+
 
 
     @Override
@@ -52,6 +56,11 @@ public class ArworkListActivity extends ActionBarActivity implements ArtworkList
     }
 
     public void onArtworkClicked(Artwork aw){
+        FragmentManager fm = getSupportFragmentManager();
+        ArtworkListFragment fragment = (ArtworkListFragment) fm.findFragmentById(R.id.container);
+
+        if(fragment == null) return;
+
         Intent i = new Intent(this, ArtworkActivity.class);
         i.putExtra(ArtworkActivity.EXTRA_ARTWORK, aw);
         i.putExtra(ArtworkActivity.EXTRA_ARTWORKS, fragment.getArtworks());

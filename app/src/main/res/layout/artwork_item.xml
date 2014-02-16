@@ -56,7 +56,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="2dp"
                 android:textSize="16sp"
-                android:textColor="@color/le_white"/>
+                android:textStyle="bold"
+                style="@style/LE.ArtworkListText"/>
 
             <TextView
                 android:id="@+id/tvAuthorAndDate"

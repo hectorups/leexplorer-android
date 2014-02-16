@@ -17,6 +17,7 @@ import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.util.ArtDate;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -50,7 +51,8 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         Artwork aw = getItem(position);
 
         holder.tvName.setText(aw.getName());
-        holder.tvAuthorAndDate.setText(aw.getAuthor());
+
+        holder.tvAuthorAndDate.setText(aw.getAuthor() + " - " + ArtDate.shortDate(aw.getPublishedAt()) );
 
         holder.ivArtworkThumb.setTag(aw);
         holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));

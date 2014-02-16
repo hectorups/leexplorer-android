@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.util.ArtDate;
 import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
@@ -61,7 +62,7 @@ public class ArtworkFragment extends Fragment {
 
         ButterKnife.inject(this, rootView);
 
-        tvAuthorAndDate.setText(artwork.getName());
+        tvAuthorAndDate.setText(artwork.getName() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
         tvDescription.setText(artwork.getDescription());
 
 

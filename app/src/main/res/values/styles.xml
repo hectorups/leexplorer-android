@@ -7,17 +7,29 @@
 
     <style name="LE"/>
 
-    <style name="LE.HeadlineText">
+    <!-- Text styles -->
+
+    <style name="LE.TextStyle">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/le_black</item>
+    </style>
+
+    <style name="LE.HeadlineText" parent="LE.TextStyle">
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="LE.HeadlineText.Normal">
+    <style name="LE.HeadlineText.Normal" parent="LE.TextStyle">
         <item name="android:textColor">@color/le_dark_grey</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">normal</item>
     </style>
+
+    <style name="LE.ArtworkListText" parent="LE.TextStyle">
+        <item name="android:textColor">@color/le_white</item>
+    </style>
+
+    <!-- Profile Styles -->
 
     <style name="LE.ProfileTitle">
         <item name="android:layout_width">match_parent</item>

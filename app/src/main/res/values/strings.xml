@@ -4,6 +4,7 @@
     <string name="app_name">leExplorer</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_artwork">Exhibit</string>
+    <string name="unknown_date">unknown</string>
 
     <!--ARWORK SCREEN-->
     <string name="artwork_description_header">Description</string>

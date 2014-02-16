@@ -49,6 +49,23 @@ public class ArtworkActivity extends ActionBarActivity {
             }
         });
 
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {}
+
+            @Override
+            public void onPageSelected(int i) {
+                Artwork aw = artworks.get(i);
+                if( aw != null){
+                    setTitle(aw.getName());
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {}
+        });
+
         // Set page in ViewPager
         for(int i = 0; i < artworks.size(); i++){
             Artwork aw = artworks.get(i);

@@ -84,7 +84,7 @@ public class ArtworkFragment extends Fragment {
 
         ButterKnife.inject(this, rootView);
 
-        tvAuthorAndDate.setText(artwork.getName() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
+        tvAuthorAndDate.setText(artwork.getAuthor() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
         tvDescription.setText(artwork.getDescription());
 
 

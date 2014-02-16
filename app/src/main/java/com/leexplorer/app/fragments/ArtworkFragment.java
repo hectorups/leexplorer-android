@@ -46,7 +46,6 @@ import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
  * Created by hectormonserrate on 11/02/14.
  */
 public class ArtworkFragment extends Fragment {
-    private static final String ARTWORK_SAVED = "tweet_results";
     private static final String TAG = "com.leexplorer.artworkfragment";
     private static final String EXTRA_ARTWORK = "extra_artwork";
 
@@ -118,11 +117,6 @@ public class ArtworkFragment extends Fragment {
                 .load(artwork.getImageUrl())
                 .into(targetForShare);
 
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
     }
 
     @Override

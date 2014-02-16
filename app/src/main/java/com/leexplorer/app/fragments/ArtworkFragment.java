@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.leexplorer.app.R;
@@ -38,6 +39,8 @@ import rx.android.concurrency.AndroidSchedulers;
 import rx.concurrency.Schedulers;
 import rx.subscriptions.Subscriptions;
 import rx.util.functions.Action1;
+import uk.co.chrisjenx.paralloid.Parallaxor;
+import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 
 /**
  * Created by hectormonserrate on 11/02/14.
@@ -86,6 +89,12 @@ public class ArtworkFragment extends Fragment {
 
         tvAuthorAndDate.setText(artwork.getAuthor() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
         tvDescription.setText(artwork.getDescription());
+
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.ivArtwork);
+        ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.scroll_view);
+        if (scrollView instanceof Parallaxor) {
+            ((Parallaxor) scrollView).parallaxViewBy(imageView, new InvertTransformer(), 0.35f);
+        }
 
 
         Picasso.with(getActivity())

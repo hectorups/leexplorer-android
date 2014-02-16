@@ -35,6 +35,9 @@ public class FakeData {
                 Artwork aw = Artwork.fromJson(new JSONObject(awj));
                 // Random distance
                 aw.setDistance( DISTANCE_VALUES.get(RANDOM.nextInt(DISTANCE_VALUES.size())) );
+
+                for(int i = 0; i < 100; i++){ aw.setDescription("Avium sodium rules all. " + aw.getDescription()); }
+
                 artworks.add(aw);
            } catch(Exception e){
             e.printStackTrace();

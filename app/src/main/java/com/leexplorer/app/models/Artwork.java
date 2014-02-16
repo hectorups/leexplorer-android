@@ -44,6 +44,9 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     @Column(name="known")
     private boolean known;
 
+    @Column(name="i_liked")
+    private boolean iLiked;
+
     public static enum Distance {
         CLOSE,
         MEDIUM,
@@ -125,6 +128,8 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         this.distance = distance;
     }
 
+    public boolean isiLiked(){ return this.iLiked; }
+
     public Artwork(){
         super();
         distance = Distance.OUT_OF_RANGE;
@@ -170,6 +175,18 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         return this.mac.equals(aw2.mac);
     }
 
+    public void like(){
+        this.iLiked = true;
+        this.likesCount += 1;
+        //this.save();
+    }
+
+    public void unlike(){
+        this.iLiked = false;
+        this.likesCount -= 1;
+        //this.save();
+    }
+
     /*
      *  Parcelable Overrides
      */
@@ -182,6 +199,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         author = in.readString();
         likesCount = in.readInt();
         publishedAt = new Date(in.readLong());
+        iLiked = in.readInt() == 1 ? true : false;
     }
 
     @Override
@@ -198,6 +216,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         dest.writeString(author);
         dest.writeInt(likesCount);
         dest.writeLong(publishedAt.getTime());
+        dest.writeInt( iLiked ? 1 : 0 );
     }
 
     @SuppressWarnings("unused")

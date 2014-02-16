@@ -14,15 +14,18 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.ArtDate;
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorInflater;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -49,6 +52,8 @@ public class ArtworkFragment extends Fragment {
     private static final String TAG = "com.leexplorer.artworkfragment";
     private static final String EXTRA_ARTWORK = "extra_artwork";
 
+    private final int LIKED_IMG_SIZE = 52;
+
     @InjectView(R.id.tvAuthorAndDate)
     TextView tvAuthorAndDate;
 
@@ -57,6 +62,21 @@ public class ArtworkFragment extends Fragment {
 
     @InjectView(R.id.ivArtwork)
     ImageView ivArtwork;
+
+    @InjectView(R.id.ivLiked)
+    ImageView ivLiked;
+
+    @InjectView(R.id.ivLike)
+    ImageView ivLike;
+
+    @InjectView(R.id.svDescription)
+    FrameLayout svDescription;
+
+    @InjectView(R.id.flHeaderOverlay) FrameLayout flHeaderOverlay;
+    @InjectView(R.id.flLike) FrameLayout flLike;
+    @InjectView(R.id.tvLikesCount) TextView tvLikesCount;
+    @InjectView(R.id.ivLikesCount) ImageView ivLikesCount;
+
 
     Artwork artwork;
     ShareActionProvider miShareAction;
@@ -89,14 +109,28 @@ public class ArtworkFragment extends Fragment {
         tvAuthorAndDate.setText(artwork.getAuthor() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
         tvDescription.setText(artwork.getDescription());
 
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.ivArtwork);
-        ScrollView scrollView = (ScrollView) rootView.findViewById(R.id.scroll_view);
-        if (scrollView instanceof Parallaxor) {
-            ((Parallaxor) scrollView).parallaxViewBy(imageView, new InvertTransformer(), 0.35f);
+        if (svDescription instanceof Parallaxor) {
+            ((Parallaxor) svDescription).parallaxViewBy(ivArtwork, new InvertTransformer(), 0.35f);
         }
 
 
-        Picasso.with(getActivity())
+        flHeaderOverlay.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if( Math.abs(motionEvent.getX() - (flLike.getX() + LIKED_IMG_SIZE/2 ) ) < LIKED_IMG_SIZE * 2
+                    && Math.abs(motionEvent.getY() - (flLike.getY() + LIKED_IMG_SIZE/2 ) ) < LIKED_IMG_SIZE * 2
+                        ){
+                    onClickLike();
+                }
+                return false;
+            }
+        });
+        if( artwork.isiLiked() ){
+            ivLiked.setVisibility(View.VISIBLE);
+        }
+
+        tvLikesCount.setText(String.valueOf(artwork.getLikesCount()));
+         Picasso.with(getActivity())
                 .load(artwork.getImageUrl())
                 .fit()
                 .centerCrop()
@@ -128,6 +162,22 @@ public class ArtworkFragment extends Fragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void onClickLike() {
+        if(artwork.isiLiked()){
+            artwork.unlike();
+            ivLiked.setVisibility(View.INVISIBLE);
+
+        } else {
+            artwork.like();
+            ivLiked.setVisibility(View.VISIBLE);
+            Animator anim = AnimatorInflater.loadAnimator(getActivity(), R.anim.enlarge);
+            anim.setTarget(ivLiked);
+            anim.start();
+        }
+
+        tvLikesCount.setText( String.valueOf(artwork.getLikesCount()) );
     }
 
     private void navigateBack(){

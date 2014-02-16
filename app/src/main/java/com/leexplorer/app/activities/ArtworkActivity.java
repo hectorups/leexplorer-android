@@ -67,6 +67,7 @@ public class ArtworkActivity extends ActionBarActivity {
         });
 
         // Set page in ViewPager
+        setTitle(currentAw.getName());
         for(int i = 0; i < artworks.size(); i++){
             Artwork aw = artworks.get(i);
             if( currentAw.equals(aw) ){

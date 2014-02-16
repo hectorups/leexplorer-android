@@ -12,12 +12,12 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 
-public class ArworkListActivity extends ActionBarActivity implements ArtworkListFragment.Callbacks {
+public class ArtworkListActivity extends ActionBarActivity implements ArtworkListFragment.Callbacks {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_arwork_list);
+        setContentView(R.layout.activity_artwork_list);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.container);

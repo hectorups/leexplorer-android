@@ -3,5 +3,5 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.leexplorer.app.activities.ArworkListActivity"
+    tools:context="com.leexplorer.app.activities.ArtworkListActivity"
     tools:ignore="MergeRootFrame" />

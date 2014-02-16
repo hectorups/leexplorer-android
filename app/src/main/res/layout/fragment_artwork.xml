@@ -19,7 +19,7 @@
         android:layout_marginTop="5dp"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="right|top">
+        android:layout_gravity="left|top">
 
         <ImageView
             android:layout_gravity="center"

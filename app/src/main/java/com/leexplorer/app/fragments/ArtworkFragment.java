@@ -117,8 +117,11 @@ public class ArtworkFragment extends Fragment {
         flHeaderOverlay.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if( Math.abs(motionEvent.getX() - (flLike.getX() + LIKED_IMG_SIZE/2 ) ) < LIKED_IMG_SIZE * 2
-                    && Math.abs(motionEvent.getY() - (flLike.getY() + LIKED_IMG_SIZE/2 ) ) < LIKED_IMG_SIZE * 2
+                int offset[] = new int[2];
+                flLike.getLocationOnScreen( offset );
+
+                if( Math.abs(motionEvent.getRawX() - (offset[0] + LIKED_IMG_SIZE/2 ) ) < LIKED_IMG_SIZE * 2
+                    && Math.abs(motionEvent.getRawY() - (offset[1] + LIKED_IMG_SIZE/2 ) ) < LIKED_IMG_SIZE * 2
                         ){
                     onClickLike();
                 }

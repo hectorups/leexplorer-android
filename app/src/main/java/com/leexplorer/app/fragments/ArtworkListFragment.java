@@ -63,7 +63,7 @@ public class ArtworkListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_artwork_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_artwork_list_responsive, container, false);
 
         ButterKnife.inject(this, rootView);
 

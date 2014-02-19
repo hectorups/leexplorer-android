@@ -60,4 +60,15 @@
 
     </uk.co.chrisjenx.paralloid.views.ParallaxScrollView>
 
+    <FrameLayout
+        android:id="@+id/flPlayAudio"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center">
+
+        <include layout="@layout/audio_player"/>
+
+     </FrameLayout>
+
 </FrameLayout>

@@ -1,11 +1,14 @@
 package com.leexplorer.app.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
@@ -18,12 +21,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.ArtDate;
+import com.leexplorer.app.util.AudioTime;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorInflater;
 import com.squareup.picasso.Picasso;
@@ -35,6 +41,7 @@ import java.io.IOException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -48,7 +55,7 @@ import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 /**
  * Created by hectormonserrate on 11/02/14.
  */
-public class ArtworkFragment extends Fragment {
+public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChangeListener{
     private static final String TAG = "com.leexplorer.artworkfragment";
     private static final String EXTRA_ARTWORK = "extra_artwork";
 
@@ -77,6 +84,15 @@ public class ArtworkFragment extends Fragment {
     @InjectView(R.id.tvLikesCount) TextView tvLikesCount;
     @InjectView(R.id.ivLikesCount) ImageView ivLikesCount;
 
+    @InjectView(R.id.flPlayAudio) FrameLayout flPlayAudio;
+    @InjectView(R.id.btnPlay) ImageButton btnPlay;
+    @InjectView(R.id.btnPause) ImageButton btnPause;
+    @InjectView(R.id.sbAudio) SeekBar sbAudio;
+    @InjectView(R.id.tvDuration) TextView tvDuration;
+    @InjectView(R.id.tvTotalDuration) TextView tvTotalDuration;
+
+    private MenuItem menuPlay;
+
 
     Artwork artwork;
     ShareActionProvider miShareAction;
@@ -98,6 +114,11 @@ public class ArtworkFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        stop();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -139,6 +160,8 @@ public class ArtworkFragment extends Fragment {
                 .centerCrop()
                 .into(ivArtwork);
 
+        sbAudio.setOnSeekBarChangeListener(this);
+
         return rootView;
     }
 
@@ -149,6 +172,8 @@ public class ArtworkFragment extends Fragment {
         MenuItem item = menu.findItem(R.id.menuShare);
 
         miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+
+        menuPlay = (MenuItem) menu.findItem(R.id.menuPlay);
 
         Picasso.with(getActivity())
                 .load(artwork.getImageUrl())
@@ -162,6 +187,10 @@ public class ArtworkFragment extends Fragment {
             case android.R.id.home:
                 navigateBack();
                 return true;
+            case R.id.menuPlay:
+                flPlayAudio.setVisibility(View.VISIBLE);
+                menuPlay.setVisible(false);
+                playAudio(btnPlay);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -234,5 +263,138 @@ public class ArtworkFragment extends Fragment {
         @Override
         public void onPrepareLoad(android.graphics.drawable.Drawable drawable){}
     };
+
+    /*
+     * AUDIO @todo: port it to a service
+     *
+     */
+
+    @OnClick(R.id.btnPlay)
+    public void playAudio(View view){
+
+        btnPlay.setVisibility(View.GONE);
+        btnPause.setVisibility(View.VISIBLE);
+
+        play(getActivity(), "http://freedownloads.last.fm/download/569264057/Get%2BGot.mp3");
+        sbAudio.setMax(100);
+
+        updateProgressBar();
+    }
+
+    @OnClick(R.id.btnPause)
+    public void pauseAudio(View view){
+        handler.removeCallbacks(updateTimeTask);
+        pause();
+        btnPause.setVisibility(View.GONE);
+        btnPlay.setVisibility(View.VISIBLE);
+    }
+
+    private MediaPlayer mediaPlayer;
+    private int currentPosition;
+
+    public boolean isOn(){
+        return mediaPlayer != null;
+    }
+
+    public void stop(){
+        if(mediaPlayer != null){
+            mediaPlayer.release();
+            mediaPlayer = null;
+            currentPosition = 0;
+        }
+    }
+
+    public void play(Context c, String audio){
+
+        if(mediaPlayer != null && currentPosition != 0){
+            mediaPlayer.seekTo(currentPosition);
+            mediaPlayer.start();
+            return;
+        }
+
+        stop();
+        mediaPlayer = new MediaPlayer();
+        Uri myUri = Uri.parse(audio);
+        try {
+            mediaPlayer.setDataSource(c, myUri);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+            public void onCompletion(MediaPlayer mp){
+                mp.stop();
+                btnPlay.setVisibility(View.VISIBLE);
+                btnPause.setVisibility(View.GONE);
+            }
+        });
+        mediaPlayer.start();
+
+    }
+
+    public void pause(){
+        if(mediaPlayer == null){
+            return;
+        }
+
+        mediaPlayer.pause();
+        currentPosition = mediaPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {}
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // remove message Handler from updating progress bar
+        handler.removeCallbacks(updateTimeTask);
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        handler.removeCallbacks(updateTimeTask);
+
+        if(  !isOn()) return;
+        int totalDuration = mediaPlayer.getDuration();
+        int currentPosition = AudioTime.progressToTimer(seekBar.getProgress(), totalDuration);
+
+        // forward or backward to certain seconds
+        mediaPlayer.seekTo(currentPosition);
+
+        // update timer progress again
+        updateProgressBar();
+    }
+
+    public void updateProgressBar() {
+        handler.postDelayed(updateTimeTask, 100);
+    }
+
+    private Handler handler = new Handler();
+
+    private Runnable updateTimeTask = new Runnable() {
+        public void run() {
+            if( !isOn()){
+                handler.removeCallbacks(updateTimeTask);
+                return;
+            }
+
+            long totalDuration = mediaPlayer.getDuration();
+            long currentDuration = mediaPlayer.getCurrentPosition();
+
+            // Displaying Total Duration time
+            tvTotalDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(totalDuration)));
+            // Displaying time completed playing
+            tvDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(currentDuration)));
+
+            // Updating progress bar
+            int progress = (int)(AudioTime.getProgressPercentage(currentDuration, totalDuration));
+            sbAudio.setProgress(progress);
+
+            handler.postDelayed(this, 200);
+        }
+    };
+
+
 
 }

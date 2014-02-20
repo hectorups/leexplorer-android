@@ -5,6 +5,7 @@ package com.leexplorer.app.fragments;
  */
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,10 +15,12 @@ import android.view.ViewGroup;
 import com.etsy.android.grid.StaggeredGridView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
+import com.leexplorer.app.api.Client;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.FakeData;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -66,6 +69,19 @@ public class ArtworkListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_artwork_list_responsive, container, false);
 
         ButterKnife.inject(this, rootView);
+
+
+        new AsyncTask<Integer, Void, Void>() {
+            protected Void doInBackground(Integer... v) {
+                List<com.leexplorer.app.api.models.Artwork> testList = Client.getService().getArtworks();
+                return null;
+            }
+
+            protected void onPostExecute(Void v) {
+                // TODO: check this.exception
+                // TODO: do something with the feed
+            }
+        }.execute(0);
 
         if (savedInstanceState != null) {
             artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST);

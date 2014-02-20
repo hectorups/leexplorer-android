@@ -1,8 +1,7 @@
 package com.leexplorer.app.util;
 
+import com.google.gson.Gson;
 import com.leexplorer.app.models.Artwork;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,11 +28,13 @@ public class FakeData {
 
     // Gets all fake artworks
     public static ArrayList<Artwork> getArtworks(){
+        Gson gson = new Gson();
         ArrayList<Artwork> artworks = new ArrayList<>();
         for(String awj: ARTWORKS_JSON){
            try{
-                Artwork aw = Artwork.fromJson(new JSONObject(awj));
-                // Random distance
+                com.leexplorer.app.api.models.Artwork awm = gson.fromJson(awj, com.leexplorer.app.api.models.Artwork.class);
+                Artwork aw = Artwork.fromJsonModel(awm);
+               // Random distance
                 aw.setDistance( DISTANCE_VALUES.get(RANDOM.nextInt(DISTANCE_VALUES.size())) );
                 aw.unlike();
                 for(int i = 0; i < 100; i++){ aw.setDescription("Avium sodium rules all. " + aw.getDescription()); }

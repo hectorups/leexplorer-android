@@ -46,7 +46,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.concurrency.AndroidSchedulers;
-import rx.concurrency.Schedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
 import rx.util.functions.Action1;
 import uk.co.chrisjenx.paralloid.Parallaxor;

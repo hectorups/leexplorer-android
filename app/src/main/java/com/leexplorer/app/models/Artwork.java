@@ -158,6 +158,26 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         return aw;
     }
 
+    public static Artwork fromJsonModel( com.leexplorer.app.api.models.Artwork jaw){
+        Artwork aw = null;
+
+        String mac = jaw.mac;
+
+        // aw = findByMac(mac);
+
+        if(aw == null) aw = new Artwork();
+
+        aw.name = jaw.name;
+        aw.mac = mac;
+        aw.description = jaw.description;
+        aw.imageUrl = jaw.imageUrl;
+        aw.author = jaw.author;
+        aw.likesCount = jaw.likesCount;
+        aw.publishedAt = setDateFromString(jaw.publishedAt);
+
+        return aw;
+    }
+
     private static Date setDateFromString(String date) {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         sf.setLenient(true);

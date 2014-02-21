@@ -16,7 +16,6 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.models.Artwork;
-import com.leexplorer.app.util.FakeData;
 
 import java.util.ArrayList;
 
@@ -35,7 +34,7 @@ public class ArtworkListFragment extends Fragment {
 
     protected ArtworkAdapter artworkAdapter;
 
-    private ArrayList<Artwork> artworks;
+    private ArrayList<Artwork> artworks = new ArrayList<>();
 
     public interface Callbacks {
         public void onLoading(boolean loading);
@@ -71,23 +70,23 @@ public class ArtworkListFragment extends Fragment {
 
         ButterKnife.inject(this, rootView);
 
-
-        Client.getArtworksData()
-                .subscribeOn(Schedulers.threadPoolForIO())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<Artwork>>() {
-                    @Override
-                    public void call(ArrayList<Artwork> aws) {
-                        artworks = aws;
-                        artworkAdapter.notifyDataSetChanged();
-                    }
-                });
-
         if (savedInstanceState != null) {
             artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST);
-
         } else {
-            artworks = FakeData.getArtworks();
+            callbacks.onLoading(true);
+            Client.getArtworksData()
+                    .subscribeOn(Schedulers.threadPoolForIO())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<ArrayList<Artwork>>() {
+                        @Override
+                        public void call(ArrayList<Artwork> aws) {
+                            for(Artwork aw: aws){
+                                artworks.add(aw);
+                            }
+                            artworkAdapter.notifyDataSetChanged();
+                            callbacks.onLoading(false);
+                        }
+                    });
         }
 
         artworkAdapter = new ArtworkAdapter(this, artworks);

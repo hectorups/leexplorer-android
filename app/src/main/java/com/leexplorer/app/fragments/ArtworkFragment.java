@@ -317,20 +317,23 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         Uri myUri = Uri.parse(audio);
         try {
             mediaPlayer.setDataSource(c, myUri);
-            mediaPlayer.prepare();
+            mediaPlayer.prepareAsync();
+            mediaPlayer.setOnPreparedListener( new MediaPlayer.OnPreparedListener(){
+                @Override
+                public void onPrepared(MediaPlayer mp){
+                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
+                        public void onCompletion(MediaPlayer mp){
+                            mp.stop();
+                            btnPlay.setVisibility(View.VISIBLE);
+                            btnPause.setVisibility(View.GONE);
+                        }
+                    });
+                    mp.start();
+                }
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
-            public void onCompletion(MediaPlayer mp){
-                mp.stop();
-                btnPlay.setVisibility(View.VISIBLE);
-                btnPause.setVisibility(View.GONE);
-            }
-        });
-        mediaPlayer.start();
-
     }
 
     public void pause(){

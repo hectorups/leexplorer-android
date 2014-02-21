@@ -1,6 +1,8 @@
 package com.leexplorer.app.api;
 
+import com.leexplorer.app.BuildConfig;
 import com.leexplorer.app.api.models.Artwork;
+import com.leexplorer.app.util.FakeData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +49,14 @@ public class Client {
             @Override
             public Subscription onSubscribe(Observer<? super ArrayList<com.leexplorer.app.models.Artwork>> observer) {
                 try {
-
                     ArrayList<com.leexplorer.app.models.Artwork> artworks = new ArrayList<>();
 
-                    for(Artwork aaw: getService().getArtworks()){
-                        artworks.add(com.leexplorer.app.models.Artwork.fromJsonModel(aaw));
+                    if( BuildConfig.FAKE_DATA ){
+                        artworks = FakeData.getArtworks();
+                    } else {
+                        for(Artwork aaw: getService().getArtworks()){
+                            artworks.add(com.leexplorer.app.models.Artwork.fromJsonModel(aaw));
+                        }
                     }
 
                     observer.onNext(artworks);

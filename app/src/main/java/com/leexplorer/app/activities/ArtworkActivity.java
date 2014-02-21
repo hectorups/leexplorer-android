@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkFragment;
@@ -13,7 +12,7 @@ import com.leexplorer.app.models.Artwork;
 
 import java.util.ArrayList;
 
-public class ArtworkActivity extends ActionBarActivity {
+public class ArtworkActivity extends BaseActivity {
     public static final String EXTRA_ARTWORK = "extra_artwork";
     public static final String EXTRA_ARTWORKS = "extra_artworks";
 

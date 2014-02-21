@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.etsy.android.grid.StaggeredGridView;
+import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.api.Client;
@@ -117,6 +118,14 @@ public class ArtworkListFragment extends Fragment {
 
     private void refreshArtworkList(){
         callbacks.onLoading(true);
+        if( LeexplorerApplication.isOnline() ){
+            loadArtworkListFromApi();
+        } else {
+//            populateProfileView(user);
+        }
+    }
+
+    private void loadArtworkListFromApi(){
         Client.getArtworksData()
                 .subscribeOn(Schedulers.threadPoolForIO())
                 .observeOn(AndroidSchedulers.mainThread())

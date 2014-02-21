@@ -5,10 +5,8 @@ import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.util.FakeData;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit.RestAdapter;
-import retrofit.http.GET;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -25,10 +23,6 @@ public class Client {
     private static LeexplorerService service;
 
 
-    public static interface LeexplorerService {
-        @GET("/artwork")
-        List<Artwork> getArtworks();
-    }
 
     public static LeexplorerService getService(){
 

@@ -27,6 +27,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.leexplorer.app.R;
+import com.leexplorer.app.api.Client;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.AudioTime;
@@ -42,6 +43,9 @@ import java.io.IOException;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -197,6 +201,12 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     }
 
     public void onClickLike() {
+        Client.getService().likeArtwork(artwork.isiLiked() ? 0:1, new Callback<Void>(){
+            public void failure( RetrofitError re){}
+            public void success( Void v, Response r){}
+        });
+
+
         if(artwork.isiLiked()){
             artwork.unlike();
             ivLiked.setVisibility(View.INVISIBLE);

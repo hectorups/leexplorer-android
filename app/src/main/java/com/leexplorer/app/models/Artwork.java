@@ -7,8 +7,6 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-import org.json.JSONObject;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -135,28 +133,6 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         distance = Distance.OUT_OF_RANGE;
     }
 
-    public static Artwork fromJson(JSONObject json){
-        Artwork aw = null;
-
-        try{
-            String mac = json.getString("mac");
-
-            // aw = findByMac(mac);
-
-            if(aw == null) aw = new Artwork();
-            aw.name = json.getString("name");
-            aw.mac = mac;
-            aw.description = json.getString("description");
-            aw.imageUrl = json.getString("image_url");
-            aw.author = json.getString("author");
-            aw.likesCount = json.getInt("likes_count");
-            aw.publishedAt = setDateFromString(json.getString("published_at"));
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-
-        return aw;
-    }
 
     public static Artwork fromJsonModel( com.leexplorer.app.api.models.Artwork jaw){
         Artwork aw = null;

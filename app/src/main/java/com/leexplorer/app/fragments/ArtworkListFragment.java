@@ -5,7 +5,6 @@ package com.leexplorer.app.fragments;
  */
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,10 +19,12 @@ import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.FakeData;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.util.functions.Action1;
 
 
 public class ArtworkListFragment extends Fragment {
@@ -71,17 +72,16 @@ public class ArtworkListFragment extends Fragment {
         ButterKnife.inject(this, rootView);
 
 
-        new AsyncTask<Integer, Void, Void>() {
-            protected Void doInBackground(Integer... v) {
-                List<com.leexplorer.app.api.models.Artwork> testList = Client.getService().getArtworks();
-                return null;
-            }
-
-            protected void onPostExecute(Void v) {
-                // TODO: check this.exception
-                // TODO: do something with the feed
-            }
-        }.execute(0);
+        Client.getArtworksData()
+                .subscribeOn(Schedulers.threadPoolForIO())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ArrayList<Artwork>>() {
+                    @Override
+                    public void call(ArrayList<Artwork> aws) {
+                        artworks = aws;
+                        artworkAdapter.notifyDataSetChanged();
+                    }
+                });
 
         if (savedInstanceState != null) {
             artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST);

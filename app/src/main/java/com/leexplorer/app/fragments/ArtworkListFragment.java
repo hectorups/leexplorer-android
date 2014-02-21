@@ -8,6 +8,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -64,6 +67,13 @@ public class ArtworkListFragment extends Fragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_artwork_list_responsive, container, false);
@@ -73,20 +83,7 @@ public class ArtworkListFragment extends Fragment {
         if (savedInstanceState != null) {
             artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST);
         } else {
-            callbacks.onLoading(true);
-            Client.getArtworksData()
-                    .subscribeOn(Schedulers.threadPoolForIO())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<ArrayList<Artwork>>() {
-                        @Override
-                        public void call(ArrayList<Artwork> aws) {
-                            for(Artwork aw: aws){
-                                artworks.add(aw);
-                            }
-                            artworkAdapter.notifyDataSetChanged();
-                            callbacks.onLoading(false);
-                        }
-                    });
+            refreshArtworkList();
         }
 
         artworkAdapter = new ArtworkAdapter(this, artworks);
@@ -101,6 +98,43 @@ public class ArtworkListFragment extends Fragment {
         savedInstanceState.putParcelableArrayList(ARTWORK_LIST, artworks);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.artwork_list, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.menuRefresh:
+                refreshArtworkList();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void refreshArtworkList(){
+        callbacks.onLoading(true);
+        Client.getArtworksData()
+                .subscribeOn(Schedulers.threadPoolForIO())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<ArrayList<Artwork>>() {
+                    @Override
+                    public void call(ArrayList<Artwork> aws) {
+                        for(Artwork aw: aws){
+                            artworks.add(aw);
+                        }
+                        artworkAdapter.notifyDataSetChanged();
+                        callbacks.onLoading(false);
+                    }
+                });
+    }
+
+    /*
+     * Called by the host activity to get the fragment artworks
+     */
     public ArrayList<Artwork> getArtworks(){
         return artworks;
     }

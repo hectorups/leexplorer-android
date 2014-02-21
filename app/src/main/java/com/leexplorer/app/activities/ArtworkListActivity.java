@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
@@ -27,23 +25,6 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
                     .add(R.id.container, fragment)
                     .commit();
         }
-    }
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.arwork_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 

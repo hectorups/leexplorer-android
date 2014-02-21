@@ -132,6 +132,7 @@ public class ArtworkListFragment extends Fragment {
                 .subscribe(new Action1<ArrayList<Artwork>>() {
                     @Override
                     public void call(ArrayList<Artwork> aws) {
+                        artworks.clear();
                         for(Artwork aw: aws){
                             artworks.add(aw);
                         }

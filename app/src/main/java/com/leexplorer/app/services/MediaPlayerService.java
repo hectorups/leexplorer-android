@@ -17,10 +17,12 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
 import com.leexplorer.app.models.Artwork;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class MediaPlayerService extends IntentService {
+
+    private static final int STATUS_INTERVAL = 500;
+
     public static final String TOTAL_DURATION = "com.leexplorer.mediaplayerservice.total_duration";
     public static final String CURRENT_DURATION = "com.leexplorer.mediaplayerservice.current_duration";
     public static final String ARTWORK = "com.leexplorer.mediaplayerservice.artworks";
@@ -31,7 +33,7 @@ public class MediaPlayerService extends IntentService {
     public static final int ACTION_PAUSE = 3;
 
     private static final int NOTIFICATION_ID = 11;
-    private static MediaPlayer mediaPlayer = new MediaPlayer();
+    private static MediaPlayer mediaPlayer;
     private static int currentPosition = 0;
     private static Artwork artwork;
     private static ArrayList<Artwork> artworks;
@@ -59,8 +61,7 @@ public class MediaPlayerService extends IntentService {
         }
     }
 
-
-    private void prepareNotif() {
+    private void prepareNotification() {
         Resources r = getResources();
         Intent intent = new Intent(this, ArtworkActivity.class);
         intent.putExtra(ArtworkActivity.EXTRA_ARTWORK, artwork);
@@ -102,27 +103,17 @@ public class MediaPlayerService extends IntentService {
 
         this.artwork = artwork;
         stop();
-        mediaPlayer = new MediaPlayer();
-        Uri myUri = Uri.parse("http://podcasts.ricksteves.com/walkingtours/Pantheon.mp3");
-        try {
-            mediaPlayer.setDataSource(getApplicationContext(), myUri);
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                public void onCompletion(MediaPlayer mp) {
-                    mp.stop();
-                }
-            });
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mediaPlayer) {
-                    prepareNotif();
-                    updateProgress();
-                }
-            });
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        Uri audioUri = Uri.parse("http://podcasts.ricksteves.com/walkingtours/Pantheon.mp3");
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), audioUri);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                mp.stop();
+            }
+        });
+        mediaPlayer.start();
+        prepareNotification();
+        updateProgress();
     }
 
     private void pause(){
@@ -134,7 +125,7 @@ public class MediaPlayerService extends IntentService {
     }
 
     private void updateProgress() {
-        handler.postDelayed(updateTimeTask, 100);
+        handler.postDelayed(updateTimeTask, STATUS_INTERVAL);
     }
 
     private Runnable updateTimeTask = new Runnable() {
@@ -148,7 +139,7 @@ public class MediaPlayerService extends IntentService {
                 long totalDuration = mediaPlayer.getDuration();
                 long currentDuration = mediaPlayer.getCurrentPosition();
                 broadcastProgress(totalDuration, currentDuration);
-                handler.postDelayed(this, 300);
+                handler.postDelayed(this, STATUS_INTERVAL);
             }catch (Exception e){
                 e.printStackTrace();
             }

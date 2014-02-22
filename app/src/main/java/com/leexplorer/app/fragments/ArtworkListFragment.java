@@ -156,6 +156,7 @@ public class ArtworkListFragment extends Fragment {
             @Override
             public Subscription onSubscribe(Observer<? super ArrayList<Artwork>> observer) {
                 observer.onNext(Artwork.galleryArtworks());
+                observer.onCompleted();
                 return Subscriptions.empty();
             }
         }).subscribeOn(Schedulers.threadPoolForIO())

@@ -144,12 +144,14 @@ public class MediaPlayerService extends IntentService {
                 return;
             }
 
-            long totalDuration = mediaPlayer.getDuration();
-            long currentDuration = mediaPlayer.getCurrentPosition();
-
-            broadcastProgress(totalDuration, currentDuration);
-
-            handler.postDelayed(this, 300);
+            try{
+                long totalDuration = mediaPlayer.getDuration();
+                long currentDuration = mediaPlayer.getCurrentPosition();
+                broadcastProgress(totalDuration, currentDuration);
+                handler.postDelayed(this, 300);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     };
 

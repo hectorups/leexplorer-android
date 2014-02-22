@@ -20,6 +20,10 @@
             android:name="AA_DB_VERSION"
             android:value="1" />
 
+        <service
+        android:name=".services.MediaPlayerService"
+        android:exported="false"/>
+
         <activity
             android:name=".activities.ArtworkListActivity"
             android:label="@string/app_name" >

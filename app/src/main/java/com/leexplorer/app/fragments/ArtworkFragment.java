@@ -1,16 +1,19 @@
 package com.leexplorer.app.fragments;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
@@ -29,6 +32,7 @@ import android.widget.TextView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.AudioTime;
 import com.nineoldandroids.animation.Animator;
@@ -119,10 +123,22 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     }
 
     @Override
-    public void onDestroy(){
-        super.onDestroy();
-        stop();
+    public void onResume(){
+        super.onResume();
+        IntentFilter filter = new IntentFilter(MediaPlayerService.ACTION);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(audioProgressReceiver, filter);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try{
+            getActivity().unregisterReceiver(audioProgressReceiver);
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -285,15 +301,18 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         btnPlay.setVisibility(View.GONE);
         btnPause.setVisibility(View.VISIBLE);
 
-        play(getActivity(), "http://freedownloads.last.fm/download/569264057/Get%2BGot.mp3");
+        Intent i = new Intent(getActivity(), MediaPlayerService.class);
+        i.putExtra(MediaPlayerService.ARTWORK, artwork);
+        //i.putExtra(MediaPlayerService.ARTWORKS, );
+        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PLAY );
+        getActivity().startService(i);
+
         sbAudio.setMax(100);
 
-        updateProgressBar();
     }
 
     @OnClick(R.id.btnPause)
     public void pauseAudio(View view){
-        handler.removeCallbacks(updateTimeTask);
         pause();
         btnPause.setVisibility(View.GONE);
         btnPlay.setVisibility(View.VISIBLE);
@@ -306,53 +325,11 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         return mediaPlayer != null;
     }
 
-    public void stop(){
-        if(mediaPlayer != null){
-            mediaPlayer.release();
-            mediaPlayer = null;
-            currentPosition = 0;
-        }
-    }
-
-    public void play(Context c, String audio){
-
-        if(mediaPlayer != null && currentPosition != 0){
-            mediaPlayer.seekTo(currentPosition);
-            mediaPlayer.start();
-            return;
-        }
-
-        stop();
-        mediaPlayer = new MediaPlayer();
-        Uri myUri = Uri.parse(audio);
-        try {
-            mediaPlayer.setDataSource(c, myUri);
-            mediaPlayer.prepareAsync();
-            mediaPlayer.setOnPreparedListener( new MediaPlayer.OnPreparedListener(){
-                @Override
-                public void onPrepared(MediaPlayer mp){
-                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener(){
-                        public void onCompletion(MediaPlayer mp){
-                            mp.stop();
-                            btnPlay.setVisibility(View.VISIBLE);
-                            btnPause.setVisibility(View.GONE);
-                        }
-                    });
-                    mp.start();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void pause(){
-        if(mediaPlayer == null){
-            return;
-        }
-
-        mediaPlayer.pause();
-        currentPosition = mediaPlayer.getCurrentPosition();
+        Intent i = new Intent(getActivity(), MediaPlayerService.class);
+        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PAUSE );
+        getActivity().startService(i);
     }
 
     @Override
@@ -360,14 +337,11 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
-        // remove message Handler from updating progress bar
-        handler.removeCallbacks(updateTimeTask);
+        // handler.removeCallbacks(updateTimeTask);
     }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        handler.removeCallbacks(updateTimeTask);
-
         if(  !isOn()) return;
         int totalDuration = mediaPlayer.getDuration();
         int currentPosition = AudioTime.progressToTimer(seekBar.getProgress(), totalDuration);
@@ -375,36 +349,27 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         // forward or backward to certain seconds
         mediaPlayer.seekTo(currentPosition);
 
-        // update timer progress again
-        updateProgressBar();
     }
 
-    public void updateProgressBar() {
-        handler.postDelayed(updateTimeTask, 100);
-    }
 
-    private Handler handler = new Handler();
+    private BroadcastReceiver audioProgressReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
+            Artwork playingArtwork = intent.getParcelableExtra(MediaPlayerService.ARTWORK);
+            if (resultCode == Activity.RESULT_OK && artwork.equals(playingArtwork)) {
+                long totalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
+                long currentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
 
-    private Runnable updateTimeTask = new Runnable() {
-        public void run() {
-            if( !isOn()){
-                handler.removeCallbacks(updateTimeTask);
-                return;
+                // Displaying Total Duration time
+                tvTotalDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(totalDuration)));
+                // Displaying time completed playing
+                tvDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(currentDuration)));
+
+                // Updating progress bar
+                int progress = AudioTime.getProgressPercentage(currentDuration, totalDuration);
+                sbAudio.setProgress(progress);
             }
-
-            long totalDuration = mediaPlayer.getDuration();
-            long currentDuration = mediaPlayer.getCurrentPosition();
-
-            // Displaying Total Duration time
-            tvTotalDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(totalDuration)));
-            // Displaying time completed playing
-            tvDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(currentDuration)));
-
-            // Updating progress bar
-            int progress = (int)(AudioTime.getProgressPercentage(currentDuration, totalDuration));
-            sbAudio.setProgress(progress);
-
-            handler.postDelayed(this, 200);
         }
     };
 

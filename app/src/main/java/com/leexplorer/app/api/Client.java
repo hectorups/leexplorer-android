@@ -16,8 +16,8 @@ import rx.subscriptions.Subscriptions;
  * Created by hectormonserrate on 20/02/14.
  */
 public class Client {
-    private static final String API_URL = "http://10.12.34.255:1321"; // Hector 1
-    //private static final String API_URL = "http://10.0.0.7:1321"; // Hector 2
+    //private static final String API_URL = "http://10.12.34.255:1321"; // Hector 1
+    private static final String API_URL = "http://10.0.0.4:1321"; // Hector 2
     //private static final String API_URL = "http://121.0.0.1:1321"; // Deepak
 
     private static LeexplorerService service;

@@ -9,6 +9,10 @@
     <!--ARWORK SCREEN-->
     <string name="artwork_description_header">Description</string>
     <string name="share_image">Share</string>
+    
+    <!-- AUDIO SERVICE -->
+    <string name="audio_notification_title">audio</string>
+    <string name="audio_notification_text">playing...</string>
 
     <!--GALLERY SCREEN-->
 

@@ -66,6 +66,10 @@ import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChangeListener{
     private static final String TAG = "com.leexplorer.artworkfragment";
     private static final String EXTRA_ARTWORK = "extra_artwork";
+    private static final String SAVED_CURRENT_DURAITON = "saved_current_duration";
+    private static final String SAVED_TOTAL_DURAITON = "saved_total_duration";
+    private static final String SAVED_NOW_PLAYING = "saved_now_playing";
+    private static final String SAVED_ON_PAUSE = "saved_on_pause";
 
     private final int LIKED_IMG_SIZE = 52;
 
@@ -139,6 +143,15 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putLong(SAVED_CURRENT_DURAITON, audioCurrentDuration);
+        savedInstanceState.putLong(SAVED_TOTAL_DURAITON, audioTotalDuration);
+        savedInstanceState.putBoolean(SAVED_NOW_PLAYING, nowPlaying);
+        savedInstanceState.putBoolean(SAVED_ON_PAUSE, onPause);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -146,6 +159,15 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         View rootView = inflater.inflate(R.layout.fragment_artwork, container, false);
 
         ButterKnife.inject(this, rootView);
+
+        if (savedInstanceState != null) {
+            audioCurrentDuration = savedInstanceState.getLong(SAVED_CURRENT_DURAITON);
+            audioTotalDuration = savedInstanceState.getLong(SAVED_TOTAL_DURAITON);
+            nowPlaying = savedInstanceState.getBoolean(SAVED_NOW_PLAYING);
+            onPause = savedInstanceState.getBoolean(SAVED_ON_PAUSE);
+
+            showAudio();
+        }
 
         tvAuthorAndDate.setText(artwork.getAuthor() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
         tvDescription.setText(artwork.getDescription());
@@ -193,7 +215,13 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
         miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
-        menuPlay = (MenuItem) menu.findItem(R.id.menuPlay);
+        menuPlay = menu.findItem(R.id.menuPlay);
+
+        if(audioCurrentDuration == 0 ){
+            menuPlay.setVisible(true);
+        } else {
+            menuPlay.setVisible(false);
+        }
 
         Picasso.with(getActivity())
                 .load(artwork.getImageUrl())
@@ -208,7 +236,6 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
                 navigateBack();
                 return true;
             case R.id.menuPlay:
-                flPlayAudio.setVisibility(View.VISIBLE);
                 menuPlay.setVisible(false);
                 playAudio(btnPlay);
             default:
@@ -295,11 +322,13 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
      *
      */
 
+    private long audioTotalDuration = 0;
+    private long audioCurrentDuration = 0;
+    private boolean nowPlaying = false;
+    private boolean onPause = false;
+
     @OnClick(R.id.btnPlay)
     public void playAudio(View view){
-
-        btnPlay.setVisibility(View.GONE);
-        btnPause.setVisibility(View.VISIBLE);
 
         Intent i = new Intent(getActivity(), MediaPlayerService.class);
         i.putExtra(MediaPlayerService.ARTWORK, artwork);
@@ -307,15 +336,51 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PLAY );
         getActivity().startService(i);
 
+        updateSeekbar();
+        nowPlaying = true;
+        onPause = false;
+        showAudio();
+    }
+
+    private void updateSeekbar(){
         sbAudio.setMax(100);
 
+        if( audioCurrentDuration > 0 && audioTotalDuration > 0){
+            // Displaying Total Duration time
+            tvTotalDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(audioTotalDuration)));
+            // Displaying time completed playing
+            tvDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(audioCurrentDuration)));
+        }
+
+        // Updating progress bar
+        int progress = AudioTime.getProgressPercentage(audioCurrentDuration, audioTotalDuration);
+        sbAudio.setProgress(progress);
+
+    }
+
+    private void showAudio(){
+
+        if(!nowPlaying && !onPause){
+            flPlayAudio.setVisibility(View.GONE);
+            return;
+        }
+
+        flPlayAudio.setVisibility(View.VISIBLE);
+        if(nowPlaying){
+            btnPause.setVisibility(View.VISIBLE);
+            btnPlay.setVisibility(View.GONE);
+        } else {
+            btnPause.setVisibility(View.GONE);
+            btnPlay.setVisibility(View.VISIBLE);
+        }
     }
 
     @OnClick(R.id.btnPause)
     public void pauseAudio(View view){
         pause();
-        btnPause.setVisibility(View.GONE);
-        btnPlay.setVisibility(View.VISIBLE);
+        onPause = true;
+        nowPlaying = false;
+        showAudio();
     }
 
     private MediaPlayer mediaPlayer;
@@ -351,24 +416,24 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
     }
 
-
     private BroadcastReceiver audioProgressReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
             Artwork playingArtwork = intent.getParcelableExtra(MediaPlayerService.ARTWORK);
-            if (resultCode == Activity.RESULT_OK && artwork.equals(playingArtwork)) {
-                long totalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
-                long currentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
-
-                // Displaying Total Duration time
-                tvTotalDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(totalDuration)));
-                // Displaying time completed playing
-                tvDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(currentDuration)));
-
-                // Updating progress bar
-                int progress = AudioTime.getProgressPercentage(currentDuration, totalDuration);
-                sbAudio.setProgress(progress);
+            if (resultCode == Activity.RESULT_OK){
+                if(artwork.equals(playingArtwork)) {
+                    audioTotalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
+                    audioCurrentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
+                    updateSeekbar();
+                } else {
+                    audioCurrentDuration = 0;
+                    audioTotalDuration = 0;
+                    nowPlaying = false;
+                    onPause = false;
+                    updateSeekbar();
+                    showAudio();
+                }
             }
         }
     };

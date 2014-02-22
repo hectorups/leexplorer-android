@@ -6,10 +6,13 @@ import android.os.Parcelable;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by hectormonserrate on 12/02/14.
@@ -181,6 +184,12 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         this.iLiked = false;
         this.likesCount -= 1;
         //this.save();
+    }
+
+    // @todo: move this to gallery model
+    public static ArrayList<Artwork> galleryArtworks() {
+        List<Artwork> aws = new Select().from(Artwork.class).execute();
+        return new ArrayList<>(aws);
     }
 
     /*

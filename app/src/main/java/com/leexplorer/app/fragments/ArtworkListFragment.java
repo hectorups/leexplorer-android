@@ -25,9 +25,12 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.util.functions.Action1;
+import rx.subscriptions.Subscriptions;
 
 
 public class ArtworkListFragment extends Fragment {
@@ -117,29 +120,65 @@ public class ArtworkListFragment extends Fragment {
     }
 
     private void refreshArtworkList(){
-        callbacks.onLoading(true);
         if( LeexplorerApplication.isOnline() ){
             loadArtworkListFromApi();
         } else {
-//            populateProfileView(user);
+            loadArtworkListFromDB();
         }
     }
 
     private void loadArtworkListFromApi(){
+        callbacks.onLoading(true);
         Client.getArtworksData()
                 .subscribeOn(Schedulers.threadPoolForIO())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<Artwork>>() {
-                    @Override
-                    public void call(ArrayList<Artwork> aws) {
-                        artworks.clear();
-                        for(Artwork aw: aws){
-                            artworks.add(aw);
+                .subscribe(
+                        new Observer<ArrayList<Artwork>>() {
+                            @Override public void onCompleted() {callbacks.onLoading(false);}
+
+                            @Override public void onError(Throwable throwable) {
+                                callbacks.onLoading(false);
+                                loadArtworkListFromDB();
+                            }
+
+                            @Override public void onNext(ArrayList<Artwork> aws) {
+                                refreshArtworkAdapter(aws);
+                            }
                         }
-                        artworkAdapter.notifyDataSetChanged();
-                        callbacks.onLoading(false);
+                );
+
+    }
+
+    private void loadArtworkListFromDB(){
+        callbacks.onLoading(true);
+
+        Observable.create(new Observable.OnSubscribeFunc<ArrayList<Artwork>>() {
+            @Override
+            public Subscription onSubscribe(Observer<? super ArrayList<Artwork>> observer) {
+                observer.onNext(Artwork.galleryArtworks());
+                return Subscriptions.empty();
+            }
+        }).subscribeOn(Schedulers.threadPoolForIO())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                    new Observer<ArrayList<Artwork>>() {
+                        @Override public void onCompleted() {callbacks.onLoading(false);}
+                        @Override public void onError(Throwable throwable) {loadArtworkListFromDB();}
+                        @Override public void onNext(ArrayList<Artwork> aws) {
+                            refreshArtworkAdapter(aws);
+                        }
                     }
-                });
+            );
+
+        callbacks.onLoading(false);
+    }
+
+    private void refreshArtworkAdapter(ArrayList<Artwork> aws){
+        artworks.clear();
+        for(Artwork aw: aws){
+            artworks.add(aw);
+        }
+        artworkAdapter.notifyDataSetChanged();
     }
 
     /*
@@ -150,3 +189,6 @@ public class ArtworkListFragment extends Fragment {
     }
 
 }
+
+
+

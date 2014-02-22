@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -383,13 +382,6 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         showAudio();
     }
 
-    private MediaPlayer mediaPlayer;
-    private int currentPosition;
-
-    public boolean isOn(){
-        return mediaPlayer != null;
-    }
-
 
     public void pause(){
         Intent i = new Intent(getActivity(), MediaPlayerService.class);
@@ -407,12 +399,13 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        if(  !isOn()) return;
-        int totalDuration = mediaPlayer.getDuration();
-        int currentPosition = AudioTime.progressToTimer(seekBar.getProgress(), totalDuration);
+        if(  !nowPlaying ) return;
+        int currentPosition = AudioTime.progressToTimer(seekBar.getProgress(), (int) audioTotalDuration);
 
-        // forward or backward to certain seconds
-        mediaPlayer.seekTo(currentPosition);
+        Intent i = new Intent(getActivity(), MediaPlayerService.class);
+        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_SEEK_TO );
+        i.putExtra(MediaPlayerService.SEEK_TO_VALUE, currentPosition);
+        getActivity().startService(i);
 
     }
 

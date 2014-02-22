@@ -27,10 +27,12 @@ public class MediaPlayerService extends IntentService {
     public static final String CURRENT_DURATION = "com.leexplorer.mediaplayerservice.current_duration";
     public static final String ARTWORK = "com.leexplorer.mediaplayerservice.artworks";
     public static final String ARTWORKS = "com.leexplorer.mediaplayerservice.artwork";
+    public static final String SEEK_TO_VALUE = "com.leexplorer.mediaplayerservice.seek_to_value";
     public static final String ACTION = "com.leexplorer.mediaplayerservice.action";
     public static final int ACTION_PLAY = 1;
     public static final int ACTION_STOP = 2;
     public static final int ACTION_PAUSE = 3;
+    public static final int ACTION_SEEK_TO = 4;
 
     private static final int NOTIFICATION_ID = 11;
     private static MediaPlayer mediaPlayer;
@@ -57,6 +59,9 @@ public class MediaPlayerService extends IntentService {
                 break;
             case ACTION_PAUSE:
                 pause();
+                break;
+            case ACTION_SEEK_TO:
+                seek_to(intent.getIntExtra(SEEK_TO_VALUE, 0));
                 break;
         }
     }
@@ -122,6 +127,14 @@ public class MediaPlayerService extends IntentService {
         }
 
         mediaPlayer.pause();
+    }
+
+    private void seek_to(int position){
+        if(mediaPlayer == null){
+            return;
+        }
+
+        mediaPlayer.seekTo(position);
     }
 
     private void updateProgress() {

@@ -15,6 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.leexplorer.app.util.Beacon;
+import com.leexplorer.app.util.BeaconsManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 public class BeaconScanService extends IntentService {
     private static final int INTERVAL_FOREGROUND = 10000; // 2 * 60 * 1000;
     private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000;
-    private static final int SCAN_PERIOD = 2 * 1000;
+    private static final int SCAN_PERIOD = 2500;
 
     public static final String ACTION = "com.leexplorer.services.beaconscanservice";
     public static final String BEACONS = "beacons";
@@ -54,6 +55,7 @@ public class BeaconScanService extends IntentService {
 
         setBluetoothAdapter();
         bluetoothAdapter.startLeScan(leScanCallback);
+        scanning = true;
 
         beacons = new HashMap<>();
 
@@ -136,8 +138,9 @@ public class BeaconScanService extends IntentService {
         Intent in = new Intent(ACTION);
         in.putExtra("resultCode", Activity.RESULT_OK);
 
-
-        in.putExtra(BEACONS, new ArrayList<>(beacons.values()));
+        BeaconsManager beaconManager = BeaconsManager.getInstance();
+        beaconManager.updateBeacons(new ArrayList<>(beacons.values()));
+        in.putExtra(BEACONS, beaconManager.getAll());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
     }

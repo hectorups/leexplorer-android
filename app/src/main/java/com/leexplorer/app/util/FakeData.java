@@ -35,7 +35,7 @@ public class FakeData {
                 com.leexplorer.app.api.models.Artwork awm = gson.fromJson(awj, com.leexplorer.app.api.models.Artwork.class);
                 Artwork aw = Artwork.fromJsonModel(awm);
                // Random distance
-                aw.setDistance( DISTANCE_VALUES.get(RANDOM.nextInt(DISTANCE_VALUES.size())) );
+                aw.setDistance( RANDOM.nextInt(1) );
                 aw.unlike();
                 for(int i = 0; i < 100; i++){ aw.setDescription("Avium sodium rules all. " + aw.getDescription()); }
 

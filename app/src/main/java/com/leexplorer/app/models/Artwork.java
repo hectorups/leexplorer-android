@@ -58,7 +58,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         OUT_OF_RANGE
     }
 
-    private Distance distance;
+    private int distance;
 
     public String getAudioUrl() {return audioUrl;}
 
@@ -129,10 +129,20 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     }
 
     public Distance getDistance() {
-        return distance;
+        if( distance == 0 ){
+            return Distance.OUT_OF_RANGE;
+        }
+
+        if(distance > -60){
+            return Distance.CLOSE;
+        } else if(distance > -80){
+            return Distance.MEDIUM;
+        } else {
+            return Distance.FAR;
+        }
     }
 
-    public void setDistance(Distance distance) {
+    public void setDistance(int distance) {
         this.distance = distance;
     }
 
@@ -140,9 +150,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
 
     public Artwork(){
         super();
-        distance = Distance.OUT_OF_RANGE;
     }
-
 
     public static Artwork fromJsonModel( com.leexplorer.app.api.models.Artwork jaw){
         Artwork aw = null;
@@ -175,7 +183,9 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     }
 
     public int compareTo(Artwork aw2) {
-        return this.distance.ordinal() - aw2.distance.ordinal();
+        int distance1 = Math.abs(this.distance == 0 ? -999 : this.distance);
+        int distance2 = Math.abs(aw2.distance == 0 ? -999 : aw2.distance);
+        return distance1 - distance2;
     }
 
     public boolean equals(Artwork aw2){
@@ -214,6 +224,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         publishedAt = new Date(in.readLong());
         iLiked = in.readInt() == 1 ? true : false;
         audioUrl = in.readString();
+        distance = in.readInt();
     }
 
     @Override
@@ -232,6 +243,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         dest.writeLong(publishedAt.getTime());
         dest.writeInt( iLiked ? 1 : 0 );
         dest.writeString(audioUrl);
+        dest.writeInt(distance);
     }
 
     @SuppressWarnings("unused")

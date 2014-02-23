@@ -55,9 +55,13 @@ public class Client {
 
                     observer.onNext(artworks);
 
-                    // Persist Artworks...
-                    for(com.leexplorer.app.models.Artwork aw: artworks){
-                        aw.save();
+                    try{
+                        // Persist Artworks...
+                        for(com.leexplorer.app.models.Artwork aw: artworks){
+                            aw.save();
+                        }
+                    } catch (Exception e){
+                        e.printStackTrace();
                     }
 
                     observer.onCompleted();

@@ -121,9 +121,9 @@ public class MediaPlayerService extends Service {
                                             , PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.ic_action_play)
+                .setSmallIcon(R.drawable.ic_white_play)
                 .setContentTitle(r.getString(R.string.audio_notification_title))
-                .setContentText(r.getString(R.string.audio_notification_text))
+                .setContentText(r.getString(R.string.audio_notification_text, artwork.getName()))
                 .setContentIntent(pi)
                 .build();
 
@@ -163,7 +163,7 @@ public class MediaPlayerService extends Service {
             });
             mediaPlayer.start();
         }
-        
+
         updateProgress();
         prepareNotification();
     }

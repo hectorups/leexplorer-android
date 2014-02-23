@@ -80,13 +80,6 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
         @OnClick(R.id.pager)
         public void onClickArtwork(View view) {
             Toast.makeText(fragment.getActivity(),"Hello World", Toast.LENGTH_SHORT).show();
-            System.out.println("&&&&&&%%%%%%%%%HELLO...................................)))))))))))))))))))))))))))))))");
-            System.out.println("&&&&&&%%%%%%%%%HELLO...................................)))))))))))))))))))))))))))))))");
-            System.out.println("&&&&&&%%%%%%%%%HELLO...................................)))))))))))))))))))))))))))))))");
-            System.out.println("&&&&&&%%%%%%%%%HELLO...................................)))))))))))))))))))))))))))))))");
-            System.out.println("&&&&&&%%%%%%%%%HELLO...................................)))))))))))))))))))))))))))))))");
-            System.out.println("&&&&&&%%%%%%%%%HELLO...................................)))))))))))))))))))))))))))))))");
-            System.out.println("&&&&&&%%%%%%%%%HELLO...................................)))))))))))))))))))))))))))))))");
         }
     }
 

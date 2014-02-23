@@ -36,7 +36,7 @@ public class GalleryListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         galleries = new ArrayList<Gallery>();
-        //galleryAdapter = new GalleryAdapter(this, galleries);
+        galleryAdapter = new GalleryAdapter(this, galleries);
 
     }
 
@@ -46,7 +46,7 @@ public class GalleryListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gallery_list, container, false);
         ButterKnife.inject(this,view);
         List<Gallery> galleries = FakeData.getGalleries();
-        galleryAdapter = new GalleryAdapter(this, galleries);
+
         lvGalleries.setAdapter(galleryAdapter);
         galleryAdapter.addAll(galleries);
 

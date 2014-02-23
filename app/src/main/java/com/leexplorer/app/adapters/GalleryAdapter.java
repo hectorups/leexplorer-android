@@ -1,23 +1,19 @@
 package com.leexplorer.app.adapters;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leexplorer.app.R;
-import com.leexplorer.app.fragments.GalleryImageFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -56,7 +52,7 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
         holder.txGalleryType.setText(gallery.getType());
         holder.txPrice.setText(gallery.getPrice());
 
-        MyAdapter mAdapter = new MyAdapter(fragment.getChildFragmentManager(), gallery.getImageUrl());
+        MyAdapter mAdapter = new MyAdapter(fragment, gallery.getImageUrl());
         holder.pager.setAdapter(mAdapter);
         holder.pager.setCurrentItem(0);
 
@@ -84,11 +80,13 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
     }
 
 
-    public static class MyAdapter extends FragmentPagerAdapter {
+    public static class MyAdapter extends PagerAdapter {
         String url;
-        public MyAdapter(FragmentManager fragmentManager, String url) {
-            super(fragmentManager);
+        private LayoutInflater inflater;
+        public MyAdapter(GalleryListFragment fragment, String url) {
+            super();
             this.url = url;
+            this.inflater = LayoutInflater.from(fragment.getActivity());
         }
 
         @Override
@@ -97,8 +95,24 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
         }
 
         @Override
-        public Fragment getItem(int position) {
-            return GalleryImageFragment.newInstance(url);
+        public Object instantiateItem(ViewGroup container, int position) {
+
+            LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.page2, null);
+
+            container.addView(layout);
+
+            return layout;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            ((ViewPager) container).removeView((View) object);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object obj) {
+
+            return view.equals(obj);
         }
     }
 }

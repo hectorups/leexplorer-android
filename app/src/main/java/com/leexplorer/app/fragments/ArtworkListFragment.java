@@ -5,6 +5,7 @@ package com.leexplorer.app.fragments;
  */
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.services.BeaconScanService;
 
 import java.util.ArrayList;
 
@@ -89,6 +91,11 @@ public class ArtworkListFragment extends Fragment {
         } else {
             refreshArtworkList();
         }
+
+        /////
+        Intent i = new Intent(getActivity(), BeaconScanService.class);
+        getActivity().startService(i);
+        /////
 
         artworkAdapter = new ArtworkAdapter(this, artworks);
         sgvArtworks.setAdapter(artworkAdapter);

@@ -418,15 +418,16 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
                 if(artwork.equals(playingArtwork)) {
                     audioTotalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
                     audioCurrentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
-                    updateSeekbar();
+                    if(!onPause) nowPlaying = true;
                 } else {
                     audioCurrentDuration = 0;
                     audioTotalDuration = 0;
                     nowPlaying = false;
                     onPause = false;
-                    updateSeekbar();
-                    showAudio();
                 }
+
+                showAudio();
+                updateSeekbar();
             }
         }
     };

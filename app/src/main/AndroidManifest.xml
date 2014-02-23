@@ -37,10 +37,15 @@
 
         <activity
             android:name=".activities.ArtworkActivity"
-            android:label="@string/title_activity_artwork" >
+            android:label="@string/title_activity_artwork">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.leexplorer.app.activities.ArtworkListActivity" />
+            <intent-filter
+                android:priority="-999">
+                <action
+                    android:name=".services.MediaPlayerService" />
+            </intent-filter>
         </activity>
 
     </application>

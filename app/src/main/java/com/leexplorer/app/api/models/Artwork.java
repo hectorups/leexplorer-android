@@ -30,4 +30,4 @@ public class Artwork {
     @SerializedName("audio_url")
     public String audioUrl;
 
-}   
+}

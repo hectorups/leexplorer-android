@@ -25,6 +25,8 @@ import java.util.ArrayList;
 
 public class MediaPlayerService extends Service {
 
+    private static final String LOG = "com.leexplorer.services.mediaplayerservice";
+
     private static final int STATUS_INTERVAL = 500;
 
     public static final String TOTAL_DURATION = "com.leexplorer.mediaplayerservice.total_duration";
@@ -87,7 +89,7 @@ public class MediaPlayerService extends Service {
     }
 
     protected void onHandleIntent(Intent intent) {
-        Log.d("Service", "Intent received");
+        Log.d(LOG, "Intent received");
         switch (intent.getIntExtra(ACTION, 0)){
             case ACTION_PLAY:
                 //artworks = intent.getParcelableArrayListExtra(ARTWORKS);
@@ -145,6 +147,11 @@ public class MediaPlayerService extends Service {
 
     synchronized private void play(Artwork artwork){
 
+        if(artwork.getAudioUrl() == null){
+            Log.e(LOG, "I got an artwork to play without an audio file !!!");
+            return;
+        }
+
         if(mediaPlayer != null && this.artwork != null && this.artwork.equals(artwork)){
             mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
             mediaPlayer.start();
@@ -152,7 +159,7 @@ public class MediaPlayerService extends Service {
             this.artwork = artwork;
             stop();
 
-            Uri audioUri = Uri.parse("http://podcasts.ricksteves.com/walkingtours/Pantheon.mp3");
+            Uri audioUri = Uri.parse(artwork.getAudioUrl());
             mediaPlayer = MediaPlayer.create(getApplicationContext(), audioUri);
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mp) {

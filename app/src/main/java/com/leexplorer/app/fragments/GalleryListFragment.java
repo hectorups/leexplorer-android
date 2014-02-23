@@ -46,16 +46,8 @@ public class GalleryListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gallery_list, container, false);
         ButterKnife.inject(this,view);
         List<Gallery> galleries = FakeData.getGalleries();
-
         lvGalleries.setAdapter(galleryAdapter);
         galleryAdapter.addAll(galleries);
-
-        lvGalleries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getActivity(), "HELLO WORLD!!!!!", Toast.LENGTH_SHORT ).show();
-            }
-        });
         return view;
     }
 

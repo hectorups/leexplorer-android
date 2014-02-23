@@ -30,14 +30,26 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         super();
     }
 
-    public Gallery(String name, String imageUrl, String address, String type, String price) {
+    public Gallery(Long galleryId, String name, String imageUrl, String address, String type, String price) {
+        this.galleryId = galleryId;
         this.name = name;
-
         this.imageUrl = imageUrl;
         this.address = address;
         this.type = type;
         this.price = price;
     }
+
+    public static final Parcelable.Creator<Gallery> CREATOR = new Parcelable.Creator<Gallery>() {
+        @Override
+        public Gallery createFromParcel(Parcel in) {
+            return new Gallery(in);
+        }
+
+        @Override
+        public Gallery[] newArray(int size) {
+            return new Gallery[size];
+        }
+    };
 
     protected Gallery(Parcel parcel){
         this.galleryId = parcel.readLong();

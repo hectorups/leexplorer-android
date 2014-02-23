@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout
+    android:id="@+id/flGalleryItem"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:descendantFocusability="blocksDescendants"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="250dp">
 
-        <!--<ImageView-->
-        <!--android:id="@+id/ivGalleryImage"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="fill_parent"-->
-        <!--android:src="@drawable/ic_launcher"/>-->
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="fill_parent"

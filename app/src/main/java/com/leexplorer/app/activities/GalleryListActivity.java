@@ -73,7 +73,6 @@ public class GalleryListActivity extends ActionBarActivity implements GalleryLis
 
         Intent i = new Intent(this, GalleryActivity.class);
         i.putExtra("gallery", gallery);
-        i.putExtra("", "");
         startActivity(i);
     }
 }

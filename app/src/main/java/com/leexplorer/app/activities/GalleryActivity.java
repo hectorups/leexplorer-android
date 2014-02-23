@@ -1,17 +1,15 @@
 package com.leexplorer.app.activities;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
 import com.leexplorer.app.R;
+import com.leexplorer.app.fragments.GalleryFragment;
+import com.leexplorer.app.models.Gallery;
 
 public class GalleryActivity extends ActionBarActivity {
 
@@ -20,13 +18,17 @@ public class GalleryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.container);
+
+        if(fragment == null){
+            Gallery gallery = getIntent().getParcelableExtra("gallery");
+            fragment = GalleryFragment.newInstance(gallery);
+            fm.beginTransaction()
+                    .add(R.id.container, fragment)
                     .commit();
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -47,21 +49,4 @@ public class GalleryActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_gallery, container, false);
-            return rootView;
-        }
-    }
-
 }

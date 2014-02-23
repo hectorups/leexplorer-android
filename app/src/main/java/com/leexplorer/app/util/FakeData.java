@@ -27,12 +27,12 @@ public class FakeData {
     private static List<Gallery> galleries = new ArrayList<Gallery>();
 
     static{
-        galleries.add(new Gallery("Picasso","http://www.themost10.com/wp-content/uploads/2012/03/Three-Musicians-By-Pablo-Picasso.jpg?24eefd","23 Octavia St San Francisco CA ", "Art", "Free"));
-        galleries.add(new Gallery("Aiguiere Gallery","http://www.themost10.com/wp-content/uploads/2012/03/The-Old-Guitarist.jpg?24eefd","38 Gough St San Francisco CA ", "Painting", "20"));
-        galleries.add(new Gallery("My Gallery","http://www.themost10.com/wp-content/uploads/2012/03/Seated-Woman-Marie-Therese-By-Pablo-Picasso.jpg?24eefd","38 Gough St San Francisco CA ", "Sculptures", "20"));
-        galleries.add(new Gallery("Gallery 10","http://www.themost10.com/wp-content/uploads/2012/03/Seated-Woman-Marie-Therese-By-Pablo-Picasso.jpg?24eefd","38 Gough St San Francisco CA ", "Sculptures", "20"));
-        galleries.add(new Gallery("SFO Gallery", "http://www.themost10.com/wp-content/uploads/2012/03/Seated-Woman-Marie-Therese-By-Pablo-Picasso.jpg?24eefd", "38 Gough St San Francisco CA ", "Sculptures", "20"));
-        galleries.add(new Gallery("Gallery 39","http://www.themost10.com/wp-content/uploads/2012/03/Seated-Woman-Marie-Therese-By-Pablo-Picasso.jpg?24eefd","38 Gough St San Francisco CA ", "Sculptures", "20"));
+        galleries.add(new Gallery(1L,"Picasso","http://www.themost10.com/wp-content/uploads/2012/03/Three-Musicians-By-Pablo-Picasso.jpg?24eefd","23 Octavia St San Francisco CA ", "Art", "Free"));
+        galleries.add(new Gallery(2L,"Aiguiere Gallery","http://www.themost10.com/wp-content/uploads/2012/03/The-Old-Guitarist.jpg?24eefd","38 Gough St San Francisco CA ", "Painting", "20"));
+        galleries.add(new Gallery(3L,"My Gallery","http://www.themost10.com/wp-content/uploads/2012/03/Seated-Woman-Marie-Therese-By-Pablo-Picasso.jpg?24eefd","38 Gough St San Francisco CA ", "Sculptures", "20"));
+        galleries.add(new Gallery(4L,"Gallery 10","http://www.themost10.com/wp-content/uploads/2012/03/Seated-Woman-Marie-Therese-By-Pablo-Picasso.jpg?24eefd","38 Gough St San Francisco CA ", "Sculptures", "20"));
+        galleries.add(new Gallery(5L,"SFO Gallery", "http://www.themost10.com/wp-content/uploads/2012/03/Seated-Woman-Marie-Therese-By-Pablo-Picasso.jpg?24eefd", "38 Gough St San Francisco CA ", "Sculptures", "20"));
+        galleries.add(new Gallery(6L,"Gallery 39","http://www.themost10.com/wp-content/uploads/2012/03/Seated-Woman-Marie-Therese-By-Pablo-Picasso.jpg?24eefd","38 Gough St San Francisco CA ", "Sculptures", "20"));
     }
 
     private static final List<Artwork.Distance> DISTANCE_VALUES =

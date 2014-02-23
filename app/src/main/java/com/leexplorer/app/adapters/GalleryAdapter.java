@@ -1,20 +1,18 @@
 package com.leexplorer.app.adapters;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leexplorer.app.R;
-import com.leexplorer.app.fragments.GalleryImageFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
 import com.squareup.picasso.Picasso;
@@ -56,7 +54,7 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
         holder.txGalleryType.setText(gallery.getType());
         holder.txPrice.setText(gallery.getPrice());
 
-        MyAdapter mAdapter = new MyAdapter(fragment.getChildFragmentManager(), gallery.getImageUrl());
+        MyAdapter mAdapter = new MyAdapter(fragment, gallery);
         holder.pager.setAdapter(mAdapter);
         holder.pager.setCurrentItem(0);
 
@@ -76,19 +74,17 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
             ButterKnife.inject(this, view);
             this.fragment = fragment;
         }
-
-        @OnClick(R.id.pager)
-        public void onClickArtwork(View view) {
-            Toast.makeText(fragment.getActivity(),"Hello World", Toast.LENGTH_SHORT).show();
-        }
     }
 
-
-    public static class MyAdapter extends FragmentPagerAdapter {
-        String url;
-        public MyAdapter(FragmentManager fragmentManager, String url) {
-            super(fragmentManager);
-            this.url = url;
+    public static class MyAdapter extends PagerAdapter {
+        Gallery gallery;
+        private LayoutInflater inflater;
+        GalleryListFragment fragment;
+        public MyAdapter(GalleryListFragment fragment, Gallery gallery) {
+            super();
+            this.gallery = gallery;
+            this.fragment = fragment;
+            this.inflater = LayoutInflater.from(fragment.getActivity());
         }
 
         @Override
@@ -97,8 +93,34 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
         }
 
         @Override
-        public Fragment getItem(int position) {
-            return GalleryImageFragment.newInstance(url);
+        public Object instantiateItem(ViewGroup container, int position) {
+            RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.fragment_gallery_image, null);
+            ImageView ivGalleryImage = (ImageView)layout.findViewById(R.id.ivGallery);
+            Picasso.with(fragment.getActivity())
+                    .load(gallery.getImageUrl())
+                    .fit()
+                    .centerCrop()
+                    .into(ivGalleryImage);
+
+            ivGalleryImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    fragment.callbacks.loadGalleryDetails(gallery);
+                }
+            });
+
+            container.addView(layout);
+            return layout;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            ((ViewPager) container).removeView((View) object);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object obj) {
+            return view.equals(obj);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.leexplorer.app.services;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -10,9 +11,14 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.leexplorer.app.util.Beacon;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Created by hectormonserrate on 22/02/14.
@@ -23,12 +29,17 @@ public class BeaconScanService extends IntentService {
     private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000;
     private static final int SCAN_PERIOD = 2 * 1000;
 
+    public static final String ACTION = "com.leexplorer.services.beaconscanservice";
+    public static final String BEACONS = "beacons";
+
     private final String TAG = "com.leexplorer.app.services.beaconscanservice";
 
     private static BluetoothManager bluetoothManager;
 
     private static BluetoothAdapter bluetoothAdapter;
     private Handler leHandler = new Handler();
+
+    private HashMap<String,Beacon> beacons;
 
     private static boolean scanning = false;
 
@@ -44,12 +55,15 @@ public class BeaconScanService extends IntentService {
         setBluetoothAdapter();
         bluetoothAdapter.startLeScan(leScanCallback);
 
+        beacons = new HashMap<>();
+
         leHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 scanning = false;
                 bluetoothAdapter.stopLeScan(leScanCallback);
                 endSearch();
+                broadcastBeacons();
             }
         }, SCAN_PERIOD);
 
@@ -74,7 +88,12 @@ public class BeaconScanService extends IntentService {
                             + rssi
                     );
 
-
+                    if( beacons.get(device.getAddress()) == null ){
+                        Beacon beacon = new Beacon(device.getAddress(), serviceFromScanRecord(scanRecord), rssi);
+                        beacons.put(device.getAddress(), beacon);
+                    } else {
+                        beacons.get(device.getAddress()).addRssi(rssi);
+                    }
                 }
     };
 
@@ -111,6 +130,16 @@ public class BeaconScanService extends IntentService {
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
         alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), INTERVAL_FOREGROUND, pi);
+    }
+
+    private void broadcastBeacons(){
+        Intent in = new Intent(ACTION);
+        in.putExtra("resultCode", Activity.RESULT_OK);
+
+
+        in.putExtra(BEACONS, new ArrayList<>(beacons.values()));
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(in);
     }
 
 }

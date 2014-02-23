@@ -5,9 +5,14 @@ package com.leexplorer.app.fragments;
  */
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +27,7 @@ import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.BeaconScanService;
+import com.leexplorer.app.util.Beacon;
 
 import java.util.ArrayList;
 
@@ -36,6 +42,7 @@ import rx.subscriptions.Subscriptions;
 
 
 public class ArtworkListFragment extends Fragment {
+
     private static final String ARTWORK_LIST = "arwork_list";
     private static final String TAG = "com.leexplorer.artworklistfragement";
 
@@ -78,6 +85,22 @@ public class ArtworkListFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        IntentFilter filter = new IntentFilter(BeaconScanService.ACTION);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(beaconsReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        try{
+            getActivity().unregisterReceiver(beaconsReceiver);
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -195,6 +218,17 @@ public class ArtworkListFragment extends Fragment {
     public ArrayList<Artwork> getArtworks(){
         return artworks;
     }
+
+    private BroadcastReceiver beaconsReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
+            ArrayList<Beacon> beacons = intent.getParcelableArrayListExtra(BeaconScanService.BEACONS);
+            if (resultCode == Activity.RESULT_OK){
+               Log.d(TAG, "Beacons detected: " + beacons.size());
+            }
+        }
+    };
 
 }
 

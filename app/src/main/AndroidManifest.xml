@@ -12,7 +12,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Generator" >
-
         <meta-data
             android:name="AA_DB_NAME"
             android:value="leexplorer.db" />
@@ -21,24 +20,29 @@
             android:value="1" />
 
         <activity
-            android:name=".activities.ArtworkListActivity"
+            android:name="com.leexplorer.app.activities.ArtworkListActivity"
             android:label="@string/app_name" >
-
+        </activity>
+        <activity
+            android:name="com.leexplorer.app.activities.ArtworkActivity"
+            android:label="@string/title_activity_artwork" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.leexplorer.app.activities.ArtworkListActivity" />
+        </activity>
+        <activity
+            android:name="com.leexplorer.app.activities.GalleryListActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".activities.ArtworkActivity"
-            android:label="@string/title_activity_artwork" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.leexplorer.app.activities.ArtworkListActivity" />
+            android:name="com.leexplorer.app.activities.GalleryActivity"
+            android:label="@string/title_activity_gallery" >
         </activity>
-
     </application>
 
 </manifest>

@@ -216,7 +216,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
         menuPlay = menu.findItem(R.id.menuPlay);
 
-        if(audioCurrentDuration == 0 ){
+        if(audioCurrentDuration == 0 && artwork.getAudioUrl() != null ){
             menuPlay.setVisible(true);
         } else {
             menuPlay.setVisible(false);

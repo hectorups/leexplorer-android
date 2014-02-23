@@ -48,6 +48,9 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     @Column(name="i_liked")
     private boolean iLiked;
 
+    @Column(name = "audio_url")
+    private String audioUrl;
+
     public static enum Distance {
         CLOSE,
         MEDIUM,
@@ -56,6 +59,10 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     }
 
     private Distance distance;
+
+    public String getAudioUrl() {return audioUrl;}
+
+    public void setAudioUrl(String audioUrl) {this.audioUrl = audioUrl;}
 
     public String getName() {
         return name;
@@ -153,6 +160,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         aw.author = jaw.author;
         aw.likesCount = jaw.likesCount;
         aw.publishedAt = setDateFromString(jaw.publishedAt);
+        aw.audioUrl = jaw.audioUrl;
 
         return aw;
     }
@@ -205,6 +213,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         likesCount = in.readInt();
         publishedAt = new Date(in.readLong());
         iLiked = in.readInt() == 1 ? true : false;
+        audioUrl = in.readString();
     }
 
     @Override
@@ -222,6 +231,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         dest.writeInt(likesCount);
         dest.writeLong(publishedAt.getTime());
         dest.writeInt( iLiked ? 1 : 0 );
+        dest.writeString(audioUrl);
     }
 
     @SuppressWarnings("unused")

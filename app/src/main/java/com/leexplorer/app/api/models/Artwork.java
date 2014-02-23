@@ -27,4 +27,7 @@ public class Artwork {
     @SerializedName("likes_count")
     public int likesCount;
 
-}
+    @SerializedName("audio_url")
+    public String audioUrl;
+
+}   

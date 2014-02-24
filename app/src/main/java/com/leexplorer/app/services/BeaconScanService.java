@@ -4,16 +4,21 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.leexplorer.app.R;
+import com.leexplorer.app.activities.ArtworkListActivity;
 import com.leexplorer.app.util.Beacon;
 import com.leexplorer.app.util.BeaconsManager;
 
@@ -31,6 +36,9 @@ public class BeaconScanService extends IntentService {
 
     public static final String ACTION = "com.leexplorer.services.beaconscanservice";
     public static final String BEACONS = "beacons";
+
+    public static final String ACTION_SHOW_NOTIFICATION = "com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION";
+    public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
 
     private final String TAG = "com.leexplorer.app.services.beaconscanservice";
 
@@ -65,6 +73,7 @@ public class BeaconScanService extends IntentService {
                 bluetoothAdapter.stopLeScan(leScanCallback);
                 endSearch();
                 broadcastBeacons();
+                sendNotification();
             }
         }, SCAN_PERIOD);
 
@@ -121,6 +130,29 @@ public class BeaconScanService extends IntentService {
         in.putExtra(BEACONS, beaconManager.getAll());
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+    }
+
+    private void sendNotification(){
+        if(beacons.size() == 0) return;
+
+        Resources r = getResources();
+        PendingIntent pi = PendingIntent
+                .getActivity(this, 0, new Intent(this, ArtworkListActivity.class), 0);
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setTicker(r.getString(R.string.beacon_notification_title))
+                .setSmallIcon(android.R.drawable.ic_menu_report_image)
+                .setContentTitle(r.getString(R.string.beacon_notification_title))
+                .setContentText(r.getString(R.string.beacon_notification_text))
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .build();
+
+        Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
+        i.putExtra("REQUEST_CODE", 0);
+        i.putExtra("NOTIFICATION", notification);
+
+        sendOrderedBroadcast(i, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
     }
 
 }

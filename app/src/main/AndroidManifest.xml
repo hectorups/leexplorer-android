@@ -11,6 +11,10 @@
 
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
+    <permission android:name="com.leexplorer.beaconscanservice.PRIVATE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.leexplorer.beaconscanservice.PRIVATE" />
+
     <application
         android:name="com.leexplorer.app.LeexplorerApplication"
         android:allowBackup="true"
@@ -33,9 +37,15 @@
             android:name=".services.BeaconScanService"
             android:exported="false"/>
 
-        <receiver android:name=".services.receivers.StartupReceiver">
+        <receiver android:name=".receivers.StartupReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receivers.NotificationReceiver" android:exported="false">
+            <intent-filter android:priority="-999">
+                <action android:name="com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION" />
             </intent-filter>
         </receiver>
 
@@ -56,8 +66,7 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.leexplorer.app.activities.ArtworkListActivity" />
-            <intent-filter
-                android:priority="-999">
+            <intent-filter>
                 <action
                     android:name=".services.MediaPlayerService" />
             </intent-filter>

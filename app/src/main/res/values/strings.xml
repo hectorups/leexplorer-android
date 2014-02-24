@@ -14,6 +14,10 @@
     <string name="audio_notification_title">LeExplorer</string>
     <string name="audio_notification_text">Playing %1$s</string>
 
+    <!-- BEACON SCAN SERVICE -->
+    <string name="beacon_notification_title">LeExplorer</string>
+    <string name="beacon_notification_text">You are within range of a Gallery</string>
+
     <!--GALLERY SCREEN-->
 
 </resources>

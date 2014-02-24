@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
@@ -61,7 +62,7 @@ import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 /**
  * Created by hectormonserrate on 11/02/14.
  */
-public class ArtworkFragment extends BaseFragment implements  SeekBar.OnSeekBarChangeListener{
+public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChangeListener{
     private static final String TAG = "com.leexplorer.artworkfragment";
     private static final String EXTRA_ARTWORK = "extra_artwork";
     private static final String SAVED_CURRENT_DURAITON = "saved_current_duration";

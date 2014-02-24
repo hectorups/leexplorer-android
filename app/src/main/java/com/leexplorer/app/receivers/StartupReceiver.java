@@ -1,4 +1,4 @@
-package com.leexplorer.app.services.receivers;
+package com.leexplorer.app.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

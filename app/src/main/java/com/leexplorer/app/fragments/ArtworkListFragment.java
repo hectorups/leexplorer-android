@@ -55,6 +55,7 @@ public class ArtworkListFragment extends Fragment {
 
     private ArrayList<Artwork> artworks = new ArrayList<>();
     private BeaconsManager beaconsManager;
+    private boolean newBeaconInfo;
 
     public interface Callbacks {
         public void onLoading(boolean loading);
@@ -88,6 +89,7 @@ public class ArtworkListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         beaconsManager = BeaconsManager.getInstance();
+        newBeaconInfo = false;
     }
 
     @Override
@@ -172,8 +174,11 @@ public class ArtworkListFragment extends Fragment {
                             @Override public void onCompleted() {callbacks.onLoading(false);}
 
                             @Override public void onError(Throwable throwable) {
+                                throwable.printStackTrace();
                                 if(callbacks != null) callbacks.onLoading(false);
-                                loadArtworkListFromDB();
+                                if(artworks == null || artworks.size() == 0){
+                                    loadArtworkListFromDB();
+                                }
                             }
 
                             @Override public void onNext(ArrayList<Artwork> aws) {
@@ -218,7 +223,9 @@ public class ArtworkListFragment extends Fragment {
         for(Artwork aw: aws){
             artworks.add(aw);
         }
+
         artworkAdapter.notifyDataSetChanged();
+        newBeaconInfo = false;
     }
 
     /*
@@ -235,10 +242,31 @@ public class ArtworkListFragment extends Fragment {
             ArrayList<Beacon> beacons = intent.getParcelableArrayListExtra(BeaconScanService.BEACONS);
             if (resultCode == Activity.RESULT_OK){
                 Log.d(TAG, "Beacons detected: " + beacons.size());
-                refreshArtworkList();
+                distancesChangesCheck(beacons);
+                if(newBeaconInfo){
+                    refreshArtworkList();
+                }
             }
         }
     };
+
+    private void distancesChangesCheck(ArrayList<Beacon> beacons){
+        if(newBeaconInfo) return;
+
+        BeaconArtworkUpdater.updateDistances(artworks, beacons);
+        ArrayList<String> currentOrderedMacs = new ArrayList<>();
+        ArrayList<String> newOrderedMacs = new ArrayList<>();
+        for(Artwork aw: artworks){ currentOrderedMacs.add(aw.getMac());}
+        Collections.sort(artworks);
+        for(Artwork aw: artworks){ newOrderedMacs.add(aw.getMac());}
+
+        for(int i = 0; i < currentOrderedMacs.size() ; i++){
+          if(! currentOrderedMacs.get(i).equals(newOrderedMacs.get(i)) ){
+              newBeaconInfo = true;
+              break;
+          }
+        }
+    }
 
 }
 

@@ -39,6 +39,9 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        BeaconScanService.setScannerAlarm(this, true);
+
         IntentFilter filter = new IntentFilter(BeaconScanService.ACTION_SHOW_NOTIFICATION);
         registerReceiver(onShowNotification, filter, BeaconScanService.PERM_PRIVATE, null);
 
@@ -54,6 +57,8 @@ public class BaseActivity extends ActionBarActivity {
     public void onPause() {
         super.onPause();
         unregisterReceiver(onShowNotification);
+
+        BeaconScanService.setScannerAlarm(this, false);
     }
 
 

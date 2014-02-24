@@ -17,6 +17,6 @@ public class StartupReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Received broadcast intent: " + intent.getAction());
 
-        BeaconScanService.setScannerAlarm(context);
+        BeaconScanService.setScannerAlarm(context, false);
     }
 }

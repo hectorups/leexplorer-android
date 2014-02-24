@@ -30,9 +30,9 @@ import java.util.HashMap;
  */
 @TargetApi(18)
 public class BeaconScanService extends IntentService {
-    private static final int INTERVAL_FOREGROUND = 10000; // 2 * 60 * 1000;
-    private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000;
-    private static final int SCAN_PERIOD = 2500;
+    private static final int INTERVAL_FOREGROUND = 1 * 60 * 1000;
+    private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000; // Don't drain the battery when in bg!
+    private static final int SCAN_PERIOD = 2000;
 
     public static final String ACTION = "com.leexplorer.services.beaconscanservice";
     public static final String BEACONS = "beacons";
@@ -112,13 +112,16 @@ public class BeaconScanService extends IntentService {
         bluetoothAdapter.stopLeScan(leScanCallback);
     }
 
-    public static void setScannerAlarm(Context context) {
+    public static void setScannerAlarm(Context context, boolean foreground) {
         Intent i = new Intent(context, BeaconScanService.class);
         PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
 
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
 
-        alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), INTERVAL_FOREGROUND, pi);
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pi);
+
+        int interval = foreground ? INTERVAL_FOREGROUND : INTERVAL_BACKGROUND;
+        alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), interval, pi);
     }
 
     private void broadcastBeacons(){

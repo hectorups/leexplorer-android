@@ -108,11 +108,11 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
     // @todo: this is for testing, needs to be implemted depending on
     // the overal gallery score
     private double getHeightRatioFromPopularity(Artwork aw) {
-        long factor;
+        double factor = 0;
         if(aw.getLikesCount() > 100){
             factor = 1;
-        } else {
-            factor = aw.getLikesCount() / 100;
+        } else if( (aw.getLikesCount() > 50)) {
+            factor = 0.5;
         }
 
         return (( factor / 2.0) + 1.0); // height will be 1.0 - 1.5 the width

@@ -133,7 +133,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
             return Distance.OUT_OF_RANGE;
         }
 
-        if(distance > -60){
+        if(distance > -65){
             return Distance.CLOSE;
         } else if(distance > -80){
             return Distance.MEDIUM;

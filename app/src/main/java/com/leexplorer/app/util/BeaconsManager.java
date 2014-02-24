@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class BeaconsManager {
     private static BeaconsManager instance;
 
-    private ArrayList<Beacon> activeBeacons;
+    private ArrayList<Beacon> activeBeacons = new ArrayList<>();
 
     public static BeaconsManager getInstance(){
         if( instance == null){

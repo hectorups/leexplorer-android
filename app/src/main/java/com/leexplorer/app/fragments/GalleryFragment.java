@@ -24,12 +24,21 @@ public class GalleryFragment extends Fragment {
 
     @InjectView(R.id.ivGalleryDetail)
     ImageView ivGalleryDetail;
+    @InjectView(R.id.txDetailAddress)
+    TextView txDetailAddress;
+    @InjectView(R.id.txDetailGalleryType)
+    TextView txDetailGalleryType;
+    @InjectView(R.id.txLanguage)
+    TextView txLanguage;
+
     @InjectView(R.id.txHours)
     TextView txHours;
-    @InjectView(R.id.txPrice)
-    TextView txPrice;
+    @InjectView(R.id.txDetailedPrice)
+    TextView txDetailedPrice;
     @InjectView(R.id.txFacilities)
     TextView txFacilities;
+    @InjectView(R.id.txDescription)
+    TextView txDescription;
 
     public static GalleryFragment newInstance(Gallery gallery){
         Bundle args = new Bundle();
@@ -47,7 +56,7 @@ public class GalleryFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+        View view = inflater.inflate(R.layout.fragment_gallery_content, container, false);
         ButterKnife.inject(this, view);
 
         Picasso.with(getActivity())
@@ -56,8 +65,13 @@ public class GalleryFragment extends Fragment {
                 .centerCrop()
                 .into(ivGalleryDetail);
 
-        txPrice.setText(gallery.getPrice());
-
+        txDetailAddress.setText(gallery.getAddress());
+        txDetailGalleryType.setText(gallery.getType());
+        txLanguage.setText(gallery.getLanguage());
+        txHours.setText(gallery.getHours());
+        txDetailedPrice.setText(gallery.getDetailedPrice());
+        txFacilities.setText(gallery.getFacilities());
+        txDescription.setText(gallery.getDescription());
         return view;
     }
 }

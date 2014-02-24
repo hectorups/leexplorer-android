@@ -23,6 +23,7 @@ public class GalleryActivity extends ActionBarActivity {
 
         if(fragment == null){
             Gallery gallery = getIntent().getParcelableExtra("gallery");
+            getSupportActionBar().setTitle(gallery.getName());
             fragment = GalleryFragment.newInstance(gallery);
             fm.beginTransaction()
                     .add(R.id.container, fragment)

@@ -1,0 +1,168 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:id="@+id/flGalleryImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+
+        android:scaleType="fitCenter">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:id="@+id/ivGalleryDetail"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="@color/le_black_transparent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp">
+
+                <ImageView
+                    android:id="@+id/ivDetailLocation"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_location"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:text="Address Details"
+                    android:maxLines="2"
+                    android:singleLine="false"
+                    android:gravity="center_vertical"
+                    android:id="@+id/txDetailAddress"
+                    android:textColor="@color/le_white"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp">
+
+                <ImageView
+                    android:id="@+id/ivGalleryType"
+                    android:src="@drawable/ic_building"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:text="Painting, Art"
+                    android:maxLines="2"
+                    android:singleLine="false"
+                    android:gravity="center_vertical"
+                    android:id="@+id/txDetailGalleryType"
+                    android:textColor="@color/le_white"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp">
+
+                <ImageView
+                    android:id="@+id/ivLanguage"
+                    android:src="@drawable/ic_launcher"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:text="English, Spanish"
+                    android:maxLines="2"
+                    android:singleLine="false"
+                    android:gravity="center_vertical"
+                    android:id="@+id/txLanguage"
+                    android:textColor="@color/le_white"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/llGalleryDetail"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/flGalleryImage"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/txHoursTitle"
+            android:text="Hours"
+            android:layout_marginBottom="5dp"
+            style="@style/LE.ProfileTitle"/>
+
+        <TextView
+            android:id="@+id/txHours"
+            android:text="text"
+            android:maxLines="2"
+            style="@style/LE.ProfileBody"/>
+
+        <TextView
+            android:id="@+id/txDetailedPriceTitle"
+            android:text="Price"
+            android:paddingTop="10dp"
+            android:layout_marginBottom="5dp"
+            style="@style/LE.ProfileTitle"/>
+
+        <TextView
+            android:id="@+id/txDetailedPrice"
+            android:text="text"
+            android:maxLines="3"
+            style="@style/LE.ProfileBody"/>
+
+        <TextView
+            android:id="@+id/txFacilitiesTitle"
+            android:text="Facilities"
+            android:paddingTop="10dp"
+            android:layout_marginBottom="5dp"
+            style="@style/LE.ProfileTitle"/>
+
+        <TextView
+            android:id="@+id/txFacilities"
+            android:text="text"
+            android:maxLines="2"
+            style="@style/LE.ProfileBody"/>
+
+        <TextView
+            android:id="@+id/txDescriptionTitle"
+            android:text="Description"
+            android:paddingTop="10dp"
+            android:layout_marginBottom="5dp"
+            style="@style/LE.ProfileTitle"/>
+
+        <TextView
+            android:id="@+id/txDescription"
+            android:text="text"
+            android:singleLine="false"
+            style="@style/LE.ProfileBody"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

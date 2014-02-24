@@ -18,7 +18,6 @@ import com.leexplorer.app.util.Beacon;
 import com.leexplorer.app.util.BeaconsManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -86,12 +85,11 @@ public class BeaconScanService extends IntentService {
                     Log.d(TAG, "Bluetooth found: "
                             + device.getName() + " - "
                             + device.getAddress() + " - "
-                            + serviceFromScanRecord(scanRecord) + " - "
                             + rssi
                     );
 
                     if( beacons.get(device.getAddress()) == null ){
-                        Beacon beacon = new Beacon(device.getAddress(), serviceFromScanRecord(scanRecord), rssi);
+                        Beacon beacon = new Beacon(device.getAddress(), scanRecord, rssi);
                         beacons.put(device.getAddress(), beacon);
                     } else {
                         beacons.get(device.getAddress()).addRssi(rssi);
@@ -99,26 +97,6 @@ public class BeaconScanService extends IntentService {
                 }
     };
 
-    public String serviceFromScanRecord(byte[] scanRecord) {
-
-        final int serviceOffset = 9;
-        final int serviceLimit = 16;
-        try{
-            byte[] service = Arrays.copyOfRange(scanRecord, serviceOffset, serviceOffset + serviceLimit);
-            return bytesToHex(service);
-        } catch (Exception e){
-            return null;
-        }
-    }
-
-
-    public String bytesToHex(byte[] bytes) {
-        StringBuilder builder = new StringBuilder();
-        for (byte b: bytes) {
-            builder.append(String.format("%02x ", b));
-        }
-        return builder.toString();
-    }
 
     private void endSearch(){
         Log.d(TAG, "search finished");

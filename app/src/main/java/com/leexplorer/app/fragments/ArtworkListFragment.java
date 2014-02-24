@@ -122,11 +122,6 @@ public class ArtworkListFragment extends Fragment {
             refreshArtworkList();
         }
 
-        ///// testing...
-        Intent i = new Intent(getActivity(), BeaconScanService.class);
-        getActivity().startService(i);
-        /////
-
         artworkAdapter = new ArtworkAdapter(this, artworks);
         sgvArtworks.setAdapter(artworkAdapter);
 

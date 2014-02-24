@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by hectormonserrate on 22/02/14.
@@ -14,10 +15,10 @@ public class Beacon implements Parcelable{
     private String uuid;
 
 
-    public Beacon(String mac, String uuid, int rssi){
+    public Beacon(String mac, byte[] scanRecord, int rssi){
         rssis = new ArrayList<>();
         addRssi(rssi);
-        this.uuid = uuid;
+        this.uuid = serviceFromScanRecord(scanRecord);
         this.mac = mac;
     }
 
@@ -48,6 +49,29 @@ public class Beacon implements Parcelable{
     public void setUuid(String uuid) {
         this.uuid = uuid;
     }
+
+
+    private String serviceFromScanRecord(byte[] scanRecord) {
+
+        final int serviceOffset = 9;
+        final int serviceLimit = 16;
+        try{
+            byte[] service = Arrays.copyOfRange(scanRecord, serviceOffset, serviceOffset + serviceLimit);
+            return bytesToHex(service);
+        } catch (Exception e){
+            return null;
+        }
+    }
+
+
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b: bytes) {
+            builder.append(String.format("%02x ", b));
+        }
+        return builder.toString();
+    }
+
 
     /*
      *  Parcelable Overrides

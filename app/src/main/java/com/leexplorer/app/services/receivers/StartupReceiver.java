@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.leexplorer.app.services.BeaconScanService;
+
 /**
  * Created by hectormonserrate on 22/02/14.
  */
@@ -15,6 +17,6 @@ public class StartupReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Log.i(TAG, "Received broadcast intent: " + intent.getAction());
 
-        // BeaconScanService.setScannerAlarm(context);
+        BeaconScanService.setScannerAlarm(context);
     }
 }

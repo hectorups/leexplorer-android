@@ -58,8 +58,6 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));
         Picasso.with(getContext())
                 .load(aw.getImageUrl())
-                .fit()
-                .centerCrop()
                 .into(holder.ivArtworkThumb);
 
         setSignalIndicator(holder, aw);

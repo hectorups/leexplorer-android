@@ -52,8 +52,8 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     private String audioUrl;
 
     public static enum Distance {
+        IMMEDIATE,
         CLOSE,
-        MEDIUM,
         FAR,
         OUT_OF_RANGE
     }
@@ -134,9 +134,9 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         }
 
         if(distance > -65){
-            return Distance.CLOSE;
+            return Distance.IMMEDIATE;
         } else if(distance > -80){
-            return Distance.MEDIUM;
+            return Distance.CLOSE;
         } else {
             return Distance.FAR;
         }

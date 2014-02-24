@@ -94,7 +94,7 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
 
         int drawable = R.drawable.ic_signal_close;
 
-        if(aw.getDistance() == Artwork.Distance.MEDIUM) {
+        if(aw.getDistance() == Artwork.Distance.CLOSE) {
             drawable = R.drawable.ic_signal_medium;
         } else if(aw.getDistance() == Artwork.Distance.FAR) {
             drawable = R.drawable.ic_signal_far;

@@ -4,15 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 
-public class ArtworkListActivity extends ActionBarActivity implements ArtworkListFragment.Callbacks {
+public class ArtworkListActivity extends BaseActivity implements ArtworkListFragment.Callbacks {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,30 +28,9 @@ public class ArtworkListActivity extends ActionBarActivity implements ArtworkLis
     }
 
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.arwork_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
     /*
      * Implement ArtworkListFragment.Callbacks
      */
-    public void onLoading(boolean loading){
-
-    }
-
     public void onArtworkClicked(Artwork aw){
         FragmentManager fm = getSupportFragmentManager();
         ArtworkListFragment fragment = (ArtworkListFragment) fm.findFragmentById(R.id.container);

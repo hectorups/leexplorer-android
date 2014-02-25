@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.leexplorer.app" >
+    package="com.leexplorer.app">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
+
+    <permission
+        android:name="com.leexplorer.beaconscanservice.PRIVATE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.leexplorer.beaconscanservice.PRIVATE" />
 
     <application
         android:name="com.leexplorer.app.LeexplorerApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Generator" >
+        android:theme="@style/Theme.Generator">
         <meta-data
             android:name="AA_DB_NAME"
             android:value="leexplorer.db" />
@@ -19,20 +31,46 @@
             android:name="AA_DB_VERSION"
             android:value="1" />
 
+        <service
+            android:name=".services.MediaPlayerService"
+            android:exported="false" />
+
+        <service
+            android:name=".services.BeaconScanService"
+            android:exported="false" />
+
+        <receiver android:name=".receivers.StartupReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".receivers.NotificationReceiver"
+            android:exported="false">
+            <intent-filter android:priority="-999">
+                <action android:name="com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
+
         <activity
-            android:name="com.leexplorer.app.activities.ArtworkListActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:name=".activities.ArtworkListActivity"
+            android:label="@string/app_name"></activity>
+
         <activity
-            android:name="com.leexplorer.app.activities.ArtworkActivity"
-            android:label="@string/title_activity_artwork" >
+            android:name=".activities.ArtworkActivity"
+            android:label="@string/title_activity_artwork">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.leexplorer.app.activities.ArtworkListActivity" />
+            <intent-filter>
+                <action android:name=".services.MediaPlayerService" />
+            </intent-filter>
         </activity>
+
         <activity
             android:name="com.leexplorer.app.activities.GalleryListActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,8 +79,7 @@
         </activity>
         <activity
             android:name="com.leexplorer.app.activities.GalleryActivity"
-            android:label="@string/title_activity_gallery" >
-        </activity>
+            android:label="@string/title_activity_gallery"></activity>
     </application>
 
 </manifest>

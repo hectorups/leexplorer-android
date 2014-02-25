@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">leExplorer</string>
+    <string name="app_name">LeExplorer</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_artwork">Exhibit</string>
     <string name="unknown_date">unknown</string>
@@ -9,9 +9,16 @@
     <!-- ARWORK SCREEN -->
     <string name="artwork_description_header">Description</string>
     <string name="share_image">Share</string>
+    
+    <!-- AUDIO SERVICE -->
+    <string name="audio_notification_title">LeExplorer</string>
+    <string name="audio_notification_text">Playing %1$s</string>
+
+    <!-- BEACON SCAN SERVICE -->
+    <string name="beacon_notification_title">LeExplorer</string>
+    <string name="beacon_notification_text">You are within range of a Gallery</string>
 
     <!-- GALLERY SCREEN -->
-
     <string name="title_activity_galery_list">GaleryListActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_gallery">GalleryActivity</string>

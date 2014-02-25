@@ -58,8 +58,6 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));
         Picasso.with(getContext())
                 .load(aw.getImageUrl())
-                .fit()
-                .centerCrop()
                 .into(holder.ivArtworkThumb);
 
         setSignalIndicator(holder, aw);
@@ -96,7 +94,7 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
 
         int drawable = R.drawable.ic_signal_close;
 
-        if(aw.getDistance() == Artwork.Distance.MEDIUM) {
+        if(aw.getDistance() == Artwork.Distance.CLOSE) {
             drawable = R.drawable.ic_signal_medium;
         } else if(aw.getDistance() == Artwork.Distance.FAR) {
             drawable = R.drawable.ic_signal_far;
@@ -110,11 +108,11 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
     // @todo: this is for testing, needs to be implemted depending on
     // the overal gallery score
     private double getHeightRatioFromPopularity(Artwork aw) {
-        long factor;
+        double factor = 0;
         if(aw.getLikesCount() > 100){
             factor = 1;
-        } else {
-            factor = aw.getLikesCount() / 100;
+        } else if( (aw.getLikesCount() > 50)) {
+            factor = 0.5;
         }
 
         return (( factor / 2.0) + 1.0); // height will be 1.0 - 1.5 the width

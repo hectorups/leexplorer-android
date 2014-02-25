@@ -6,12 +6,13 @@ import android.os.Parcelable;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
-
-import org.json.JSONObject;
+import com.activeandroid.query.Select;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by hectormonserrate on 12/02/14.
@@ -44,14 +45,24 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     @Column(name="known")
     private boolean known;
 
+    @Column(name="i_liked")
+    private boolean iLiked;
+
+    @Column(name = "audio_url")
+    private String audioUrl;
+
     public static enum Distance {
+        IMMEDIATE,
         CLOSE,
-        MEDIUM,
         FAR,
         OUT_OF_RANGE
     }
 
-    private Distance distance;
+    private int distance;
+
+    public String getAudioUrl() {return audioUrl;}
+
+    public void setAudioUrl(String audioUrl) {this.audioUrl = audioUrl;}
 
     public String getName() {
         return name;
@@ -118,37 +129,46 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     }
 
     public Distance getDistance() {
-        return distance;
+        if( distance == 0 ){
+            return Distance.OUT_OF_RANGE;
+        }
+
+        if(distance > -65){
+            return Distance.IMMEDIATE;
+        } else if(distance > -80){
+            return Distance.CLOSE;
+        } else {
+            return Distance.FAR;
+        }
     }
 
-    public void setDistance(Distance distance) {
+    public void setDistance(int distance) {
         this.distance = distance;
     }
 
+    public boolean isiLiked(){ return this.iLiked; }
+
     public Artwork(){
         super();
-        distance = Distance.OUT_OF_RANGE;
     }
 
-    public static Artwork fromJson(JSONObject json){
+    public static Artwork fromJsonModel( com.leexplorer.app.api.models.Artwork jaw){
         Artwork aw = null;
 
-        try{
-            String mac = json.getString("mac");
+        String mac = jaw.mac;
 
-            // aw = findByMac(mac);
+        // aw = findByMac(mac);
 
-            if(aw == null) aw = new Artwork();
-            aw.name = json.getString("name");
-            aw.mac = mac;
-            aw.description = json.getString("description");
-            aw.imageUrl = json.getString("image_url");
-            aw.author = json.getString("author");
-            aw.likesCount = json.getInt("likes_count");
-            aw.publishedAt = setDateFromString(json.getString("published_at"));
-        } catch(Exception e){
-            e.printStackTrace();
-        }
+        if(aw == null) aw = new Artwork();
+
+        aw.name = jaw.name;
+        aw.mac = mac;
+        aw.description = jaw.description;
+        aw.imageUrl = jaw.imageUrl;
+        aw.author = jaw.author;
+        aw.likesCount = jaw.likesCount;
+        aw.publishedAt = setDateFromString(jaw.publishedAt);
+        aw.audioUrl = jaw.audioUrl;
 
         return aw;
     }
@@ -163,11 +183,31 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     }
 
     public int compareTo(Artwork aw2) {
-        return this.distance.ordinal() - aw2.distance.ordinal();
+        int distance1 = Math.abs(this.distance == 0 ? -999 : this.distance);
+        int distance2 = Math.abs(aw2.distance == 0 ? -999 : aw2.distance);
+        return distance1 - distance2;
     }
 
     public boolean equals(Artwork aw2){
         return this.mac.equals(aw2.mac);
+    }
+
+    public void like(){
+        this.iLiked = true;
+        this.likesCount += 1;
+        //this.save();
+    }
+
+    public void unlike(){
+        this.iLiked = false;
+        this.likesCount -= 1;
+        //this.save();
+    }
+
+    // @todo: move this to gallery model
+    public static ArrayList<Artwork> galleryArtworks() {
+        List<Artwork> aws = new Select().from(Artwork.class).execute();
+        return new ArrayList<>(aws);
     }
 
     /*
@@ -182,6 +222,9 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         author = in.readString();
         likesCount = in.readInt();
         publishedAt = new Date(in.readLong());
+        iLiked = in.readInt() == 1 ? true : false;
+        audioUrl = in.readString();
+        distance = in.readInt();
     }
 
     @Override
@@ -198,6 +241,9 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         dest.writeString(author);
         dest.writeInt(likesCount);
         dest.writeLong(publishedAt.getTime());
+        dest.writeInt( iLiked ? 1 : 0 );
+        dest.writeString(audioUrl);
+        dest.writeInt(distance);
     }
 
     @SuppressWarnings("unused")

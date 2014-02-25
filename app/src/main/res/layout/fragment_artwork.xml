@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.leexplorer.app.activities.ArtworkActivity$PlaceholderFragment">
 
+    <!-- Profile Image -->
     <ImageView
         android:id="@+id/ivArtwork"
         android:layout_width="match_parent"
@@ -12,15 +13,62 @@
         android:layout_height="320dp"
         android:scaleType="fitCenter"/>
 
+    <!-- Like -->
+    <FrameLayout
+        android:id="@+id/flLike"
+        android:layout_marginTop="5dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="left|top">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:src="@drawable/signal_bg"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/ivLike"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_heart"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <ImageView
+                android:id="@+id/ivLiked"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_full_heart"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="invisible"/>
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <!-- Contents -->
     <uk.co.chrisjenx.paralloid.views.ParallaxScrollView
-        android:id="@+id/scroll_view"
+        android:id="@+id/svDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true">
 
-        <include layout="@layout/fragment_artwork_content"/>
-
+        <include layout="@layout/artwork_content"/>
 
     </uk.co.chrisjenx.paralloid.views.ParallaxScrollView>
+
+    <FrameLayout
+        android:id="@+id/flPlayAudio"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center">
+
+        <include layout="@layout/audio_player"/>
+
+     </FrameLayout>
 
 </FrameLayout>

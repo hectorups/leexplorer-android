@@ -79,7 +79,13 @@
         </activity>
         <activity
             android:name="com.leexplorer.app.activities.GalleryActivity"
-            android:label="@string/title_activity_gallery"></activity>
+            android:label="@string/title_activity_gallery">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.leexplorer.app.activities.GalleryListActivity">
+
+            </meta-data>
+            </activity>
     </application>
 
 </manifest>

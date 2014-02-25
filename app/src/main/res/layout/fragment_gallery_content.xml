@@ -2,16 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
     <FrameLayout
         android:id="@+id/flGalleryImage"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-
         android:scaleType="fitCenter">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="match_parent"
             android:id="@+id/ivGalleryDetail"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
@@ -79,7 +85,7 @@
 
                 <ImageView
                     android:id="@+id/ivLanguage"
-                    android:src="@drawable/ic_launcher"
+                    android:src="@drawable/ic_language"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"/>
 
@@ -163,6 +169,7 @@
             style="@style/LE.ProfileBody"/>
 
     </LinearLayout>
-
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

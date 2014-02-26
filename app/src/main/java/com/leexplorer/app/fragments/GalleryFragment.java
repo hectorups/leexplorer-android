@@ -54,7 +54,7 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.gallery = getArguments().getParcelable("gallery");
+        this.gallery = getArguments().getParcelable(GALLERY_KEY);
     }
 
     @Override

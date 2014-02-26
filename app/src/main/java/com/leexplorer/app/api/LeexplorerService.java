@@ -1,5 +1,7 @@
 package com.leexplorer.app.api;
 
+import android.widget.Gallery;
+
 import com.leexplorer.app.api.models.Artwork;
 
 import java.util.List;
@@ -15,6 +17,9 @@ import retrofit.http.Path;
 public interface LeexplorerService {
     @GET("/artwork")
     List<Artwork> getArtworks();
+
+    @GET("/gallery")
+    List<Gallery> getGalleries();
 
     @POST("/artwork/like/{value}")
     void likeArtwork(@Path("value") int value, Callback<Void> cb);

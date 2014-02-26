@@ -56,6 +56,9 @@ public class ArtworkListFragment extends Fragment {
     private ArrayList<Artwork> artworks = new ArrayList<>();
     private BeaconsManager beaconsManager;
     private boolean newBeaconInfo;
+    private boolean scaningBeacons;
+
+    private MenuItem menuReresh;
 
     public interface Callbacks {
         public void onLoading(boolean loading);
@@ -90,6 +93,7 @@ public class ArtworkListFragment extends Fragment {
         setHasOptionsMenu(true);
         beaconsManager = BeaconsManager.getInstance();
         newBeaconInfo = false;
+        scaningBeacons = false;
     }
 
     @Override
@@ -119,7 +123,7 @@ public class ArtworkListFragment extends Fragment {
         if (savedInstanceState != null) {
             artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST);
         } else {
-            refreshArtworkList();
+            loadArtworkList();
         }
 
         artworkAdapter = new ArtworkAdapter(this, artworks);
@@ -138,20 +142,25 @@ public class ArtworkListFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.artwork_list, menu);
+        menuReresh = menu.findItem(R.id.menuRefresh);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.menuRefresh:
-                refreshArtworkList();
+                scanBeacons();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void refreshArtworkList(){
+    private void loadArtworkList(){
+        // First explicitly call scan beacons to get info asap
+        scanBeacons();
+
+        // Get data from Api or DB
         if( LeexplorerApplication.isOnline() ){
             loadArtworkListFromApi();
         } else {
@@ -166,7 +175,7 @@ public class ArtworkListFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Observer<ArrayList<Artwork>>() {
-                            @Override public void onCompleted() {callbacks.onLoading(false);}
+                            @Override public void onCompleted() {}
 
                             @Override public void onError(Throwable throwable) {
                                 throwable.printStackTrace();
@@ -177,7 +186,8 @@ public class ArtworkListFragment extends Fragment {
                             }
 
                             @Override public void onNext(ArrayList<Artwork> aws) {
-                                refreshArtworkAdapter(aws);
+                                updateAdapterDataset(aws);
+                                if(callbacks != null) callbacks.onLoading(false);
                             }
                         }
                 );
@@ -201,7 +211,7 @@ public class ArtworkListFragment extends Fragment {
                         @Override public void onCompleted() {callbacks.onLoading(false);}
                         @Override public void onError(Throwable throwable) {}
                         @Override public void onNext(ArrayList<Artwork> aws) {
-                            refreshArtworkAdapter(aws);
+                            updateAdapterDataset(aws);
                         }
                     }
             );
@@ -209,15 +219,26 @@ public class ArtworkListFragment extends Fragment {
         if(callbacks != null) callbacks.onLoading(false);
     }
 
-    private void refreshArtworkAdapter(ArrayList<Artwork> aws){
-        BeaconArtworkUpdater.updateDistances(aws, beaconsManager.getAll());
+    private void refreshArtworks(){
+        if(artworks.size() > 0){
+            refreshArtworkAdapter();
+        } else {
+            loadArtworkList();
+        }
+    }
 
-        Collections.sort(aws);
-
+    private void updateAdapterDataset(ArrayList<Artwork> aws){
         artworks.clear();
         for(Artwork aw: aws){
             artworks.add(aw);
         }
+        refreshArtworkAdapter();
+    }
+
+    private void refreshArtworkAdapter(){
+        BeaconArtworkUpdater.updateDistances(artworks, beaconsManager.getAll());
+
+        Collections.sort(artworks);
 
         artworkAdapter.notifyDataSetChanged();
         newBeaconInfo = false;
@@ -230,6 +251,17 @@ public class ArtworkListFragment extends Fragment {
         return artworks;
     }
 
+
+    private void scanBeacons(){
+        if(callbacks != null) callbacks.onLoading(true);
+        if(menuReresh != null) menuReresh.setVisible(false);
+
+        scaningBeacons = true;
+
+        Intent i = new Intent(getActivity(), BeaconScanService.class);
+        getActivity().startService(i);
+    }
+
     private BroadcastReceiver beaconsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -237,10 +269,18 @@ public class ArtworkListFragment extends Fragment {
             ArrayList<Beacon> beacons = intent.getParcelableArrayListExtra(BeaconScanService.BEACONS);
             if (resultCode == Activity.RESULT_OK){
                 Log.d(TAG, "Beacons detected: " + beacons.size());
-                distancesChangesCheck(beacons);
-                if(newBeaconInfo){
-                    refreshArtworkList();
+
+                // If this is true, it means we are able to satisfy the
+                // scanBeacons call
+                if(scaningBeacons){
+                    scaningBeacons = false;
+                    if(callbacks != null) callbacks.onLoading(false);
+                    if(menuReresh != null) menuReresh.setVisible(true);
+                    refreshArtworks();
+                    return;
                 }
+
+                distancesChangesCheck(beacons);
             }
         }
     };

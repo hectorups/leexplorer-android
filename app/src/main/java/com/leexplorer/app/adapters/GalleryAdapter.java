@@ -20,6 +20,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 
 /**
@@ -71,6 +72,11 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
         public ViewHolder(View view, GalleryListFragment fragment) {
             ButterKnife.inject(this, view);
             this.fragment = fragment;
+        }
+
+        @OnClick(R.id.llGalleryLocation)
+        public void onClickAddress(View view) {
+            fragment.callbacks.loadMap(String.valueOf(txAddress.getText()));
         }
     }
 

@@ -1,24 +1,22 @@
 package com.leexplorer.app.activities;
 
+import static com.leexplorer.app.util.AppConstants.*;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
 import com.leexplorer.app.R;
-import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
 
-public class GalleryListActivity extends ActionBarActivity implements GalleryListFragment.Callbacks{
+public class GalleryListActivity extends BaseActivity implements GalleryListFragment.Callbacks{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +56,6 @@ public class GalleryListActivity extends ActionBarActivity implements GalleryLis
     }
 
     @Override
-    public void onLoading(boolean loading) {
-
-    }
-
-    @Override
     public void loadGalleryDetails(Gallery gallery) {
         FragmentManager fm = getSupportFragmentManager();
         GalleryListFragment fragment = (GalleryListFragment) fm.findFragmentById(R.id.container);
@@ -72,7 +65,7 @@ public class GalleryListActivity extends ActionBarActivity implements GalleryLis
         }
 
         Intent i = new Intent(this, GalleryActivity.class);
-        i.putExtra("gallery", gallery);
+        i.putExtra(GALLERY_KEY, gallery);
         startActivity(i);
     }
 }

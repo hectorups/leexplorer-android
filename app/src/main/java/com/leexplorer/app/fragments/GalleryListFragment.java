@@ -55,6 +55,7 @@ public class GalleryListFragment extends Fragment {
     public interface Callbacks {
         public void onLoading(boolean loading);
         public void loadGalleryDetails(Gallery gallery);
+        public void loadMap(String address);
     }
 
     public Callbacks callbacks;

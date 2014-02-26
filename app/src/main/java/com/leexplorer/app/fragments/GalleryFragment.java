@@ -1,13 +1,15 @@
 package com.leexplorer.app.fragments;
 
-import static com.leexplorer.app.util.AppConstants.*;
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.leexplorer.app.R;
@@ -17,6 +19,9 @@ import com.squareup.picasso.Picasso;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
+import static com.leexplorer.app.util.AppConstants.GALLERY_KEY;
 
 /**
  * Created by deepakdhiman on 2/23/14.
@@ -42,6 +47,8 @@ public class GalleryFragment extends Fragment {
     TextView txFacilities;
     @InjectView(R.id.txDescription)
     TextView txDescription;
+    @InjectView(R.id.llFacilitiesImg)
+    LinearLayout llFacilitiesImg;
 
     public static GalleryFragment newInstance(Gallery gallery){
         Bundle args = new Bundle();
@@ -75,7 +82,24 @@ public class GalleryFragment extends Fragment {
         txDetailedPrice.setText(gallery.getDetailedPrice());
         txFacilities.setText(gallery.getFacilities());
         txDescription.setText(gallery.getDescription());
+
+        setFacilities();
+
         return view;
+    }
+
+    private void setFacilities(){
+        if(gallery.getFacilities()!=null && gallery.getFacilities().length()>0){
+            String[] facilities = gallery.getFacilities().toLowerCase().split(",");
+            for(String facility: facilities){
+                if(FACILITIES_IMG_MAP.get(facility.trim())!=null){
+                    ImageView ivFacility = new ImageView(getActivity());
+                    Bitmap bm = BitmapFactory.decodeResource(getResources(), FACILITIES_IMG_MAP.get(facility.trim()));
+                    ivFacility.setImageBitmap(bm);
+                    llFacilitiesImg.addView(ivFacility);
+                }
+            }
+        }
     }
 
     @OnClick(R.id.ivGalleryDetail)

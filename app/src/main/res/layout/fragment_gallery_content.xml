@@ -153,6 +153,14 @@
                     android:layout_marginBottom="5dp"
                     style="@style/LE.ProfileTitle" />
 
+                <LinearLayout
+                    android:id="@+id/llFacilitiesImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    </LinearLayout>
+
                 <TextView
                     android:id="@+id/txFacilities"
                     android:text="text"

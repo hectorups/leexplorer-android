@@ -56,11 +56,6 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
     }
 
     @Override
-    public void onLoading(boolean loading) {
-
-    }
-
-    @Override
     public void loadGalleryDetails(Gallery gallery) {
         FragmentManager fm = getSupportFragmentManager();
         GalleryListFragment fragment = (GalleryListFragment) fm.findFragmentById(R.id.container);

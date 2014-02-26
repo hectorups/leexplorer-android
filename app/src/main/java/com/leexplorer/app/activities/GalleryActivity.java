@@ -54,11 +54,6 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Cal
     }
 
     @Override
-    public void onLoading(boolean loading) {
-        ///
-    }
-
-    @Override
     public void loadArtworks(Gallery gallery) {
 
         FragmentManager fm = getSupportFragmentManager();

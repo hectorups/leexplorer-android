@@ -30,8 +30,8 @@ import java.util.HashMap;
  */
 @TargetApi(18)
 public class BeaconScanService extends IntentService {
-    private static final int INTERVAL_FOREGROUND = 1 * 60 * 1000;
-    private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000; // Don't drain the battery when in bg!
+    private static final int INTERVAL_FOREGROUND = 30 * 1000;
+    private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000; // Don't drain the battery when in bg!
     private static final int SCAN_PERIOD = 2000;
 
     public static final String ACTION = "com.leexplorer.services.beaconscanservice";

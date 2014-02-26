@@ -5,6 +5,7 @@ package com.leexplorer.app.adapters;
  */
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,8 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         Artwork aw = getItem(position);
 
         holder.tvName.setText(aw.getName());
+        holder.tvName.setMaxLines(1);
+        holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
 
         holder.tvAuthorAndDate.setText(aw.getAuthor() + " - " + ArtDate.shortDate(aw.getPublishedAt()) );
 

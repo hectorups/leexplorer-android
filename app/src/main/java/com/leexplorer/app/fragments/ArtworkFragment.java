@@ -216,7 +216,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
         menuPlay = menu.findItem(R.id.menuPlay);
 
-        if(audioCurrentDuration == 0 && artwork.getAudioUrl() != null ){
+        if(artwork.getAudioUrl() != null ){
             menuPlay.setVisible(true);
         } else {
             menuPlay.setVisible(false);
@@ -358,6 +358,14 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     }
 
     private void showAudio(){
+
+        if(menuPlay != null){
+            if(audioCurrentDuration == 0 && artwork.getAudioUrl() != null ){
+                menuPlay.setVisible(true);
+            } else {
+                menuPlay.setVisible(false);
+            }
+        }
 
         if(!nowPlaying && !onPause){
             flPlayAudio.setVisibility(View.GONE);

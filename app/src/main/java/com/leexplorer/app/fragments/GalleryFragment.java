@@ -1,5 +1,7 @@
 package com.leexplorer.app.fragments;
 
+import static com.leexplorer.app.util.AppConstants.*;
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by deepakdhiman on 2/23/14.
@@ -42,7 +45,7 @@ public class GalleryFragment extends Fragment {
 
     public static GalleryFragment newInstance(Gallery gallery){
         Bundle args = new Bundle();
-        args.putParcelable("gallery", gallery);
+        args.putParcelable(GALLERY_KEY, gallery);
         GalleryFragment galleryFragment = new GalleryFragment();
         galleryFragment.setArguments(args);
         return galleryFragment;
@@ -73,5 +76,37 @@ public class GalleryFragment extends Fragment {
         txFacilities.setText(gallery.getFacilities());
         txDescription.setText(gallery.getDescription());
         return view;
+    }
+
+    @OnClick(R.id.ivGalleryDetail)
+    public void loadArtworks(View view){
+        callbacks.loadArtworks(gallery);
+    }
+
+    public interface Callbacks {
+        public void onLoading(boolean loading);
+        public void loadArtworks(Gallery gallery);
+    }
+
+    public Callbacks callbacks;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        super.onAttach(activity);
+        if (activity instanceof Callbacks) {
+            callbacks = (Callbacks)activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement GalleryFragment.Callbacks");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callbacks = null;
     }
 }

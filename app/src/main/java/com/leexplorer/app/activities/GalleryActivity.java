@@ -1,5 +1,7 @@
 package com.leexplorer.app.activities;
 
+import static com.leexplorer.app.util.AppConstants.*;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +13,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 
-public class GalleryActivity extends ActionBarActivity {
+public class GalleryActivity extends ActionBarActivity implements GalleryFragment.Callbacks{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +24,7 @@ public class GalleryActivity extends ActionBarActivity {
         Fragment fragment = fm.findFragmentById(R.id.container);
 
         if(fragment == null){
-            Gallery gallery = getIntent().getParcelableExtra("gallery");
+            Gallery gallery = getIntent().getParcelableExtra(GALLERY_KEY);
             getSupportActionBar().setTitle(gallery.getName());
             fragment = GalleryFragment.newInstance(gallery);
             fm.beginTransaction()
@@ -49,5 +51,24 @@ public class GalleryActivity extends ActionBarActivity {
 //            return true;
 //        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onLoading(boolean loading) {
+        ///
+    }
+
+    @Override
+    public void loadArtworks(Gallery gallery) {
+
+        FragmentManager fm = getSupportFragmentManager();
+        GalleryFragment fragment = (GalleryFragment) fm.findFragmentById(R.id.container);
+
+        if(fragment == null) {
+            return;
+        }
+        Intent i = new Intent(this, ArtworkListActivity.class);
+        i.putExtra("galleryId", gallery.getGalleryId());
+        startActivity(i);
     }
 }

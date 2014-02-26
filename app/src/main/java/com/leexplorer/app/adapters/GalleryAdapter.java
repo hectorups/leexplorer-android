@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryListFragment;
@@ -21,7 +20,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 
 /**
@@ -52,7 +50,7 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
         holder.txGalleryName.setText(gallery.getName());
         holder.txAddress.setText(gallery.getAddress());
         holder.txGalleryType.setText(gallery.getType());
-        holder.txPrice.setText(gallery.getPrice());
+        holder.txPrice.setText(String.valueOf(gallery.getPrice()));
 
         MyAdapter mAdapter = new MyAdapter(fragment, gallery);
         holder.pager.setAdapter(mAdapter);
@@ -97,7 +95,7 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
             RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.fragment_gallery_image, null);
             ImageView ivGalleryImage = (ImageView)layout.findViewById(R.id.ivGallery);
             Picasso.with(fragment.getActivity())
-                    .load(gallery.getImageUrl())
+                    .load("http://pablo-ruiz-picasso.com/images/works/143_s.jpg") // @todo ...
                     .fit()
                     .centerCrop()
                     .into(ivGalleryImage);

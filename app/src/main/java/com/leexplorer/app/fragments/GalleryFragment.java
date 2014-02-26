@@ -1,6 +1,5 @@
 package com.leexplorer.app.fragments;
 
-import static com.leexplorer.app.util.AppConstants.*;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,6 +16,8 @@ import com.squareup.picasso.Picasso;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+
+import static com.leexplorer.app.util.AppConstants.GALLERY_KEY;
 
 /**
  * Created by deepakdhiman on 2/23/14.
@@ -63,17 +64,22 @@ public class GalleryFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         Picasso.with(getActivity())
-                .load(gallery.getImageUrl())
+                .load("http://pablo-ruiz-picasso.com/images/works/143_s.jpg") // @todo ...
                 .fit()
                 .centerCrop()
                 .into(ivGalleryDetail);
 
         txDetailAddress.setText(gallery.getAddress());
         txDetailGalleryType.setText(gallery.getType());
-        txLanguage.setText(gallery.getLanguage());
+        txLanguage.setText(gallery.getLanguages());
         txHours.setText(gallery.getHours());
         txDetailedPrice.setText(gallery.getDetailedPrice());
-        txFacilities.setText(gallery.getFacilities());
+
+        String facilities = "";
+        for(String facility:gallery.getFacilities()){
+            facilities += (facility.equals("") ? "":", ") + facility;
+        }
+        txFacilities.setText(facilities);
         txDescription.setText(gallery.getDescription());
         return view;
     }

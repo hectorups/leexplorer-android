@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    android:id="@+id/flGalleryItem"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="250dp">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        </android.support.v4.view.ViewPager>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+
+            <TextView
+                android:id="@+id/txGalleryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="HELLO WORLD"
+                android:textColor="@color/le_white"
+                android:textStyle="bold"
+                android:textSize="30sp"/>
+
+        </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/le_black_transparent">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivAddress"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_location"/>
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="250 Octavia St\nSan Francisco CA 90023"
+                android:singleLine="false"
+                android:maxLines="2"
+                android:id="@+id/txAddress"
+                android:layout_toRightOf="@+id/ivAddress"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/le_white"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivGalleryType"
+                android:src="@drawable/ic_building"
+                android:layout_alignBottom="@+id/txGalleryType"
+                android:layout_toLeftOf="@+id/txGalleryType"
+                android:layout_alignTop="@+id/txGalleryType"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:minWidth="50dp"
+                android:layout_height="wrap_content"
+                android:text="Painting, Art"
+                android:id="@+id/txGalleryType"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/le_white"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ivPrice"
+                android:src="@drawable/ic_price"
+                android:layout_alignBottom="@+id/txPrice"
+                android:layout_alignTop="@+id/txPrice"
+                android:layout_alignLeft="@+id/ivGalleryType"
+                android:layout_alignEnd="@+id/ivGalleryType" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$20"
+                android:id="@+id/txPrice"
+                android:textColor="@color/le_white"
+                android:layout_alignBottom="@+id/txAddress"
+                android:layout_alignLeft="@+id/txGalleryType"
+                android:layout_alignStart="@+id/txGalleryType" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</FrameLayout>

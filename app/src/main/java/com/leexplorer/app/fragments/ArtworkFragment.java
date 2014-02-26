@@ -317,7 +317,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     };
 
     /*
-     * AUDIO @todo: port it to a service
+     * AUDIO
      *
      */
 
@@ -401,9 +401,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {}
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
-        // handler.removeCallbacks(updateTimeTask);
-    }
+    public void onStartTrackingTouch(SeekBar seekBar) {}
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {

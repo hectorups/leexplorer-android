@@ -74,6 +74,11 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
             ButterKnife.inject(this, view);
             this.fragment = fragment;
         }
+
+        @OnClick(R.id.ivAddress)
+        public void onClickAddress(View view) {
+            fragment.callbacks.loadMap(String.valueOf(txAddress.getText()));
+        }
     }
 
     public static class MyAdapter extends PagerAdapter {

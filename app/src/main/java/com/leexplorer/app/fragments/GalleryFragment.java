@@ -83,9 +83,15 @@ public class GalleryFragment extends Fragment {
         callbacks.loadArtworks(gallery);
     }
 
+    @OnClick(R.id.llGalleryDetailLocation)
+    public void onClickAddress(View view) {
+        callbacks.loadMap(String.valueOf(txDetailAddress.getText()));
+    }
+
     public interface Callbacks {
         public void onLoading(boolean loading);
         public void loadArtworks(Gallery gallery);
+        public void loadMap(String address);
     }
 
     public Callbacks callbacks;

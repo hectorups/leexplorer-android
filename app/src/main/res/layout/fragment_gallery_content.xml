@@ -33,6 +33,7 @@
                     android:background="@color/le_black_transparent">
 
                     <LinearLayout
+                        android:id="@+id/llGalleryDetailLocation"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="15dp">

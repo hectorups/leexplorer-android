@@ -13,7 +13,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 
-public class GalleryActivity extends ActionBarActivity implements GalleryFragment.Callbacks{
+public class GalleryActivity extends BaseActivity implements GalleryFragment.Callbacks{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

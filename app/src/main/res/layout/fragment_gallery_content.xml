@@ -30,7 +30,7 @@
                     android:layout_width="200dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="right"
-                    android:background="@color/le_black_transparent">
+                    android:background="@color/le_black_more_transparent">
 
                     <LinearLayout
                         android:id="@+id/llGalleryDetailLocation"

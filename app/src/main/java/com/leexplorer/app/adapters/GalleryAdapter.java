@@ -75,7 +75,7 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
             this.fragment = fragment;
         }
 
-        @OnClick(R.id.ivAddress)
+        @OnClick(R.id.llGalleryLocation)
         public void onClickAddress(View view) {
             fragment.callbacks.loadMap(String.valueOf(txAddress.getText()));
         }

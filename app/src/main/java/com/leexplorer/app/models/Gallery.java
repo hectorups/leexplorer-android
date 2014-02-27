@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
 
     @Column(name="gallery_id")
-    private Long galleryId;
+    private String galleryId;
     @Column(name="name")
     private String name;
     @Column(name="address")
@@ -40,10 +40,10 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
     private String description;
 
     @Column(name="latitude")
-    private long latitude;
+    private float latitude;
 
     @Column(name="longitude")
-    private long longitude;
+    private float longitude;
 
 
     public Gallery(){
@@ -51,19 +51,36 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         super();
     }
 
-    public Gallery(Long galleryId, String name, String imageUrl, String address,
-                    String type, float price, String languages, String hours,
+    public Gallery(String galleryId, String name, String imageUrl, String address,
+                    String type, float price, ArrayList<String> languages, String hours,
                     String detailedPrice, ArrayList<String> facilities, String description) {
         this.galleryId = galleryId;
         this.name = name;
         this.address = address;
         this.type = type;
         this.price = price;
-        this.languages = languages;
+        this.setLanguages(languages);
         this.hours = hours;
         this.detailedPrice = detailedPrice;
         this.setFacilities(facilities);
         this.description = description;
+    }
+
+    public static Gallery fromApiModel( com.leexplorer.app.api.models.Gallery apiGallery){
+        Gallery g = new Gallery();
+
+        g.galleryId = apiGallery.id;
+        g.name = apiGallery.name;
+        g.address = apiGallery.address;
+        g.type = apiGallery.type;
+        g.price = apiGallery.priceReference;
+        g.hours = apiGallery.hours;
+        g.detailedPrice = apiGallery.priceDescription;
+        g.setFacilities(new ArrayList<>(apiGallery.facilities));
+        g.description = apiGallery.description;
+        g.setLanguages(new ArrayList<>(apiGallery.languages));
+
+        return g;
     }
 
     public static final Parcelable.Creator<Gallery> CREATOR = new Parcelable.Creator<Gallery>() {
@@ -79,7 +96,7 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
     };
 
     protected Gallery(Parcel parcel){
-        this.galleryId = parcel.readLong();
+        this.galleryId = parcel.readString();
         this.name= parcel.readString();
         this.address = parcel.readString();
         this.type = parcel.readString();
@@ -89,8 +106,8 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.detailedPrice = parcel.readString();
         this.facilities = parcel.readString();
         this.description = parcel.readString();
-        this.latitude = parcel.readLong();
-        this.longitude = parcel.readLong();
+        this.latitude = parcel.readFloat();
+        this.longitude = parcel.readFloat();
     }
 
     @Override
@@ -105,7 +122,7 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(galleryId);
+        parcel.writeString(galleryId);
         parcel.writeString(name);
         parcel.writeString(address);
         parcel.writeString(type);
@@ -119,11 +136,11 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         parcel.writeFloat(longitude);
     }
 
-    public Long getGalleryId() {
+    public String getGalleryId() {
         return galleryId;
     }
 
-    public void setGalleryId(Long galleryId) {
+    public void setGalleryId(String galleryId) {
         this.galleryId = galleryId;
     }
 
@@ -159,14 +176,6 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.price = price;
     }
 
-    public String getLanguages() {
-        return languages;
-    }
-
-    public void setLanguages(String languages) {
-        this.languages = languages;
-    }
-
     public String getHours() {
         return hours;
     }
@@ -194,6 +203,17 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.facilities  = gson.toJson(facilities);
     }
 
+    public ArrayList<String> getLanguages() {
+        Gson gson = new Gson();
+        Type collectionType = new TypeToken<ArrayList<String>>(){}.getType();
+        return gson.fromJson(this.languages, collectionType);
+    }
+
+    public void setLanguages(ArrayList<String> languages) {
+        Gson gson = new Gson();
+        this.languages  = gson.toJson(languages);
+    }
+
     public String getDescription() {
         return description;
     }
@@ -202,7 +222,7 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.description = description;
     }
 
-    public long getLatitude() {
+    public float getLatitude() {
         return latitude;
     }
 
@@ -210,7 +230,7 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.latitude = latitude;
     }
 
-    public long getLongitude() {
+    public float getLongitude() {
         return longitude;
     }
 

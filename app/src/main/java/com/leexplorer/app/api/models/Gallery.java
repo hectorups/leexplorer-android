@@ -9,13 +9,15 @@ import java.util.List;
  */
 public class Gallery {
 
+    public String id;
+
     public String name;
 
     public String address;
 
-    public long latitude;
+    public float latitude;
 
-    public long longitude;
+    public float longitude;
 
     public String type;
 

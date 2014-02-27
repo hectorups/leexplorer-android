@@ -77,7 +77,13 @@ public class GalleryFragment extends Fragment {
 
         txDetailAddress.setText(gallery.getAddress());
         txDetailGalleryType.setText(gallery.getType());
-        txLanguage.setText(gallery.getLanguages());
+
+        String languages = "";
+        for(String facility:gallery.getFacilities()){
+            languages += (facility.equals("") ? "":", ") + facility;
+        }
+        txLanguage.setText(languages);
+
         txHours.setText(gallery.getHours());
         txDetailedPrice.setText(gallery.getDetailedPrice());
 

@@ -2,6 +2,7 @@ package com.leexplorer.app.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.services.LocationService;
 import com.leexplorer.app.util.FakeData;
 
 import java.util.ArrayList;
@@ -46,6 +48,13 @@ public class GalleryListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gallery_list, container, false);
         ButterKnife.inject(this,view);
         List<Gallery> galleries = FakeData.getGalleries();
+        LocationService service = new LocationService(getActivity());
+        Location location = service.getLocation();
+        location.getLatitude();
+        location.getLongitude();
+
+        Toast.makeText(getActivity(),"Lat & Long="+location.getLatitude()+" --- "+location.getLongitude(),Toast.LENGTH_SHORT).show();
+
         lvGalleries.setAdapter(galleryAdapter);
         galleryAdapter.addAll(galleries);
         return view;

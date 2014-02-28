@@ -10,7 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField "boolean", "FAKE_DATA", "false"
+        buildConfigField "boolean", "FAKE_DATA", "true"
     }
 
     compileOptions {
@@ -33,6 +33,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:4.0.1'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
     compile 'com.etsy.android.grid:library:1.0.3'
+    //compile 'com.viewpagerindicator:library:2.4.1'
     compile project(':paralloidviews')
 
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])

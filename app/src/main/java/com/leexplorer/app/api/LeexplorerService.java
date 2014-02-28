@@ -14,8 +14,11 @@ import retrofit.http.Path;
  * Created by hectormonserrate on 20/02/14.
  */
 public interface LeexplorerService {
-    @GET("/artwork")
-    List<Artwork> getArtworks();
+    @GET("/artwork/:id")
+    Artwork getArtwork();
+
+    @GET("/gallery/{id}/artworks")
+    List<Artwork> getArtworks(@Path("id") String galleryId);
 
     @GET("/gallery")
     List<Gallery> getGalleries();

@@ -39,7 +39,7 @@ public class Client {
     }
 
 
-    public static Observable<ArrayList<com.leexplorer.app.models.Artwork>> getArtworksData(){
+    public static Observable<ArrayList<com.leexplorer.app.models.Artwork>> getArtworksData(final String galleryId){
         return Observable.create(new Observable.OnSubscribeFunc<ArrayList<com.leexplorer.app.models.Artwork>>() {
             @Override
             public Subscription onSubscribe(Observer<? super ArrayList<com.leexplorer.app.models.Artwork>> observer) {
@@ -49,7 +49,7 @@ public class Client {
                     if( BuildConfig.FAKE_DATA ){
                         artworks = FakeData.getArtworks();
                     } else {
-                        for(Artwork aaw: getService().getArtworks()){
+                        for(Artwork aaw: getService().getArtworks(galleryId)){
                             artworks.add(com.leexplorer.app.models.Artwork.fromJsonModel(aaw));
                         }
                     }

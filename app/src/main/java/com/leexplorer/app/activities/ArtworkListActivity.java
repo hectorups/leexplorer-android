@@ -8,8 +8,13 @@ import android.support.v4.app.FragmentManager;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.models.Gallery;
 
 public class ArtworkListActivity extends BaseActivity implements ArtworkListFragment.Callbacks {
+
+    public static String EXTRA_GALLERY = "extra_gallery";
+
+    private Gallery gallery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +24,12 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.container);
 
+        gallery = getIntent().getParcelableExtra(EXTRA_GALLERY);
+
+        setTitle(gallery.getName());
+
         if(fragment == null){
-            fragment = new ArtworkListFragment();
+            fragment = ArtworkListFragment.newInstance(gallery);
             fm.beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();

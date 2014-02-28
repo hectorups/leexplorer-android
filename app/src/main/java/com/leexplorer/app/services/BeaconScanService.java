@@ -19,6 +19,9 @@ import android.util.Log;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkListActivity;
+import com.leexplorer.app.api.Client;
+import com.leexplorer.app.api.models.Artwork;
+import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.Beacon;
 import com.leexplorer.app.util.BeaconsManager;
 
@@ -136,11 +139,14 @@ public class BeaconScanService extends IntentService {
     }
 
     private void sendNotification(){
-        if(beacons.size() == 0) return;
+        Gallery g = unseenGallery();
+        if(g == null) return; // nothing new ...
 
         Resources r = getResources();
+        Intent artworkIntent = new Intent(this, ArtworkListActivity.class);
+        artworkIntent.putExtra(ArtworkListActivity.EXTRA_GALLERY, g);
         PendingIntent pi = PendingIntent
-                .getActivity(this, 0, new Intent(this, ArtworkListActivity.class), 0);
+                .getActivity(this, 0, artworkIntent, 0);
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setTicker(r.getString(R.string.beacon_notification_title))
@@ -151,11 +157,67 @@ public class BeaconScanService extends IntentService {
                 .setAutoCancel(true)
                 .build();
 
-        Intent i = new Intent(ACTION_SHOW_NOTIFICATION);
-        i.putExtra("REQUEST_CODE", 0);
-        i.putExtra("NOTIFICATION", notification);
+        Intent notificationIntent = new Intent(ACTION_SHOW_NOTIFICATION);
+        notificationIntent.putExtra("REQUEST_CODE", 0);
+        notificationIntent.putExtra("NOTIFICATION", notification);
 
-        sendOrderedBroadcast(i, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
+        sendOrderedBroadcast(notificationIntent, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
+    }
+
+    private Gallery unseenGallery(){
+        Gallery g = null;
+        for(Beacon beacon: beacons.values()){
+            g = galleryFromBeacon(beacon);
+
+            if( g != null ){
+                break;
+            }
+        }
+
+        return g;
+    }
+
+    private Gallery galleryFromBeacon(Beacon b){
+        String galleryId = null;
+        com.leexplorer.app.models.Artwork aw = com.leexplorer.app.models.Artwork.findByMac(b.getMac());
+
+        if( aw == null){
+            Artwork apiAw = null;
+
+            try{
+                apiAw = Client.getService().getArtwork(b.getMac());
+            } catch(Exception e) {e.printStackTrace();}
+
+            if( apiAw != null ){
+                aw = com.leexplorer.app.models.Artwork.fromJsonModel(apiAw);
+                aw.save();
+            }
+        }
+
+        if( aw != null ){
+            galleryId = aw.getGalleryId();
+        }
+
+        if(galleryId == null) return null;
+
+        Gallery g = Gallery.findById(galleryId);
+
+        if( g == null ){
+            com.leexplorer.app.api.models.Gallery apiGallery = null;
+            try{
+                apiGallery = Client.getService().getGallery(galleryId);
+            } catch(Exception e) {e.printStackTrace();}
+
+            if(apiGallery != null){
+                g = Gallery.fromApiModel(apiGallery);
+                g.setWasSeen(true);
+                g.save();
+            }
+        } else if( g.isWasSeen() ) {
+            return null;
+        }
+
+        return g;
     }
 
 }

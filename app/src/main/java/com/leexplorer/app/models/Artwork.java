@@ -51,6 +51,9 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     @Column(name = "audio_url")
     private String audioUrl;
 
+    @Column(name = "gallery_id")
+    private String galleryId;
+
     public static enum Distance {
         IMMEDIATE,
         CLOSE,
@@ -217,6 +220,14 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
                 .executeSingle();
     }
 
+    public String getGalleryId() {
+        return galleryId;
+    }
+
+    public void setGalleryId(String galleryId) {
+        this.galleryId = galleryId;
+    }
+
     /*
      *  Parcelable Overrides
      */
@@ -232,6 +243,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         iLiked = in.readInt() == 1 ? true : false;
         audioUrl = in.readString();
         distance = in.readInt();
+        galleryId = in.readString();
     }
 
     @Override
@@ -251,6 +263,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         dest.writeInt( iLiked ? 1 : 0 );
         dest.writeString(audioUrl);
         dest.writeInt(distance);
+        dest.writeString(galleryId);
     }
 
     @SuppressWarnings("unused")

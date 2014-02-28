@@ -259,6 +259,14 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.longitude = longitude;
     }
 
+    public boolean isWasSeen() {
+        return wasSeen;
+    }
+
+    public void setWasSeen(boolean wasSeen) {
+        this.wasSeen = wasSeen;
+    }
+
     public static Gallery findById(String galleryId) {
         return new Select()
                 .from(Gallery.class)

@@ -144,7 +144,7 @@ public class BeaconScanService extends IntentService {
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setTicker(r.getString(R.string.beacon_notification_title))
-                .setSmallIcon(android.R.drawable.ic_menu_report_image)
+                .setSmallIcon(R.drawable.ic_building)
                 .setContentTitle(r.getString(R.string.beacon_notification_title))
                 .setContentText(r.getString(R.string.beacon_notification_text))
                 .setContentIntent(pi)

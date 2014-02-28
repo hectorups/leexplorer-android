@@ -45,6 +45,8 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
     @Column(name="longitude")
     private float longitude;
 
+    private ArrayList<String> artworkImageUrls;
+
 
     public Gallery(){
 
@@ -80,6 +82,8 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         g.description = apiGallery.description;
         g.setLanguages(new ArrayList<>(apiGallery.languages));
 
+        g.artworkImageUrls = new ArrayList<>(apiGallery.artworks);
+
         return g;
     }
 
@@ -108,6 +112,7 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.description = parcel.readString();
         this.latitude = parcel.readFloat();
         this.longitude = parcel.readFloat();
+        this.artworkImageUrls = parcel.readArrayList(null);
     }
 
     @Override
@@ -134,6 +139,15 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         parcel.writeString(description);
         parcel.writeFloat(latitude);
         parcel.writeFloat(longitude);
+        parcel.writeList(artworkImageUrls);
+    }
+
+    public ArrayList<String> getArtworkImageUrls() {
+        return artworkImageUrls;
+    }
+
+    public void setArtworkImageUrls(ArrayList<String> artworkImageUrls) {
+        this.artworkImageUrls = artworkImageUrls;
     }
 
     public String getGalleryId() {

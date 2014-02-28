@@ -34,4 +34,7 @@ public class Gallery {
     public String description;
 
     public List<String> facilities;
+
+
+    public List<String> artworks;
 }

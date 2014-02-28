@@ -93,7 +93,7 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
 
         @Override
         public int getCount() {
-            return 5;
+            return this.gallery.getArtworkImageUrls().size();
         }
 
         @Override
@@ -101,7 +101,7 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
             RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.fragment_gallery_image, null);
             ImageView ivGalleryImage = (ImageView)layout.findViewById(R.id.ivGallery);
             Picasso.with(fragment.getActivity())
-                    .load("http://pablo-ruiz-picasso.com/images/works/143_s.jpg") // @todo ...
+                    .load(this.gallery.getArtworkImageUrls().get(position)) 
                     .fit()
                     .centerCrop()
                     .into(ivGalleryImage);

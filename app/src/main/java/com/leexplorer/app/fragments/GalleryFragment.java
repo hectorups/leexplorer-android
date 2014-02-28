@@ -70,7 +70,7 @@ public class GalleryFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         Picasso.with(getActivity())
-                .load("http://pablo-ruiz-picasso.com/images/works/143_s.jpg") // @todo ...
+                .load(gallery.getArtworkImageUrls().get(0))
                 .fit()
                 .centerCrop()
                 .into(ivGalleryDetail);

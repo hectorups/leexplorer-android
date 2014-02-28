@@ -79,8 +79,8 @@ public class GalleryFragment extends Fragment {
         txDetailGalleryType.setText(gallery.getType());
 
         String languages = "";
-        for(String facility:gallery.getFacilities()){
-            languages += (facility.equals("") ? "":", ") + facility;
+        for(String language:gallery.getLanguages()){
+            languages += (languages.equals("") ? "":", ") + language;
         }
         txLanguage.setText(languages);
 
@@ -89,7 +89,7 @@ public class GalleryFragment extends Fragment {
 
         String facilities = "";
         for(String facility:gallery.getFacilities()){
-            facilities += (facility.equals("") ? "":", ") + facility;
+            facilities += (facilities.equals("") ? "":", ") + facility;
         }
         txFacilities.setText(facilities);
         txDescription.setText(gallery.getDescription());

@@ -18,8 +18,8 @@ import rx.subscriptions.Subscriptions;
  */
 public class Client {
     //private static final String API_URL = "http://10.12.34.255:1321"; // Hector 1
-    private static final String API_URL = "http://10.0.0.4:1321"; // Hector 2
-    //private static final String API_URL = "http://107.170.66.79:1337"; // Digital Ocean
+    //private static final String API_URL = "http://10.0.0.4:1321"; // Hector 2
+    private static final String API_URL = "http://107.170.66.79:1337"; // Digital Ocean
 
     private static LeexplorerService service;
 

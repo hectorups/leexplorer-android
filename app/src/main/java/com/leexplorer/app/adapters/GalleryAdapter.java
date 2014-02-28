@@ -101,7 +101,7 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
             RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.fragment_gallery_image, null);
             ImageView ivGalleryImage = (ImageView)layout.findViewById(R.id.ivGallery);
             Picasso.with(fragment.getActivity())
-                    .load(this.gallery.getArtworkImageUrls().get(position)) 
+                    .load(this.gallery.getArtworkImageUrls().get(position))
                     .fit()
                     .centerCrop()
                     .into(ivGalleryImage);

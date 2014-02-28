@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -45,6 +46,9 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
     @Column(name="longitude")
     private float longitude;
 
+    @Column(name="was_seen")
+    private boolean wasSeen;
+
     private ArrayList<String> artworkImageUrls;
 
 
@@ -69,7 +73,10 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
     }
 
     public static Gallery fromApiModel( com.leexplorer.app.api.models.Gallery apiGallery){
-        Gallery g = new Gallery();
+
+        Gallery g = findById(apiGallery.id);
+
+        if(g == null) g = new Gallery();
 
         g.galleryId = apiGallery.id;
         g.name = apiGallery.name;
@@ -250,5 +257,12 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
 
     public void setLongitude(long longitude) {
         this.longitude = longitude;
+    }
+
+    public static Gallery findById(String galleryId) {
+        return new Select()
+                .from(Gallery.class)
+                .where("gallery_id = ?", galleryId)
+                .executeSingle();
     }
 }

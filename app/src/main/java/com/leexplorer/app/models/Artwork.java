@@ -157,7 +157,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
 
         String mac = jaw.mac;
 
-        // aw = findByMac(mac);
+        aw = findByMac(mac);
 
         if(aw == null) aw = new Artwork();
 
@@ -208,6 +208,13 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     public static ArrayList<Artwork> galleryArtworks() {
         List<Artwork> aws = new Select().from(Artwork.class).execute();
         return new ArrayList<>(aws);
+    }
+
+    public static Artwork findByMac(String mac){
+        return new Select()
+                .from(Artwork.class)
+                .where("mac = ?", mac)
+                .executeSingle();
     }
 
     /*

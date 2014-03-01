@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.leexplorer.app.R;
+import com.leexplorer.app.adapters.GalleryInfoAdapter;
 import com.leexplorer.app.models.Gallery;
 
 import java.util.ArrayList;
@@ -292,10 +294,11 @@ public class GalleryMapFragment extends SupportMapFragment {
      */
     private void setMarkerText(MarkerDelegate marker, List<Gallery> galleries) {
         if (galleries.size() == 1) {
-            marker.setTitle(galleries.get(0).getName());
-            marker.setSnippet(galleries.get(0).getDescription());
+            Gallery g = galleries.get(0);
+            marker.setTitle(g.getName());
+            marker.setSnippet(g.getDescription());
+            marker.setUri(g.getArtworkImageUrls().get(0));
         } else {
-
             marker.setTitle(getResources().getString(R.string.consolidated_marker_title, galleries.size()));
             String consolidatedDescription = "";
             for(Gallery g: galleries){
@@ -311,14 +314,15 @@ public class GalleryMapFragment extends SupportMapFragment {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private HashMap<Marker, List<Gallery>> addAndAnimateMarkers(
-            final HashMap<MarkerDelegate, List<Gallery>> MarkerDelagateHashMap,
+            final HashMap<MarkerDelegate, List<Gallery>> markerDelagateHashMap,
             final HashMap<Marker, List<Gallery>> oldMarkerHashMap) {
 
-        HashMap<Marker, List<Gallery>> newMarkerHashMap =
-                new HashMap<>();
+        HashMap<Marker, List<Gallery>> newMarkerHashMap = new HashMap<>();
+        HashMap<String, Uri> markerInfo = new HashMap<>();
+
         List<Animator> animatorList = new ArrayList<>();
 
-        for (Map.Entry<MarkerDelegate, List<Gallery>> newEntry : MarkerDelagateHashMap.entrySet()) {
+        for (Map.Entry<MarkerDelegate, List<Gallery>> newEntry : markerDelagateHashMap.entrySet()) {
             LatLng finalPosition = null;
             outerloop:
             for (Map.Entry<Marker, List<Gallery>> oldEntry : oldMarkerHashMap.entrySet()) {
@@ -340,7 +344,11 @@ public class GalleryMapFragment extends SupportMapFragment {
             if (finalPosition != null) {
                 animatorList.add(createMarkerAnimation(marker, finalPosition));
             }
+
+            markerInfo.put(marker.getId(), newEntry.getKey().getUri());
         }
+
+        map.setInfoWindowAdapter(new GalleryInfoAdapter(getActivity().getApplicationContext(), getActivity().getLayoutInflater(), markerInfo ));
 
         if (animatorList.size() > 0) {
             AnimatorSet animatorSet = new AnimatorSet();
@@ -453,6 +461,7 @@ public class GalleryMapFragment extends SupportMapFragment {
         private LatLng position;
         private String title;
         private String snippet;
+        private Uri image;
 
         public LatLng getPosition() {
             return position;
@@ -477,6 +486,12 @@ public class GalleryMapFragment extends SupportMapFragment {
         public void setSnippet(String snippet) {
             this.snippet = snippet;
         }
+
+        public void setUri(String url){
+            this.image = Uri.parse(url);
+        }
+
+        public Uri getUri(){ return image; }
 
         public Marker createMarker(GoogleMap map) {
             return map.addMarker(

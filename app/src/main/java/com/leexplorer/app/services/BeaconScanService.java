@@ -12,7 +12,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -45,14 +45,11 @@ public class BeaconScanService extends IntentService {
 
     private final String TAG = "com.leexplorer.app.services.beaconscanservice";
 
-    private static BluetoothManager bluetoothManager;
+    private BluetoothManager bluetoothManager;
 
-    private static BluetoothAdapter bluetoothAdapter;
-    private Handler leHandler = new Handler();
+    private BluetoothAdapter bluetoothAdapter;
 
     private HashMap<String,Beacon> beacons;
-
-    private static boolean scanning = false;
 
     public BeaconScanService() {
         super("beaconscan-service");
@@ -65,20 +62,14 @@ public class BeaconScanService extends IntentService {
 
         setBluetoothAdapter();
         bluetoothAdapter.startLeScan(leScanCallback);
-        scanning = true;
 
         beacons = new HashMap<>();
 
-        leHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                scanning = false;
-                bluetoothAdapter.stopLeScan(leScanCallback);
-                endSearch();
-                broadcastBeacons();
-                sendNotification();
-            }
-        }, SCAN_PERIOD);
+        SystemClock.sleep(SCAN_PERIOD);
+
+        endSearch();
+        broadcastBeacons();
+        sendNotification();
 
     }
 
@@ -145,8 +136,9 @@ public class BeaconScanService extends IntentService {
         Resources r = getResources();
         Intent artworkIntent = new Intent(this, ArtworkListActivity.class);
         artworkIntent.putExtra(ArtworkListActivity.EXTRA_GALLERY, g);
+        artworkIntent.putExtra(ArtworkListActivity.EXTRA_FROM_NOTIFICATION, true);
         PendingIntent pi = PendingIntent
-                .getActivity(this, 0, artworkIntent, 0);
+                .getActivity(this, 0, artworkIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setTicker(r.getString(R.string.beacon_notification_title))
@@ -210,8 +202,6 @@ public class BeaconScanService extends IntentService {
 
             if(apiGallery != null){
                 g = Gallery.fromApiModel(apiGallery);
-                g.setWasSeen(true);
-                g.save();
             }
         } else if( g.isWasSeen() ) {
             return null;

@@ -14,6 +14,7 @@ import com.leexplorer.app.models.Gallery;
 public class ArtworkListActivity extends BaseActivity implements ArtworkListFragment.Callbacks {
 
     public static String EXTRA_GALLERY = "extra_gallery";
+    public static String EXTRA_FROM_NOTIFICATION = "extra_from_notification";
 
     private Gallery gallery;
 
@@ -26,6 +27,12 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
         Fragment fragment = fm.findFragmentById(R.id.container);
 
         gallery = getIntent().getParcelableExtra(EXTRA_GALLERY);
+
+        boolean from_notification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
+        if(from_notification){
+            gallery.setWasSeen(true);
+            gallery.save();
+        }
 
         setTitle(gallery.getName());
 

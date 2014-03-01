@@ -8,7 +8,7 @@
 
 
 
-    <uk.co.chrisjenx.paralloid.views.ParallaxScrollView
+    <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,6 +17,6 @@
         <include layout="@layout/fragment_gallery_content"/>
 
 
-    </uk.co.chrisjenx.paralloid.views.ParallaxScrollView>
+    </ScrollView>
 
 </FrameLayout>

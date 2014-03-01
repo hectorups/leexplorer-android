@@ -296,8 +296,12 @@ public class GalleryMapFragment extends SupportMapFragment {
             marker.setSnippet(galleries.get(0).getDescription());
         } else {
 
-            marker.setTitle("multiple galleries");
-            marker.setSnippet("text ...");
+            marker.setTitle(getResources().getString(R.string.consolidated_marker_title, galleries.size()));
+            String consolidatedDescription = "";
+            for(Gallery g: galleries){
+                consolidatedDescription += (consolidatedDescription.compareTo("") == 0 ? "" : ", ") + g.getName();
+            }
+            marker.setSnippet(consolidatedDescription);
         }
     }
 

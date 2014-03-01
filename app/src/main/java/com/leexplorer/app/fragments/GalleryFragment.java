@@ -21,12 +21,13 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
-import static com.leexplorer.app.util.AppConstants.GALLERY_KEY;
 
 /**
  * Created by deepakdhiman on 2/23/14.
  */
 public class GalleryFragment extends Fragment {
+
+    private static String GALLERY_KEY = "gallery";
 
     private Gallery gallery;
 
@@ -70,17 +71,28 @@ public class GalleryFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         Picasso.with(getActivity())
-                .load(gallery.getImageUrl())
+                .load(gallery.getArtworkImageUrls().get(0))
                 .fit()
                 .centerCrop()
                 .into(ivGalleryDetail);
 
         txDetailAddress.setText(gallery.getAddress());
         txDetailGalleryType.setText(gallery.getType());
-        txLanguage.setText(gallery.getLanguage());
+
+        String languages = "";
+        for(String language:gallery.getLanguages()){
+            languages += (languages.equals("") ? "":", ") + language;
+        }
+        txLanguage.setText(languages);
+
         txHours.setText(gallery.getHours());
         txDetailedPrice.setText(gallery.getDetailedPrice());
-        txFacilities.setText(gallery.getFacilities());
+
+        String facilities = "";
+        for(String facility:gallery.getFacilities()){
+            facilities += (facilities.equals("") ? "":", ") + facility;
+        }
+        txFacilities.setText(facilities);
         txDescription.setText(gallery.getDescription());
 
         setFacilities();
@@ -89,15 +101,12 @@ public class GalleryFragment extends Fragment {
     }
 
     private void setFacilities(){
-        if(gallery.getFacilities()!=null && gallery.getFacilities().length()>0){
-            String[] facilities = gallery.getFacilities().toLowerCase().split(",");
-            for(String facility: facilities){
-                if(FACILITIES_IMG_MAP.get(facility.trim())!=null){
-                    ImageView ivFacility = new ImageView(getActivity());
-                    Bitmap bm = BitmapFactory.decodeResource(getResources(), FACILITIES_IMG_MAP.get(facility.trim()));
-                    ivFacility.setImageBitmap(bm);
-                    llFacilitiesImg.addView(ivFacility);
-                }
+        for(String facility: gallery.getFacilities()){
+            if(FACILITIES_IMG_MAP.get(facility.trim())!=null){
+                ImageView ivFacility = new ImageView(getActivity());
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), FACILITIES_IMG_MAP.get(facility.trim()));
+                ivFacility.setImageBitmap(bm);
+                llFacilitiesImg.addView(ivFacility);
             }
         }
     }

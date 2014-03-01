@@ -1,11 +1,9 @@
 package com.leexplorer.app.activities;
 
-import static com.leexplorer.app.util.AppConstants.*;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +12,8 @@ import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 
 public class GalleryActivity extends BaseActivity implements GalleryFragment.Callbacks{
+    public static final String GALLERY_KEY = "gallery";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Cal
             return;
         }
         Intent i = new Intent(this, ArtworkListActivity.class);
-        i.putExtra("galleryId", gallery.getGalleryId());
+        i.putExtra(ArtworkListActivity.EXTRA_GALLERY, gallery);
         startActivity(i);
     }
 }

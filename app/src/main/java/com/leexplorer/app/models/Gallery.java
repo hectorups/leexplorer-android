@@ -6,6 +6,12 @@ import android.os.Parcelable;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 /**
  * Created by deepakdhiman on 2/18/14.
@@ -13,47 +19,79 @@ import com.activeandroid.annotation.Table;
 @Table(name = "galleries")
 public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
 
-    @Column(name="galleryId")
-    private Long galleryId;
+    @Column(name="gallery_id")
+    private String galleryId;
     @Column(name="name")
     private String name;
-    @Column(name="image_url")
-    private String imageUrl;
     @Column(name="address")
     private String address;
     @Column(name="type")
     private String type;
     @Column(name="price")
-    private String price;
-    @Column(name="language")
-    private String language;
+    private float price;
+    @Column(name="languages")
+    private String languages;
     @Column(name="hours")
-    String hours;
-    @Column(name="detailedPrice")
-    String detailedPrice;
+    private String hours;
+    @Column(name="detailed_price")
+    private String detailedPrice;
     @Column(name="facilities")
-    String facilities;
+    private String facilities;
     @Column(name="description")
-    String description;
+    private String description;
+
+    @Column(name="latitude")
+    private float latitude;
+
+    @Column(name="longitude")
+    private float longitude;
+
+    @Column(name="was_seen")
+    private boolean wasSeen;
+
+    private ArrayList<String> artworkImageUrls;
+
 
     public Gallery(){
+
         super();
     }
 
-    public Gallery(Long galleryId, String name, String imageUrl, String address,
-                    String type, String price, String language, String hours,
-                    String detailedPrice, String facilities, String description) {
+    public Gallery(String galleryId, String name, String imageUrl, String address,
+                    String type, float price, ArrayList<String> languages, String hours,
+                    String detailedPrice, ArrayList<String> facilities, String description) {
         this.galleryId = galleryId;
         this.name = name;
-        this.imageUrl = imageUrl;
         this.address = address;
         this.type = type;
         this.price = price;
-        this.language = language;
+        this.setLanguages(languages);
         this.hours = hours;
         this.detailedPrice = detailedPrice;
-        this.facilities = facilities;
+        this.setFacilities(facilities);
         this.description = description;
+    }
+
+    public static Gallery fromApiModel( com.leexplorer.app.api.models.Gallery apiGallery){
+
+        Gallery g = findById(apiGallery.id);
+
+        if(g == null) g = new Gallery();
+
+        g.galleryId = apiGallery.id;
+        g.name = apiGallery.name;
+        g.address = apiGallery.address;
+        g.type = apiGallery.type;
+        g.price = apiGallery.priceReference;
+        g.hours = apiGallery.hours;
+        g.detailedPrice = apiGallery.priceDescription;
+        g.setFacilities(new ArrayList<>(apiGallery.facilities));
+        g.description = apiGallery.description;
+        g.setLanguages(new ArrayList<>(apiGallery.languages));
+
+        g.artworkImageUrls = new ArrayList<>(apiGallery.artworks);
+
+        return g;
     }
 
     public static final Parcelable.Creator<Gallery> CREATOR = new Parcelable.Creator<Gallery>() {
@@ -69,17 +107,19 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
     };
 
     protected Gallery(Parcel parcel){
-        this.galleryId = parcel.readLong();
+        this.galleryId = parcel.readString();
         this.name= parcel.readString();
-        this.imageUrl = parcel.readString();
         this.address = parcel.readString();
         this.type = parcel.readString();
-        this.price = parcel.readString();
-        this.language = parcel.readString();
+        this.price = parcel.readFloat();
+        this.languages = parcel.readString();
         this.hours = parcel.readString();
         this.detailedPrice = parcel.readString();
         this.facilities = parcel.readString();
         this.description = parcel.readString();
+        this.latitude = parcel.readFloat();
+        this.longitude = parcel.readFloat();
+        this.artworkImageUrls = parcel.readArrayList(null);
     }
 
     @Override
@@ -94,24 +134,34 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(galleryId);
+        parcel.writeString(galleryId);
         parcel.writeString(name);
-        parcel.writeString(imageUrl);
         parcel.writeString(address);
         parcel.writeString(type);
-        parcel.writeString(price);
-        parcel.writeString(language);
+        parcel.writeFloat(price);
+        parcel.writeString(languages);
         parcel.writeString(hours);
         parcel.writeString(detailedPrice);
         parcel.writeString(facilities);
         parcel.writeString(description);
+        parcel.writeFloat(latitude);
+        parcel.writeFloat(longitude);
+        parcel.writeList(artworkImageUrls);
     }
 
-    public Long getGalleryId() {
+    public ArrayList<String> getArtworkImageUrls() {
+        return artworkImageUrls;
+    }
+
+    public void setArtworkImageUrls(ArrayList<String> artworkImageUrls) {
+        this.artworkImageUrls = artworkImageUrls;
+    }
+
+    public String getGalleryId() {
         return galleryId;
     }
 
-    public void setGalleryId(Long galleryId) {
+    public void setGalleryId(String galleryId) {
         this.galleryId = galleryId;
     }
 
@@ -121,14 +171,6 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public String getAddress() {
@@ -147,20 +189,12 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.type = type;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public String getHours() {
@@ -179,12 +213,26 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         this.detailedPrice = detailedPrice;
     }
 
-    public String getFacilities() {
-        return facilities;
+    public ArrayList<String> getFacilities() {
+        Gson gson = new Gson();
+        Type collectionType = new TypeToken<ArrayList<String>>(){}.getType();
+        return gson.fromJson(this.facilities, collectionType);
     }
 
-    public void setFacilities(String facilities) {
-        this.facilities = facilities;
+    public void setFacilities(ArrayList<String> facilities) {
+        Gson gson = new Gson();
+        this.facilities  = gson.toJson(facilities);
+    }
+
+    public ArrayList<String> getLanguages() {
+        Gson gson = new Gson();
+        Type collectionType = new TypeToken<ArrayList<String>>(){}.getType();
+        return gson.fromJson(this.languages, collectionType);
+    }
+
+    public void setLanguages(ArrayList<String> languages) {
+        Gson gson = new Gson();
+        this.languages  = gson.toJson(languages);
     }
 
     public String getDescription() {
@@ -193,5 +241,36 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(long latitude) {
+        this.latitude = latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(long longitude) {
+        this.longitude = longitude;
+    }
+
+    public boolean isWasSeen() {
+        return wasSeen;
+    }
+
+    public void setWasSeen(boolean wasSeen) {
+        this.wasSeen = wasSeen;
+    }
+
+    public static Gallery findById(String galleryId) {
+        return new Select()
+                .from(Gallery.class)
+                .where("gallery_id = ?", galleryId)
+                .executeSingle();
     }
 }

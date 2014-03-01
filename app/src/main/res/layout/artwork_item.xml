@@ -42,7 +42,7 @@
     <FrameLayout
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:background="@color/le_transparent_black"
+        android:background="@color/le_black_more_transparent"
         android:layout_height="48dp">
 
         <LinearLayout

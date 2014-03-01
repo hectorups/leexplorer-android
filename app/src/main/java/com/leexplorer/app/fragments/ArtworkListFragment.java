@@ -26,6 +26,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.util.Beacon;
 import com.leexplorer.app.util.BeaconArtworkUpdater;
@@ -49,6 +50,8 @@ public class ArtworkListFragment extends Fragment {
     private static final String ARTWORK_LIST = "arwork_list";
     private static final String TAG = "com.leexplorer.artworklistfragement";
 
+    private static final String EXTRA_GALLERY = "extra_gallery";
+
     @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
 
     protected ArtworkAdapter artworkAdapter;
@@ -66,6 +69,18 @@ public class ArtworkListFragment extends Fragment {
     }
 
     public Callbacks callbacks;
+
+    private Gallery gallery;
+
+    public static ArtworkListFragment newInstance(Gallery gallery){
+        Bundle args = new Bundle();
+        args.putParcelable(EXTRA_GALLERY, gallery);
+
+        ArtworkListFragment fragment = new ArtworkListFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -94,6 +109,7 @@ public class ArtworkListFragment extends Fragment {
         beaconsManager = BeaconsManager.getInstance();
         newBeaconInfo = false;
         scaningBeacons = false;
+        gallery = getArguments().getParcelable(EXTRA_GALLERY);
     }
 
     @Override
@@ -170,7 +186,7 @@ public class ArtworkListFragment extends Fragment {
 
     private void loadArtworkListFromApi(){
         if(callbacks != null) callbacks.onLoading(true);
-        Client.getArtworksData()
+        Client.getArtworksData(gallery.getGalleryId())
                 .subscribeOn(Schedulers.threadPoolForIO())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -253,6 +269,8 @@ public class ArtworkListFragment extends Fragment {
 
 
     private void scanBeacons(){
+        if(getActivity() == null) return;
+
         if(callbacks != null) callbacks.onLoading(true);
         if(menuReresh != null) menuReresh.setVisible(false);
 

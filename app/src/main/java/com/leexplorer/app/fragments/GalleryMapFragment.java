@@ -319,9 +319,6 @@ public class GalleryMapFragment extends SupportMapFragment {
             outerloop:
             for (Map.Entry<Marker, List<Gallery>> oldEntry : oldMarkerHashMap.entrySet()) {
                 for (Gallery newGallery : newEntry.getValue()) {
-                    //if an old marker's conververation list contains a new markers gallery,
-                    // and the old marker's gallery list is larger, than a de-consolidation is occuring
-                    // and we should animate
                     if (oldEntry.getValue().contains(newGallery) && oldEntry.getValue().size() > newEntry
                             .getValue()
                             .size()) {
@@ -367,8 +364,7 @@ public class GalleryMapFragment extends SupportMapFragment {
                 marker.setPosition(newPosition);
             }
         });
-        valueAnimator.setFloatValues(0, 1); // Ignored.
-        //valueAnimator.setDuration(2000);
+        valueAnimator.setFloatValues(0, 1);
         valueAnimator.addListener(new MarkerAnimatorListener(marker, finalPosition));
         return valueAnimator;
     }

@@ -150,4 +150,8 @@ public class GalleryListFragment extends Fragment {
         galleryAdapter.notifyDataSetChanged();
     }
 
+    public ArrayList<Gallery> getGalleries(){
+        return new ArrayList<Gallery>(galleries);
+    }
+
 }

@@ -3,4 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.leexplorer.app.activities.GalleryListActivity" >
 
+    <item
+        android:id="@+id/menuMap"
+        android:title="map"
+        />
+
 </menu>

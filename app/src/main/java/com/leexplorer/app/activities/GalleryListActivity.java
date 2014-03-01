@@ -1,5 +1,6 @@
 package com.leexplorer.app.activities;
 
+import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.MenuItem;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryListFragment;
+import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.models.Gallery;
 
 public class GalleryListActivity extends BaseActivity implements GalleryListFragment.Callbacks{
@@ -40,13 +42,17 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (id == R.id.menuMap) {
+            final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            FragmentManager fm = getSupportFragmentManager();
+            GalleryListFragment fragment = (GalleryListFragment) fm.findFragmentById(R.id.container);
+            GalleryMapFragment mapFragment = GalleryMapFragment.newInstance(fragment.getGalleries());
+            ft.replace(R.id.container, mapFragment, "NewFragmentTag");
+            ft.commit();
+
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

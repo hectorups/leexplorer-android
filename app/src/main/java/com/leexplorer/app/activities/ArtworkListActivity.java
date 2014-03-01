@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.view.MenuItem;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
@@ -33,6 +34,20 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
             fm.beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();
+        }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

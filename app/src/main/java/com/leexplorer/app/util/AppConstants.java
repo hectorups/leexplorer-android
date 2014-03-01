@@ -10,7 +10,6 @@ import java.util.Map;
  */
 public class AppConstants {
 
-    public static final String GALLERY_KEY = "gallery";
     public static final String APP_NAME = "LEEXPLORER";
 
     public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<String, Integer>();

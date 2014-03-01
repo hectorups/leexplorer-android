@@ -11,9 +11,9 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 
-import static com.leexplorer.app.util.AppConstants.GALLERY_KEY;
-
 public class GalleryActivity extends BaseActivity implements GalleryFragment.Callbacks{
+    public static final String GALLERY_KEY = "gallery";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

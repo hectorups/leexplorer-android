@@ -21,12 +21,13 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
-import static com.leexplorer.app.util.AppConstants.GALLERY_KEY;
 
 /**
  * Created by deepakdhiman on 2/23/14.
  */
 public class GalleryFragment extends Fragment {
+
+    private static String GALLERY_KEY = "gallery";
 
     private Gallery gallery;
 

@@ -1,14 +1,9 @@
 package com.leexplorer.app.activities;
 
-import static com.leexplorer.app.util.AppConstants.*;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -65,7 +60,7 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
         }
 
         Intent i = new Intent(this, GalleryActivity.class);
-        i.putExtra(GALLERY_KEY, gallery);
+        i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
         startActivity(i);
     }
 }

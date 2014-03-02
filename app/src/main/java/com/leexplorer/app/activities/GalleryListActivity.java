@@ -1,6 +1,7 @@
 package com.leexplorer.app.activities;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -41,6 +42,10 @@ public class GalleryListActivity extends BaseActivity
         }
 
         setContentView(R.layout.fragment_gallery_list_responsive);
+        if(isTabletMode()){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(LIST_FRAGMENT_TAG);
         if (fragment == null) {

@@ -36,9 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="HELLO WORLD"
-                android:textColor="@color/le_white"
-                android:textStyle="bold"
-                android:textSize="30sp" />
+                style="@style/LE.TitleShadowed"/>
 
         </FrameLayout>
 

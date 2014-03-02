@@ -173,7 +173,7 @@ public class GalleryListFragment extends Fragment {
         Collections.sort(this.galleries, new GalleryComparator());
         galleryAdapter.notifyDataSetChanged();
         if(callbacks.isTabletMode()){
-            callbacks.loadGalleryDetails(galleries.get(0));
+            callbacks.loadGalleryDetails(this.galleries.get(0));
         }
     }
 

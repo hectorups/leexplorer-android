@@ -96,7 +96,7 @@ public class BaseActivity extends ActionBarActivity {
     public void loadArtworks(Gallery gallery) {
 
         FragmentManager fm = getSupportFragmentManager();
-        GalleryFragment fragment = (GalleryFragment) fm.findFragmentById(R.id.container);
+        GalleryFragment fragment = (GalleryFragment) fm.findFragmentById(R.id.flGalleryDetailView);
 
         if(fragment == null) {
             return;

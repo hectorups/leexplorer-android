@@ -21,14 +21,14 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Cal
         setContentView(R.layout.activity_gallery);
 
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.container);
+        Fragment fragment = fm.findFragmentById(R.id.flGalleryDetailView);
 
         if(fragment == null){
             Gallery gallery = getIntent().getParcelableExtra(GALLERY_KEY);
             getSupportActionBar().setTitle(gallery.getName());
             fragment = GalleryFragment.newInstance(gallery);
             fm.beginTransaction()
-                    .add(R.id.container, fragment)
+                    .add(R.id.flGalleryDetailView, fragment)
                     .commit();
         }
     }

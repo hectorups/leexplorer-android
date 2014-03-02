@@ -9,10 +9,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Window;
 
+import com.leexplorer.app.R;
+import com.leexplorer.app.fragments.GalleryFragment;
+import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
 
 import static com.leexplorer.app.util.AppConstants.APP_NAME;
@@ -87,5 +91,25 @@ public class BaseActivity extends ActionBarActivity {
             Log.d(APP_NAME, "Error opening maps" + e.getMessage());
         }
 
+    }
+
+    public void loadArtworks(Gallery gallery) {
+
+        FragmentManager fm = getSupportFragmentManager();
+        GalleryFragment fragment = (GalleryFragment) fm.findFragmentById(R.id.flGalleryDetailView);
+
+        if(fragment == null) {
+            return;
+        }
+        Intent i = new Intent(this, ArtworkListActivity.class);
+        i.putExtra(ArtworkListActivity.EXTRA_GALLERY, gallery);
+        startActivity(i);
+    }
+
+    public boolean isTabletMode() {
+        if(findViewById(R.id.flGalleryDetailView)!=null){
+            return true;
+        }
+        return false;
     }
 }

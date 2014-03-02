@@ -6,5 +6,7 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:dividerHeight="0dp"
+        android:divider="@null"
         android:id="@+id/lvGalleries"/>
 </FrameLayout>

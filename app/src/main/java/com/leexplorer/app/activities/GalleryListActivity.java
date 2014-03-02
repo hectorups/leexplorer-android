@@ -1,21 +1,27 @@
 package com.leexplorer.app.activities;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.leexplorer.app.R;
+import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.models.Gallery;
 
+
 public class GalleryListActivity extends BaseActivity
         implements GalleryListFragment.Callbacks,
-                   GalleryMapFragment.Callbacks{
+                   GalleryMapFragment.Callbacks,
+                   GalleryFragment.Callbacks{
 
     private static final String LIST_FRAGMENT_TAG = "list_fragment_tag";
     private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
@@ -29,22 +35,23 @@ public class GalleryListActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if(savedInstanceState != null){
             menuFragmentOn = savedInstanceState.getBoolean(MAP_FRAGMENT_ON, false);
         } else {
             menuFragmentOn = false;
         }
 
-        setContentView(R.layout.activity_gallery_list);
+        setContentView(R.layout.fragment_gallery_list_responsive);
+        if(isTabletMode()){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(LIST_FRAGMENT_TAG);
-
-        if(fragment == null){
+        if (fragment == null) {
             fragment = new GalleryListFragment();
             fm.beginTransaction()
-                    .add(R.id.container, fragment, LIST_FRAGMENT_TAG)
+                    .add(R.id.flGalleryListView, fragment, LIST_FRAGMENT_TAG)
                     .commit();
         }
     }
@@ -87,9 +94,9 @@ public class GalleryListActivity extends BaseActivity
         GalleryListFragment listFragment = (GalleryListFragment) fm.findFragmentByTag(LIST_FRAGMENT_TAG);
         GalleryMapFragment mapFragment = (GalleryMapFragment) fm.findFragmentByTag(MAP_FRAGMENT_TAG);
 
-        switch (id){
+        switch (id) {
             case R.id.menuMap:
-                if(mapFragment == null){
+                if (mapFragment == null) {
                     mapFragment = GalleryMapFragment.newInstance(listFragment.getGalleries());
                 }
 
@@ -97,7 +104,7 @@ public class GalleryListActivity extends BaseActivity
                         .beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                        .replace(R.id.container, mapFragment, MAP_FRAGMENT_TAG)
+                        .replace(R.id.flGalleryListView, mapFragment, MAP_FRAGMENT_TAG)
                         .addToBackStack(null)
                         .commit();
 
@@ -106,39 +113,44 @@ public class GalleryListActivity extends BaseActivity
 
                 return true;
             case R.id.menuList:
-                if(listFragment == null){
+                if (listFragment == null) {
                     listFragment = new GalleryListFragment();
                 }
 
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-                        .replace(R.id.container, listFragment, LIST_FRAGMENT_TAG)
+                        .replace(R.id.flGalleryListView, listFragment, LIST_FRAGMENT_TAG)
                         .commit();
 
                 menuFragmentOn = false;
                 updateMenuIcon();
-
                 return true;
         }
-
-
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void loadGalleryDetails(Gallery gallery) {
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment =  fm.findFragmentById(R.id.container);
-
-        if(fragment == null) {
+        Fragment fragment = fm.findFragmentById(R.id.flGalleryListView);
+        if (fragment == null) {
             return;
         }
+//
+//        int screenSize = getResources().getConfiguration().screenLayout &
+//                Configuration.SCREENLAYOUT_SIZE_MASK;
 
-        Intent i = new Intent(this, GalleryActivity.class);
-        i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
-        startActivity(i);
+        if (isTabletMode()) {
+            Fragment fragmentGallery = GalleryFragment.newInstance(gallery);
+            fm.beginTransaction()
+                    .replace(R.id.flGalleryDetailView, fragmentGallery)
+                    .commit();
+        } else {
+            Intent i = new Intent(this, GalleryActivity.class);
+            i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
+            startActivity(i);
+        }
     }
 
     @Override

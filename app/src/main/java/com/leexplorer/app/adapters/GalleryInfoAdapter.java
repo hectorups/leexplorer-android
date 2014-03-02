@@ -33,10 +33,15 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
         mContext = c;
     }
 
+
+
     @Override
     public View getInfoContents(Marker marker) {
+        return null;
+    }
 
-
+    @Override
+    public View getInfoWindow(Marker marker) {
         // Getting view from the layout file
         View v = mInflater.inflate(R.layout.gallery_info_window, null);
         ViewHolder holder = new ViewHolder(v);
@@ -46,7 +51,7 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
         holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
 
         holder.tvDescription.setText(marker.getSnippet());
-        holder.tvDescription.setMaxLines(4);
+        holder.tvDescription.setMaxLines(3);
         holder.tvDescription.setEllipsize(TextUtils.TruncateAt.END);
 
         Uri image = mImages.get(marker.getId());
@@ -59,11 +64,6 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
 
 
         return v;
-    }
-
-    @Override
-    public View getInfoWindow(Marker marker) {
-        return null;
     }
 
 

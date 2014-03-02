@@ -45,4 +45,11 @@
         <item name="android:freezesText">true</item>
     </style>
 
+    <style name="LE.InfoWindowTitle" parent="LE.InfoWindowTitle">
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+    <style name="LE.InfoWindowBody" parent="LE.ProfileBody">
+    </style>
+
 </resources>

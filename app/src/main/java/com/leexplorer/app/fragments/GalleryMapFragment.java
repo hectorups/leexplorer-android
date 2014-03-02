@@ -263,12 +263,10 @@ public class GalleryMapFragment extends SupportMapFragment {
         //If Honeycomb or later, create and add animate de-consolidated markers
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            markerGalleryHashMap =
-                    addAndAnimateMarkers(markerDelegateHashMap, markerGalleryHashMap);
+            markerGalleryHashMap = addAndAnimateMarkers(markerDelegateHashMap, markerGalleryHashMap);
         } else {
             // if not add the new markers as is
-            final HashMap<Marker, List<Gallery>> newMarkerHashMap =
-                    new HashMap<Marker, List<Gallery>>();
+            final HashMap<Marker, List<Gallery>> newMarkerHashMap = new HashMap<Marker, List<Gallery>>();
 
             for (Map.Entry<MarkerDelegate, List<Gallery>> entry : markerDelegateHashMap.entrySet()) {
                 newMarkerHashMap.put(entry.getKey().createMarker(map), entry.getValue());

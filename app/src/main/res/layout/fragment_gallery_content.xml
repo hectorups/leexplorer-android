@@ -22,15 +22,14 @@
                     android:layout_height="match_parent"
                     android:id="@+id/ivGalleryDetail"
                     android:src="@drawable/ic_building"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true" />
+                     />
 
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="200dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="left"
+                    android:paddingLeft="5dp"
                     android:background="@drawable/le_frame_background">
 
                     <LinearLayout

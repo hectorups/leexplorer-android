@@ -543,9 +543,9 @@ public class GalleryMapFragment extends SupportMapFragment {
         }
     }
 
-    /*
-     * Why this class is doing here ? infowindow can't be modified once rendered. So images from
-     * urls dont work. We use Picasso to async and cache capabilities. We load the image and
+    /**
+     * What is this class doing here ? infowindow can't be modified once rendered. So images from
+     * urls dont work. We use Picasso  async and cache capabilities. We load the image and
      * only call show infowindow once this is done, then from the infowindow adapter it will be
      * still in memory and will be done in the same thread.
      */

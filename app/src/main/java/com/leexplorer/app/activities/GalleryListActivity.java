@@ -17,15 +17,25 @@ public class GalleryListActivity extends BaseActivity
         implements GalleryListFragment.Callbacks,
                    GalleryMapFragment.Callbacks{
 
-    private final String LIST_FRAGMENT_TAG = "list_fragment_tag";
-    private final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+    private static final String LIST_FRAGMENT_TAG = "list_fragment_tag";
+    private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+
+    static final String MAP_FRAGMENT_ON = "map_fragment_on";
 
     private MenuItem menuList;
     private MenuItem menuMap;
+    private boolean menuFragmentOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState != null){
+            menuFragmentOn = savedInstanceState.getBoolean(MAP_FRAGMENT_ON, false);
+        } else {
+            menuFragmentOn = false;
+        }
+
         setContentView(R.layout.activity_gallery_list);
 
         FragmentManager fm = getSupportFragmentManager();
@@ -39,6 +49,12 @@ public class GalleryListActivity extends BaseActivity
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(MAP_FRAGMENT_ON, menuFragmentOn);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -48,7 +64,19 @@ public class GalleryListActivity extends BaseActivity
         menuList = menu.findItem(R.id.menuList);
         menuMap = menu.findItem(R.id.menuMap);
 
+        updateMenuIcon();
+
         return true;
+    }
+
+    private void updateMenuIcon(){
+        if(menuFragmentOn){
+            menuList.setVisible(true);
+            menuMap.setVisible(false);
+        } else {
+            menuList.setVisible(false);
+            menuMap.setVisible(true);
+        }
     }
 
     @Override
@@ -73,8 +101,8 @@ public class GalleryListActivity extends BaseActivity
                         .addToBackStack(null)
                         .commit();
 
-                menuList.setVisible(true);
-                menuMap.setVisible(false);
+                menuFragmentOn = true;
+                updateMenuIcon();
 
                 return true;
             case R.id.menuList:
@@ -88,11 +116,13 @@ public class GalleryListActivity extends BaseActivity
                         .replace(R.id.container, listFragment, LIST_FRAGMENT_TAG)
                         .commit();
 
-                menuList.setVisible(false);
-                menuMap.setVisible(true);
+                menuFragmentOn = false;
+                updateMenuIcon();
 
                 return true;
         }
+
+
 
         return super.onOptionsItemSelected(item);
     }

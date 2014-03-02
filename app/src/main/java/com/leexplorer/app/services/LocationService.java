@@ -25,37 +25,36 @@ public class LocationService extends Service implements LocationListener {
     private final Context mContext;
     boolean isGPSEnabled = false;
     boolean isNetworkEnabled = false;
+    boolean isLocationAvailable = false;
     private Location location;
-
-    //The minimum distance to change updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 50; //50 meters
-
-    //The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
-
-    //Declaring a Location Manager
     protected LocationManager locationManager;
+
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 50; //50 meters
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
 
     public LocationService(Context context) {
         this.mContext = context;
-        getLocation();
+        locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (isGPSEnabled || isNetworkEnabled) {
+            isLocationAvailable = true;
+        }
     }
 
     public Location getLocation() {
         try {
-            locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
-            isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if (!isGPSEnabled && !isNetworkEnabled) {
                 // no network provider is enabled
             } else {
+                isLocationAvailable = true;
                 if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                     if (locationManager != null) {
-                        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                        this.location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     }
                 }
 
@@ -66,7 +65,7 @@ public class LocationService extends Service implements LocationListener {
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                         if (locationManager != null) {
-                            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                            this.location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         }
                     }
                 }
@@ -77,6 +76,10 @@ public class LocationService extends Service implements LocationListener {
         }
 
         return location;
+    }
+
+    public boolean isLocationAvailable(){
+        return this.isLocationAvailable;
     }
 
     @Override

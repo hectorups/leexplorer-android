@@ -30,8 +30,8 @@
                     android:orientation="vertical"
                     android:layout_width="200dp"
                     android:layout_height="match_parent"
-                    android:layout_gravity="right"
-                    android:background="@color/le_black_more_transparent">
+                    android:layout_gravity="left"
+                    android:background="@drawable/le_frame_background">
 
                     <LinearLayout
                         android:id="@+id/llGalleryDetailLocation"

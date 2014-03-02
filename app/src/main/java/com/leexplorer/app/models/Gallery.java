@@ -49,6 +49,8 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
     @Column(name="was_seen")
     private boolean wasSeen;
 
+    private double distanceFromCurrentLocation;
+
     private ArrayList<String> artworkImageUrls;
 
 
@@ -88,11 +90,9 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         g.setFacilities(new ArrayList<>(apiGallery.facilities));
         g.description = apiGallery.description;
         g.setLanguages(new ArrayList<>(apiGallery.languages));
-        g.latitude = apiGallery.latitude;
-        g.longitude = apiGallery.longitude;
-
+        g.setLatitude(apiGallery.latitude);
+        g.setLongitude(apiGallery.longitude);
         g.artworkImageUrls = new ArrayList<>(apiGallery.artworks);
-
         return g;
     }
 
@@ -249,7 +249,7 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         return latitude;
     }
 
-    public void setLatitude(long latitude) {
+    public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
 
@@ -257,7 +257,7 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         return longitude;
     }
 
-    public void setLongitude(long longitude) {
+    public void setLongitude(float longitude) {
         this.longitude = longitude;
     }
 
@@ -267,6 +267,14 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
 
     public void setWasSeen(boolean wasSeen) {
         this.wasSeen = wasSeen;
+    }
+
+    public double getDistanceFromCurrentLocation() {
+        return distanceFromCurrentLocation;
+    }
+
+    public void setDistanceFromCurrentLocation(double distanceFromCurrentLocation) {
+        this.distanceFromCurrentLocation = distanceFromCurrentLocation;
     }
 
     public static Gallery findById(String galleryId) {

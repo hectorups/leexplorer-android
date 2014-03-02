@@ -33,8 +33,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:4.0.1'
     compile 'com.squareup.retrofit:retrofit:1.4.1'
     compile 'com.etsy.android.grid:library:1.0.3'
-    //compile 'com.viewpagerindicator:library:2.4.1'
+    compile 'com.google.android.gms:play-services:3.2.+'
     compile project(':paralloidviews')
-
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 }

@@ -93,7 +93,6 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         g.setLatitude(apiGallery.latitude);
         g.setLongitude(apiGallery.longitude);
         g.artworkImageUrls = new ArrayList<>(apiGallery.artworks);
-
         return g;
     }
 

@@ -172,6 +172,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
         aw.likesCount = jaw.likesCount;
         aw.publishedAt = setDateFromString(jaw.publishedAt);
         aw.audioUrl = jaw.audioUrl;
+        aw.galleryId = jaw.galleryId;
 
         return aw;
     }

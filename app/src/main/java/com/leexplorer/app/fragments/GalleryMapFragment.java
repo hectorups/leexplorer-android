@@ -4,10 +4,10 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -51,6 +51,32 @@ public class GalleryMapFragment extends SupportMapFragment {
     private int markerHeight;
     private int markerWidth;
     private float lastZoom;
+
+    public interface Callbacks {
+        public void onGalleryMapClicked(Gallery gallery);
+    }
+
+    public Callbacks callbacks;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        super.onAttach(activity);
+        if (activity instanceof Callbacks) {
+            callbacks = (Callbacks)activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement GalleryListFragment.Callbacks");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callbacks = null;
+    }
 
     public static GalleryMapFragment newInstance(ArrayList<Gallery> galleries) {
         Bundle args = new Bundle();
@@ -124,10 +150,14 @@ public class GalleryMapFragment extends SupportMapFragment {
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-
-                if (markerGalleryHashMap.get(marker).size() > 1) {
-                    LatLngBounds bounds = buildBounds(markerGalleryHashMap.get(marker));
+                List<Gallery> galleries = markerGalleryHashMap.get(marker);
+                if (galleries.size() > 1) {
+                    LatLngBounds bounds = buildBounds(galleries);
                     showBounds(bounds, true);
+                } else {
+                    if(callbacks != null){
+                        callbacks.onGalleryMapClicked(galleries.get(0));
+                    }
                 }
             }
         });
@@ -295,7 +325,7 @@ public class GalleryMapFragment extends SupportMapFragment {
             Gallery g = galleries.get(0);
             marker.setTitle(g.getName());
             marker.setSnippet(g.getDescription());
-            marker.setUri(g.getArtworkImageUrls().get(0));
+            marker.setGallery(g);
         } else {
             marker.setTitle(getResources().getString(R.string.consolidated_marker_title, galleries.size()));
             String consolidatedDescription = "";
@@ -303,6 +333,7 @@ public class GalleryMapFragment extends SupportMapFragment {
                 consolidatedDescription += (consolidatedDescription.compareTo("") == 0 ? "" : ", ") + g.getName();
             }
             marker.setSnippet(consolidatedDescription);
+            marker.setGallery(null);
         }
     }
 
@@ -316,7 +347,7 @@ public class GalleryMapFragment extends SupportMapFragment {
             final HashMap<Marker, List<Gallery>> oldMarkerHashMap) {
 
         HashMap<Marker, List<Gallery>> newMarkerHashMap = new HashMap<>();
-        HashMap<String, Uri> markerInfo = new HashMap<>();
+        HashMap<String, Gallery> markerInfo = new HashMap<>();
 
         List<Animator> animatorList = new ArrayList<>();
 
@@ -343,7 +374,7 @@ public class GalleryMapFragment extends SupportMapFragment {
                 animatorList.add(createMarkerAnimation(marker, finalPosition));
             }
 
-            markerInfo.put(marker.getId(), newEntry.getKey().getUri());
+            markerInfo.put(marker.getId(), newEntry.getKey().getGallery());
         }
 
         map.setInfoWindowAdapter(new GalleryInfoAdapter(getActivity().getApplicationContext(), getActivity().getLayoutInflater(), markerInfo ));
@@ -459,7 +490,7 @@ public class GalleryMapFragment extends SupportMapFragment {
         private LatLng position;
         private String title;
         private String snippet;
-        private Uri image;
+        private Gallery gallery;
 
         public LatLng getPosition() {
             return position;
@@ -485,11 +516,11 @@ public class GalleryMapFragment extends SupportMapFragment {
             this.snippet = snippet;
         }
 
-        public void setUri(String url){
-            this.image = Uri.parse(url);
+        public void setGallery(Gallery gallery){
+            this.gallery = gallery;
         }
 
-        public Uri getUri(){ return image; }
+        public Gallery getGallery(){ return gallery; }
 
         public Marker createMarker(GoogleMap map) {
             return map.addMarker(

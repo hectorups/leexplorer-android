@@ -1,7 +1,6 @@
 package com.leexplorer.app.adapters;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryListFragment;
+import com.leexplorer.app.models.Gallery;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -25,11 +25,11 @@ import butterknife.InjectView;
 public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
     private Context mContext;
     private LayoutInflater mInflater;
-    private HashMap<String, Uri> mImages;
+    private HashMap<String, Gallery> mGalleries;
 
-    public GalleryInfoAdapter(Context c, LayoutInflater i, HashMap<String, Uri> images ){
+    public GalleryInfoAdapter(Context c, LayoutInflater i, HashMap<String, Gallery> images ){
         mInflater = i;
-        mImages = images;
+        mGalleries = images;
         mContext = c;
     }
 
@@ -54,12 +54,14 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
         holder.tvDescription.setMaxLines(3);
         holder.tvDescription.setEllipsize(TextUtils.TruncateAt.END);
 
-        Uri image = mImages.get(marker.getId());
-        if (image != null) {
+        Gallery g = mGalleries.get(marker.getId());
+        if (g != null) {
             Picasso.with(mContext)
-                    .load(image)
+                    .load(g.getArtworkImageUrls().get(0))
                     .placeholder(R.drawable.ic_museum_black)
                     .into(holder.ivImage);
+        } else {
+            holder.ivImage.setVisibility(View.GONE);
         }
 
 

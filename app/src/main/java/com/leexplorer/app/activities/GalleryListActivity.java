@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -12,7 +13,9 @@ import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.models.Gallery;
 
-public class GalleryListActivity extends BaseActivity implements GalleryListFragment.Callbacks{
+public class GalleryListActivity extends BaseActivity
+        implements GalleryListFragment.Callbacks,
+                   GalleryMapFragment.Callbacks{
 
     private final String LIST_FRAGMENT_TAG = "list_fragment_tag";
     private final String MAP_FRAGMENT_TAG = "map_fragment_tag";
@@ -64,7 +67,9 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
 
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(R.id.container, mapFragment, MAP_FRAGMENT_TAG)
+                        .addToBackStack(null)
                         .commit();
 
                 menuList.setVisible(true);
@@ -93,7 +98,7 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
     @Override
     public void loadGalleryDetails(Gallery gallery) {
         FragmentManager fm = getSupportFragmentManager();
-        GalleryListFragment fragment = (GalleryListFragment) fm.findFragmentById(R.id.container);
+        Fragment fragment =  fm.findFragmentById(R.id.container);
 
         if(fragment == null) {
             return;
@@ -102,5 +107,10 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
         Intent i = new Intent(this, GalleryActivity.class);
         i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
         startActivity(i);
+    }
+
+    @Override
+    public void onGalleryMapClicked(Gallery gallery){
+        loadGalleryDetails(gallery);
     }
 }

@@ -1,18 +1,21 @@
 package com.leexplorer.app.activities;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.leexplorer.app.R;
+import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.models.Gallery;
 
-public class GalleryListActivity extends BaseActivity implements GalleryListFragment.Callbacks{
+public class GalleryListActivity extends BaseActivity implements GalleryListFragment.Callbacks, GalleryFragment.Callbacks {
 
     private final String LIST_FRAGMENT_TAG = "list_fragment_tag";
     private final String MAP_FRAGMENT_TAG = "map_fragment_tag";
@@ -23,15 +26,13 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery_list);
-
+        setContentView(R.layout.fragment_gallery_list_responsive);
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(LIST_FRAGMENT_TAG);
-
-        if(fragment == null){
+        if (fragment == null) {
             fragment = new GalleryListFragment();
             fm.beginTransaction()
-                    .add(R.id.container, fragment, LIST_FRAGMENT_TAG)
+                    .add(R.id.flGalleryListView, fragment, LIST_FRAGMENT_TAG)
                     .commit();
         }
     }
@@ -56,15 +57,15 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
         GalleryListFragment listFragment = (GalleryListFragment) fm.findFragmentByTag(LIST_FRAGMENT_TAG);
         GalleryMapFragment mapFragment = (GalleryMapFragment) fm.findFragmentByTag(MAP_FRAGMENT_TAG);
 
-        switch (id){
+        switch (id) {
             case R.id.menuMap:
-                if(mapFragment == null){
+                if (mapFragment == null) {
                     mapFragment = GalleryMapFragment.newInstance(listFragment.getGalleries());
                 }
 
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, mapFragment, MAP_FRAGMENT_TAG)
+                        .replace(R.id.flGalleryListView, mapFragment, MAP_FRAGMENT_TAG)
                         .commit();
 
                 menuList.setVisible(true);
@@ -72,13 +73,13 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
 
                 return true;
             case R.id.menuList:
-                if(listFragment == null){
+                if (listFragment == null) {
                     listFragment = new GalleryListFragment();
                 }
 
                 getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.container, listFragment, LIST_FRAGMENT_TAG)
+                        .replace(R.id.flGalleryListView, listFragment, LIST_FRAGMENT_TAG)
                         .commit();
 
                 menuList.setVisible(false);
@@ -93,14 +94,26 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
     @Override
     public void loadGalleryDetails(Gallery gallery) {
         FragmentManager fm = getSupportFragmentManager();
-        GalleryListFragment fragment = (GalleryListFragment) fm.findFragmentById(R.id.container);
+        GalleryListFragment fragment = (GalleryListFragment) fm.findFragmentById(R.id.flGalleryListView);
 
-        if(fragment == null) {
+        if (fragment == null) {
             return;
         }
+//
+//        int screenSize = getResources().getConfiguration().screenLayout &
+//                Configuration.SCREENLAYOUT_SIZE_MASK;
 
-        Intent i = new Intent(this, GalleryActivity.class);
-        i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
-        startActivity(i);
+        if (isTabletMode()) {
+            Fragment fragmentGallery = GalleryFragment.newInstance(gallery);
+            fm.beginTransaction()
+                    .replace(R.id.flGalleryDetailView, fragmentGallery)
+                    .commit();
+        } else {
+            Intent i = new Intent(this, GalleryActivity.class);
+            i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
+            startActivity(i);
+        }
     }
+
+
 }

@@ -53,17 +53,4 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Cal
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void loadArtworks(Gallery gallery) {
-
-        FragmentManager fm = getSupportFragmentManager();
-        GalleryFragment fragment = (GalleryFragment) fm.findFragmentById(R.id.container);
-
-        if(fragment == null) {
-            return;
-        }
-        Intent i = new Intent(this, ArtworkListActivity.class);
-        i.putExtra(ArtworkListActivity.EXTRA_GALLERY, gallery);
-        startActivity(i);
-    }
 }

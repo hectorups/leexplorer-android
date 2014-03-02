@@ -66,6 +66,7 @@ public class GalleryListFragment extends Fragment {
         public void onLoading(boolean loading);
         public void loadGalleryDetails(Gallery gallery);
         public void loadMap(String address);
+        public boolean isTabletMode();
     }
 
     public Callbacks callbacks;
@@ -91,9 +92,10 @@ public class GalleryListFragment extends Fragment {
     }
 
     private void loadArtworkList(){
+        loadGalleryListFromApi();
         // Get data from Api or DB
         if( LeexplorerApplication.isOnline() ){
-            loadGalleryListFromApi();
+
         } else {
             //loadGalleryListFromDB();
         }
@@ -170,6 +172,9 @@ public class GalleryListFragment extends Fragment {
         }
         Collections.sort(this.galleries, new GalleryComparator());
         galleryAdapter.notifyDataSetChanged();
+        if(callbacks.isTabletMode()){
+            callbacks.loadGalleryDetails(galleries.get(0));
+        }
     }
 
     public ArrayList<Gallery> getGalleries(){

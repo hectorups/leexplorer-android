@@ -68,6 +68,7 @@ public class GalleryListActivity extends BaseActivity
                 getSupportFragmentManager()
                         .beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                         .replace(R.id.container, mapFragment, MAP_FRAGMENT_TAG)
                         .addToBackStack(null)
                         .commit();
@@ -83,6 +84,7 @@ public class GalleryListActivity extends BaseActivity
 
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(R.id.container, listFragment, LIST_FRAGMENT_TAG)
                         .commit();
 

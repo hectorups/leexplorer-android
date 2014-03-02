@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -15,17 +16,30 @@ import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.models.Gallery;
 
-public class GalleryListActivity extends BaseActivity implements GalleryListFragment.Callbacks, GalleryFragment.Callbacks {
 
-    private final String LIST_FRAGMENT_TAG = "list_fragment_tag";
-    private final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+public class GalleryListActivity extends BaseActivity
+        implements GalleryListFragment.Callbacks,
+                   GalleryMapFragment.Callbacks,
+                   GalleryFragment.Callbacks{
+
+    private static final String LIST_FRAGMENT_TAG = "list_fragment_tag";
+    private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+
+    static final String MAP_FRAGMENT_ON = "map_fragment_on";
 
     private MenuItem menuList;
     private MenuItem menuMap;
+    private boolean menuFragmentOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null){
+            menuFragmentOn = savedInstanceState.getBoolean(MAP_FRAGMENT_ON, false);
+        } else {
+            menuFragmentOn = false;
+        }
+
         setContentView(R.layout.fragment_gallery_list_responsive);
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(LIST_FRAGMENT_TAG);
@@ -37,6 +51,12 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putBoolean(MAP_FRAGMENT_ON, menuFragmentOn);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -46,7 +66,19 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
         menuList = menu.findItem(R.id.menuList);
         menuMap = menu.findItem(R.id.menuMap);
 
+        updateMenuIcon();
+
         return true;
+    }
+
+    private void updateMenuIcon(){
+        if(menuFragmentOn){
+            menuList.setVisible(true);
+            menuMap.setVisible(false);
+        } else {
+            menuList.setVisible(false);
+            menuMap.setVisible(true);
+        }
     }
 
     @Override
@@ -65,11 +97,14 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
 
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                         .replace(R.id.flGalleryListView, mapFragment, MAP_FRAGMENT_TAG)
+                        .addToBackStack(null)
                         .commit();
 
-                menuList.setVisible(true);
-                menuMap.setVisible(false);
+                menuFragmentOn = true;
+                updateMenuIcon();
 
                 return true;
             case R.id.menuList:
@@ -79,15 +114,14 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
 
                 getSupportFragmentManager()
                         .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(R.id.flGalleryListView, listFragment, LIST_FRAGMENT_TAG)
                         .commit();
 
-                menuList.setVisible(false);
-                menuMap.setVisible(true);
-
+                menuFragmentOn = false;
+                updateMenuIcon();
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -95,7 +129,6 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
     public void loadGalleryDetails(Gallery gallery) {
         FragmentManager fm = getSupportFragmentManager();
         GalleryListFragment fragment = (GalleryListFragment) fm.findFragmentById(R.id.flGalleryListView);
-
         if (fragment == null) {
             return;
         }
@@ -115,5 +148,8 @@ public class GalleryListActivity extends BaseActivity implements GalleryListFrag
         }
     }
 
-
+    @Override
+    public void onGalleryMapClicked(Gallery gallery){
+        loadGalleryDetails(gallery);
+    }
 }

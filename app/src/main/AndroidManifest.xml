@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.leexplorer.app">
+    package="com.leexplorer.app" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -20,6 +20,7 @@
     <permission
         android:name="com.leexplorer.beaconscanservice.PRIVATE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="com.leexplorer.beaconscanservice.PRIVATE" />
 
     <application
@@ -27,7 +28,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.Generator">
+        android:theme="@style/Theme.Generator" >
         <meta-data
             android:name="AA_DB_NAME"
             android:value="leexplorer.db" />
@@ -36,68 +37,60 @@
             android:value="1" />
 
         <service
-            android:name=".services.MediaPlayerService"
+            android:name="com.leexplorer.app.services.MediaPlayerService"
             android:exported="false" />
-
         <service
-            android:name=".services.BeaconScanService"
+            android:name="com.leexplorer.app.services.BeaconScanService"
             android:exported="false" />
 
-        <receiver android:name=".receivers.StartupReceiver">
+        <receiver android:name="com.leexplorer.app.receivers.StartupReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver
-            android:name=".receivers.NotificationReceiver"
-            android:exported="false">
-            <intent-filter android:priority="-999">
+            android:name="com.leexplorer.app.receivers.NotificationReceiver"
+            android:exported="false" >
+            <intent-filter android:priority="-999" >
                 <action android:name="com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION" />
             </intent-filter>
         </receiver>
 
         <activity
-            android:name=".activities.ArtworkListActivity"
-            android:label="@string/app_name">
-
+            android:name="com.leexplorer.app.activities.ArtworkListActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name=".services.BeaconScanService" />
             </intent-filter>
-
         </activity>
-
         <activity
-            android:name=".activities.ArtworkActivity"
-            android:label="@string/title_activity_artwork">
+            android:name="com.leexplorer.app.activities.ArtworkActivity"
+            android:label="@string/title_activity_artwork" >
             <intent-filter>
                 <action android:name=".services.MediaPlayerService" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.leexplorer.app.activities.GalleryListActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.leexplorer.app.activities.GalleryActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.leexplorer.app.activities.GalleryListActivity">
-
+                android:value="com.leexplorer.app.activities.GalleryListActivity" >
             </meta-data>
         </activity>
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyDErYllKMbc3KZHVv_xKY72zY2Iq_M46TI"/>
+            android:value="AIzaSyDErYllKMbc3KZHVv_xKY72zY2Iq_M46TI" />
 
     </application>
 

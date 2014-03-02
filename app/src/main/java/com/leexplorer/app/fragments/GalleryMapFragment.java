@@ -4,10 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.net.Uri;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -24,6 +25,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryInfoAdapter;
 import com.leexplorer.app.models.Gallery;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,6 +54,32 @@ public class GalleryMapFragment extends SupportMapFragment {
     private int markerHeight;
     private int markerWidth;
     private float lastZoom;
+
+    public interface Callbacks {
+        public void onGalleryMapClicked(Gallery gallery);
+    }
+
+    public Callbacks callbacks;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        super.onAttach(activity);
+        if (activity instanceof Callbacks) {
+            callbacks = (Callbacks)activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement GalleryListFragment.Callbacks");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callbacks = null;
+    }
 
     public static GalleryMapFragment newInstance(ArrayList<Gallery> galleries) {
         Bundle args = new Bundle();
@@ -112,11 +141,20 @@ public class GalleryMapFragment extends SupportMapFragment {
         map.getUiSettings().setRotateGesturesEnabled(false);
         map.getUiSettings().setTiltGesturesEnabled(false);
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-
             @Override
             public boolean onMarkerClick(Marker marker) {
+                List<Gallery> galleries = markerGalleryHashMap.get(marker);
 
-                animateToOpenInfoWindow(marker);
+                if(galleries != null && galleries.size() == 1){
+                    Gallery g = galleries.get(0);
+                    Picasso.with(getActivity())
+                            .load(g.getArtworkImageUrls().get(0))
+                            .placeholder(R.drawable.ic_museum_black)
+                            .into(new InfoWindowImage(marker));
+                } else {
+                    animateToOpenInfoWindow(marker);
+                }
+
                 return true;
             }
         });
@@ -124,10 +162,14 @@ public class GalleryMapFragment extends SupportMapFragment {
         map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-
-                if (markerGalleryHashMap.get(marker).size() > 1) {
-                    LatLngBounds bounds = buildBounds(markerGalleryHashMap.get(marker));
+                List<Gallery> galleries = markerGalleryHashMap.get(marker);
+                if (galleries.size() > 1) {
+                    LatLngBounds bounds = buildBounds(galleries);
                     showBounds(bounds, true);
+                } else {
+                    if(callbacks != null){
+                        callbacks.onGalleryMapClicked(galleries.get(0));
+                    }
                 }
             }
         });
@@ -263,12 +305,10 @@ public class GalleryMapFragment extends SupportMapFragment {
         //If Honeycomb or later, create and add animate de-consolidated markers
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            markerGalleryHashMap =
-                    addAndAnimateMarkers(markerDelegateHashMap, markerGalleryHashMap);
+            markerGalleryHashMap = addAndAnimateMarkers(markerDelegateHashMap, markerGalleryHashMap);
         } else {
             // if not add the new markers as is
-            final HashMap<Marker, List<Gallery>> newMarkerHashMap =
-                    new HashMap<Marker, List<Gallery>>();
+            final HashMap<Marker, List<Gallery>> newMarkerHashMap = new HashMap<Marker, List<Gallery>>();
 
             for (Map.Entry<MarkerDelegate, List<Gallery>> entry : markerDelegateHashMap.entrySet()) {
                 newMarkerHashMap.put(entry.getKey().createMarker(map), entry.getValue());
@@ -297,7 +337,7 @@ public class GalleryMapFragment extends SupportMapFragment {
             Gallery g = galleries.get(0);
             marker.setTitle(g.getName());
             marker.setSnippet(g.getDescription());
-            marker.setUri(g.getArtworkImageUrls().get(0));
+            marker.setGallery(g);
         } else {
             marker.setTitle(getResources().getString(R.string.consolidated_marker_title, galleries.size()));
             String consolidatedDescription = "";
@@ -305,6 +345,7 @@ public class GalleryMapFragment extends SupportMapFragment {
                 consolidatedDescription += (consolidatedDescription.compareTo("") == 0 ? "" : ", ") + g.getName();
             }
             marker.setSnippet(consolidatedDescription);
+            marker.setGallery(null);
         }
     }
 
@@ -318,7 +359,7 @@ public class GalleryMapFragment extends SupportMapFragment {
             final HashMap<Marker, List<Gallery>> oldMarkerHashMap) {
 
         HashMap<Marker, List<Gallery>> newMarkerHashMap = new HashMap<>();
-        HashMap<String, Uri> markerInfo = new HashMap<>();
+        HashMap<String, Gallery> markerInfo = new HashMap<>();
 
         List<Animator> animatorList = new ArrayList<>();
 
@@ -345,7 +386,7 @@ public class GalleryMapFragment extends SupportMapFragment {
                 animatorList.add(createMarkerAnimation(marker, finalPosition));
             }
 
-            markerInfo.put(marker.getId(), newEntry.getKey().getUri());
+            markerInfo.put(marker.getId(), newEntry.getKey().getGallery());
         }
 
         map.setInfoWindowAdapter(new GalleryInfoAdapter(getActivity().getApplicationContext(), getActivity().getLayoutInflater(), markerInfo ));
@@ -461,7 +502,7 @@ public class GalleryMapFragment extends SupportMapFragment {
         private LatLng position;
         private String title;
         private String snippet;
-        private Uri image;
+        private Gallery gallery;
 
         public LatLng getPosition() {
             return position;
@@ -487,11 +528,11 @@ public class GalleryMapFragment extends SupportMapFragment {
             this.snippet = snippet;
         }
 
-        public void setUri(String url){
-            this.image = Uri.parse(url);
+        public void setGallery(Gallery gallery){
+            this.gallery = gallery;
         }
 
-        public Uri getUri(){ return image; }
+        public Gallery getGallery(){ return gallery; }
 
         public Marker createMarker(GoogleMap map) {
             return map.addMarker(
@@ -500,6 +541,28 @@ public class GalleryMapFragment extends SupportMapFragment {
                             .title(title)
                             .snippet(snippet));
         }
+    }
+
+    /**
+     * What is this class doing here ? infowindow can't be modified once rendered. So images from
+     * urls dont work. We use Picasso  async and cache capabilities. We load the image and
+     * only call show infowindow once this is done, then from the infowindow adapter it will be
+     * still in memory and will be done in the same thread.
+     */
+    private class InfoWindowImage implements Target {
+        private Marker marker;
+
+        public InfoWindowImage(Marker marker){
+            this.marker = marker;
+        }
+
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            animateToOpenInfoWindow(marker);
+        }
+
+        @Override public void onBitmapFailed(Drawable d) {}
+        @Override public void onPrepareLoad(android.graphics.drawable.Drawable drawable){}
     }
 }
 

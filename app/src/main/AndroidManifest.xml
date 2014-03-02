@@ -87,7 +87,7 @@
 
         <activity
             android:name="com.leexplorer.app.activities.GalleryActivity"
-            android:label="@string/title_activity_gallery">
+            android:label="@string/app_name">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.leexplorer.app.activities.GalleryListActivity">

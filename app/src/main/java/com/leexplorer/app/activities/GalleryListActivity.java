@@ -128,7 +128,7 @@ public class GalleryListActivity extends BaseActivity
     @Override
     public void loadGalleryDetails(Gallery gallery) {
         FragmentManager fm = getSupportFragmentManager();
-        GalleryListFragment fragment = (GalleryListFragment) fm.findFragmentById(R.id.flGalleryListView);
+        Fragment fragment = fm.findFragmentById(R.id.flGalleryListView);
         if (fragment == null) {
             return;
         }

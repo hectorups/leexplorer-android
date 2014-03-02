@@ -15,8 +15,8 @@ public class AppConstants {
     public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<String, Integer>();
 
     static {
-        FACILITIES_IMG_MAP.put("wheelchair accessible", R.drawable.ic_facilities_accessibility);
-        FACILITIES_IMG_MAP.put("wifi available", R.drawable.ic_facilities_wifi);
+        FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);
+        FACILITIES_IMG_MAP.put("wifi", R.drawable.ic_facilities_wifi);
         FACILITIES_IMG_MAP.put("cafe", R.drawable.ic_facilities_cafe);
     }
 

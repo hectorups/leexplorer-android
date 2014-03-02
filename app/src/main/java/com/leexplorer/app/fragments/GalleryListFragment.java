@@ -59,23 +59,6 @@ public class GalleryListFragment extends Fragment {
         lvGalleries.setAdapter(galleryAdapter);
         loadArtworkList();
         return view;
-
-
-//        View view = inflater.inflate(R.layout.fragment_gallery_list, container, false);
-//        ButterKnife.inject(this,view);
-//
-//        List<Gallery> galleries = FakeData.getGalleries();
-//        LocationService service = new LocationService(getActivity());
-//        Location location = service.getLocation();
-//        location.getLatitude();
-//        location.getLongitude();
-//
-//        Toast.makeText(getActivity(),"Lat & Long="+location.getLatitude()+" --- "+location.getLongitude(), Toast.LENGTH_SHORT).show();
-//
-//
-//        lvGalleries.setAdapter(galleryAdapter);
-//        loadArtworkList();
-//        return view;
     }
 
 

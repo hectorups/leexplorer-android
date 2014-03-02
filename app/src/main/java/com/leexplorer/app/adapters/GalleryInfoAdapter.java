@@ -68,7 +68,6 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
         return v;
     }
 
-
     static class ViewHolder {
         private GalleryListFragment fragment;
 

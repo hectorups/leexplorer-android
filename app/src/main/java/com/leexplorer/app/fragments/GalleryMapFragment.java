@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -24,6 +25,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryInfoAdapter;
 import com.leexplorer.app.models.Gallery;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -138,11 +141,20 @@ public class GalleryMapFragment extends SupportMapFragment {
         map.getUiSettings().setRotateGesturesEnabled(false);
         map.getUiSettings().setTiltGesturesEnabled(false);
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-
             @Override
             public boolean onMarkerClick(Marker marker) {
+                List<Gallery> galleries = markerGalleryHashMap.get(marker);
 
-                animateToOpenInfoWindow(marker);
+                if(galleries != null && galleries.size() == 1){
+                    Gallery g = galleries.get(0);
+                    Picasso.with(getActivity())
+                            .load(g.getArtworkImageUrls().get(0))
+                            .placeholder(R.drawable.ic_museum_black)
+                            .into(new InfoWindowImage(marker));
+                } else {
+                    animateToOpenInfoWindow(marker);
+                }
+
                 return true;
             }
         });
@@ -529,6 +541,28 @@ public class GalleryMapFragment extends SupportMapFragment {
                             .title(title)
                             .snippet(snippet));
         }
+    }
+
+    /*
+     * Why this class is doing here ? infowindow can't be modified once rendered. So images from
+     * urls dont work. We use Picasso to async and cache capabilities. We load the image and
+     * only call show infowindow once this is done, then from the infowindow adapter it will be
+     * still in memory and will be done in the same thread.
+     */
+    private class InfoWindowImage implements Target {
+        private Marker marker;
+
+        public InfoWindowImage(Marker marker){
+            this.marker = marker;
+        }
+
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            animateToOpenInfoWindow(marker);
+        }
+
+        @Override public void onBitmapFailed(Drawable d) {}
+        @Override public void onPrepareLoad(android.graphics.drawable.Drawable drawable){}
     }
 }
 

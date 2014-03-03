@@ -134,6 +134,10 @@ public class Gallery extends Model implements Parcelable, Comparable<Gallery> {
         return 0;
     }
 
+    public boolean equals(Gallery gallery){
+        return this.getGalleryId() == gallery.getGalleryId();
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(galleryId);

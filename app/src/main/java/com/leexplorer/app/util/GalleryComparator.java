@@ -15,10 +15,10 @@ public class GalleryComparator implements Comparator<Gallery> {
             return 0;
         }
         else if(gallery.getDistanceFromCurrentLocation()>gallery2.getDistanceFromCurrentLocation()){
-            return -1;
+            return 1;
         }
         else{
-            return 1;
+            return -1;
         }
 
     }

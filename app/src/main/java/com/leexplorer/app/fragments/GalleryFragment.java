@@ -110,6 +110,7 @@ public class GalleryFragment extends Fragment {
                 ImageView ivFacility = new ImageView(getActivity());
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), FACILITIES_IMG_MAP.get(facility.trim()));
                 ivFacility.setImageBitmap(bm);
+                ivFacility.setPadding(0, 0, 2, 0);
                 llFacilitiesImg.addView(ivFacility);
             }
         }
@@ -123,6 +124,14 @@ public class GalleryFragment extends Fragment {
     @OnClick(R.id.llGalleryDetailLocation)
     public void onClickAddress(View view) {
         callbacks.loadMap(String.valueOf(txDetailAddress.getText()));
+    }
+
+    @OnClick(R.id.llFacilitiesImg)
+    public void showFacilitiesList(View v){
+        FragmentManager fm = getChildFragmentManager();
+        FacilitiesDialogFragment dialog = new FacilitiesDialogFragment();
+        dialog.show(fm,"FacilitiesDialogFragment");
+
     }
 
     public interface Callbacks {

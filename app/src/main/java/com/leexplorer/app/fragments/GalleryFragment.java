@@ -129,7 +129,7 @@ public class GalleryFragment extends Fragment {
     @OnClick(R.id.llFacilitiesImg)
     public void showFacilitiesList(View v){
         FragmentManager fm = getChildFragmentManager();
-        FacilitiesDialogFragment dialog = new FacilitiesDialogFragment();
+        FacilitiesDialogFragment dialog = FacilitiesDialogFragment.newInstance(gallery.getFacilities());
         dialog.show(fm,"FacilitiesDialogFragment");
 
     }

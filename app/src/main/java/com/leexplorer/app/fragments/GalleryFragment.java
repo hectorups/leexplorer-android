@@ -130,7 +130,8 @@ public class GalleryFragment extends Fragment {
     public void showFacilitiesList(View v){
         FragmentManager fm = getChildFragmentManager();
         FacilitiesDialogFragment dialog = FacilitiesDialogFragment.newInstance(gallery.getFacilities());
-        dialog.show(fm,"FacilitiesDialogFragment");
+
+        dialog.show(fm,"fragment_facilities_desc");
 
     }
 

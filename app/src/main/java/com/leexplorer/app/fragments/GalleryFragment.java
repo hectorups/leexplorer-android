@@ -103,7 +103,7 @@ public class GalleryFragment extends Fragment {
                 ImageView ivFacility = new ImageView(getActivity());
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), FACILITIES_IMG_MAP.get(facility.trim()));
                 ivFacility.setImageBitmap(bm);
-                ivFacility.setPadding(0, 0, 5, 0);
+                ivFacility.setPadding(0, 0, 20, 0);
                 llFacilitiesImg.addView(ivFacility);
             }
         }

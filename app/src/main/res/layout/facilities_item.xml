@@ -10,7 +10,8 @@
         android:id="@+id/ivFacilitiesDetailImg"
         android:gravity="left"
         android:layout_gravity="center_vertical"
-        android:layout_weight="0.5"/>
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,6 +21,6 @@
         android:gravity="left"
         android:layout_gravity="center_vertical"
         android:id="@+id/txFacilitiesDetailLabel"
-        android:layout_weight="1.5" />
+        android:layout_weight="1" />
 
 </LinearLayout>

@@ -144,12 +144,14 @@ public class GalleryListActivity extends BaseActivity
         if (isTabletMode()) {
             Fragment fragmentGallery = GalleryFragment.newInstance(gallery);
             fm.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                     .replace(R.id.flGalleryDetailView, fragmentGallery)
                     .commit();
         } else {
             Intent i = new Intent(this, GalleryActivity.class);
             i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
             startActivity(i);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         }
     }
 

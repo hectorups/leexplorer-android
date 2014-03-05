@@ -45,8 +45,6 @@ public class GalleryFragment extends Fragment {
     TextView txHours;
     @InjectView(R.id.txDetailedPrice)
     TextView txDetailedPrice;
-    @InjectView(R.id.txFacilities)
-    TextView txFacilities;
     @InjectView(R.id.txDescription)
     TextView txDescription;
     @InjectView(R.id.llFacilitiesImg)
@@ -92,11 +90,6 @@ public class GalleryFragment extends Fragment {
         txHours.setText(gallery.getHours());
         txDetailedPrice.setText(gallery.getDetailedPrice());
 
-        String facilities = "";
-        for(String facility:gallery.getFacilities()){
-            facilities += (facilities.equals("") ? "":", ") + facility;
-        }
-        txFacilities.setText(facilities);
         txDescription.setText(gallery.getDescription());
 
         setFacilities();
@@ -110,7 +103,7 @@ public class GalleryFragment extends Fragment {
                 ImageView ivFacility = new ImageView(getActivity());
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), FACILITIES_IMG_MAP.get(facility.trim()));
                 ivFacility.setImageBitmap(bm);
-                ivFacility.setPadding(0, 0, 2, 0);
+                ivFacility.setPadding(0, 0, 5, 0);
                 llFacilitiesImg.addView(ivFacility);
             }
         }

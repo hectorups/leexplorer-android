@@ -161,11 +161,11 @@
 
                     </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txFacilities"
-                    android:text="text"
-                    android:maxLines="2"
-                    style="@style/LE.ProfileBody" />
+                <!--<TextView-->
+                    <!--android:id="@+id/txFacilities"-->
+                    <!--android:text="text"-->
+                    <!--android:maxLines="2"-->
+                    <!--style="@style/LE.ProfileBody" />-->
 
                 <TextView
                     android:id="@+id/txDescriptionTitle"

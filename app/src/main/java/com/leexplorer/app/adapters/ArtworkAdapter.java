@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.etsy.android.grid.util.DynamicHeightImageView;
@@ -73,7 +72,7 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
         @InjectView(R.id.ivArtworkThumb) DynamicHeightImageView ivArtworkThumb;
         @InjectView(R.id.flSignalIndicator) FrameLayout flSignalIndicator;
-        @InjectView(R.id.ivSignalIcon) ImageView ivSignalIcon;
+        @InjectView(R.id.tvSignalIcon) TextView tvSignalIcon;
 
         private ArtworkListFragment fragment;
 
@@ -95,15 +94,23 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
             return;
         }
 
-        int drawable = R.drawable.ic_signal_close;
+        int color = R.color.le_green;
+        int siganl_text = R.string.signal_immediate;
+        int bg_drawable = R.drawable.immediate_rounded_rectanble;
 
         if(aw.getDistance() == Artwork.Distance.CLOSE) {
-            drawable = R.drawable.ic_signal_medium;
+            color = R.color.le_blue;
+            siganl_text = R.string.signal_close;
+            bg_drawable = R.drawable.close_rounded_rectangle;
         } else if(aw.getDistance() == Artwork.Distance.FAR) {
-            drawable = R.drawable.ic_signal_far;
+            color = R.color.le_yellow;
+            siganl_text = R.string.signal_far;
+            bg_drawable = R.drawable.far_rounded_rectangle;
         }
 
-        holder.ivSignalIcon.setImageResource(drawable);
+        holder.tvSignalIcon.setText(fragment.getResources().getString(siganl_text));
+        holder.tvSignalIcon.setTextColor(fragment.getResources().getColor(color));
+        holder.tvSignalIcon.setBackgroundResource(bg_drawable);
         holder.flSignalIndicator.setVisibility(View.VISIBLE);
     }
 

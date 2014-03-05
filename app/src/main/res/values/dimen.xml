@@ -4,4 +4,6 @@
     <dimen name="separator_thickness">1dp</dimen>
     <dimen name="widget_gap">10dp</dimen>
 
+    <dimen name="signal_corner">5dp</dimen>
+
 </resources>

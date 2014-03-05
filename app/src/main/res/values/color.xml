@@ -30,5 +30,6 @@
     <color name="le_gray">#9B9b9B</color>
     <color name="le_red">#C1272D</color>
     <color name="le_emphasis_blue">#00C4f1</color>
+    <color name="le_yellow">#f1c300</color>
 
 </resources>

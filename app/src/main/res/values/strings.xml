@@ -9,6 +9,9 @@
     <!-- ARWORK SCREEN -->
     <string name="artwork_description_header">Description</string>
     <string name="share_image">Share</string>
+    <string name="signal_close">close</string>
+    <string name="signal_immediate">immediate</string>
+    <string name="signal_far">far</string>
     
     <!-- AUDIO SERVICE -->
     <string name="audio_notification_title">LeExplorer</string>

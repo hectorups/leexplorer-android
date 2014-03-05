@@ -35,7 +35,7 @@ import java.util.HashMap;
 public class BeaconScanService extends IntentService {
     private static final int INTERVAL_FOREGROUND = 30 * 1000;
     private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000; // Don't drain the battery when in bg!
-    private static final int SCAN_PERIOD = 2000;
+    private static final int SCAN_PERIOD = 3000;
 
     public static final String ACTION = "com.leexplorer.services.beaconscanservice";
     public static final String BEACONS = "beacons";
@@ -142,7 +142,7 @@ public class BeaconScanService extends IntentService {
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setTicker(r.getString(R.string.beacon_notification_title))
-                .setSmallIcon(R.drawable.ic_building)
+                .setSmallIcon(R.drawable.ic_stat_artwork)
                 .setContentTitle(r.getString(R.string.beacon_notification_title))
                 .setContentText(r.getString(R.string.beacon_notification_text))
                 .setContentIntent(pi)

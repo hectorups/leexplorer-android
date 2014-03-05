@@ -45,8 +45,6 @@ public class GalleryFragment extends Fragment {
     TextView txHours;
     @InjectView(R.id.txDetailedPrice)
     TextView txDetailedPrice;
-    @InjectView(R.id.txFacilities)
-    TextView txFacilities;
     @InjectView(R.id.txDescription)
     TextView txDescription;
     @InjectView(R.id.llFacilitiesImg)
@@ -92,11 +90,6 @@ public class GalleryFragment extends Fragment {
         txHours.setText(gallery.getHours());
         txDetailedPrice.setText(gallery.getDetailedPrice());
 
-        String facilities = "";
-        for(String facility:gallery.getFacilities()){
-            facilities += (facilities.equals("") ? "":", ") + facility;
-        }
-        txFacilities.setText(facilities);
         txDescription.setText(gallery.getDescription());
 
         setFacilities();
@@ -110,6 +103,7 @@ public class GalleryFragment extends Fragment {
                 ImageView ivFacility = new ImageView(getActivity());
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), FACILITIES_IMG_MAP.get(facility.trim()));
                 ivFacility.setImageBitmap(bm);
+                ivFacility.setPadding(0, 0, 20, 0);
                 llFacilitiesImg.addView(ivFacility);
             }
         }
@@ -123,6 +117,15 @@ public class GalleryFragment extends Fragment {
     @OnClick(R.id.llGalleryDetailLocation)
     public void onClickAddress(View view) {
         callbacks.loadMap(String.valueOf(txDetailAddress.getText()));
+    }
+
+    @OnClick(R.id.llFacilitiesImg)
+    public void showFacilitiesList(View v){
+        FragmentManager fm = getChildFragmentManager();
+        FacilitiesDialogFragment dialog = FacilitiesDialogFragment.newInstance(gallery.getFacilities());
+
+        dialog.show(fm,"fragment_facilities_desc");
+
     }
 
     public interface Callbacks {

@@ -20,4 +20,12 @@ public class AppConstants {
         FACILITIES_IMG_MAP.put("cafe", R.drawable.ic_facilities_cafe);
     }
 
+    public static final Map<String, String> FACILITIES_LABEL_MAP = new HashMap<String, String>();
+
+    static {
+        FACILITIES_LABEL_MAP.put("accessibility", "Wheelchair Accessible");
+        FACILITIES_LABEL_MAP.put("wifi", "Wireless Internet");
+        FACILITIES_LABEL_MAP.put("cafe", "Cafe");
+    }
+
 }

@@ -368,9 +368,8 @@ public class GalleryMapFragment extends SupportMapFragment {
             outerloop:
             for (Map.Entry<Marker, List<Gallery>> oldEntry : oldMarkerHashMap.entrySet()) {
                 for (Gallery newGallery : newEntry.getValue()) {
-                    if (oldEntry.getValue().contains(newGallery) && oldEntry.getValue().size() > newEntry
-                            .getValue()
-                            .size()) {
+                    if ( isGalleryContained( oldEntry.getValue(), newGallery)
+                            && oldEntry.getValue().size() > newEntry.getValue().size()) {
                         finalPosition = newEntry.getKey().getPosition();
                         newEntry.getKey().setPosition(oldEntry.getKey().getPosition());
 
@@ -399,6 +398,13 @@ public class GalleryMapFragment extends SupportMapFragment {
             animatorSet.start();
         }
         return newMarkerHashMap;
+    }
+
+    private boolean isGalleryContained(List<Gallery> galleries, Gallery g){
+        for(Gallery testGallery: galleries){
+            if( g.equals(testGallery) ) return true;
+        }
+        return false;
     }
 
     /**

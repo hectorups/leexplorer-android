@@ -13,7 +13,7 @@ import com.leexplorer.app.models.Artwork;
 
 import java.util.ArrayList;
 
-public class ArtworkActivity extends BaseActivity {
+public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Callbacks{
     public static final String EXTRA_ARTWORK = "extra_artwork";
     public static final String EXTRA_ARTWORKS = "extra_artworks";
 

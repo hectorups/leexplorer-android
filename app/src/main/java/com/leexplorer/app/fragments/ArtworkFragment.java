@@ -108,6 +108,12 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     Artwork artwork;
     ShareActionProvider miShareAction;
 
+    public interface Callbacks {
+        public void onLoading(boolean loading);
+    }
+
+    public Callbacks callbacks;
+
     public static ArtworkFragment newInstance(Artwork aw){
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_ARTWORK, aw);
@@ -116,6 +122,26 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        super.onAttach(activity);
+        if (activity instanceof Callbacks) {
+            callbacks = (Callbacks)activity;
+        } else {
+            throw new ClassCastException(activity.toString()
+                    + " must implement ArtworkFragment.Callbacks");
+        }
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callbacks = null;
     }
 
     @Override
@@ -336,6 +362,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         getActivity().startService(i);
 
         updateSeekbar();
+        if(onPause == false && callbacks != null) callbacks.onLoading(true);
         nowPlaying = true;
         onPause = false;
         showAudio();
@@ -418,23 +445,27 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     private BroadcastReceiver audioProgressReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
-            Artwork playingArtwork = intent.getParcelableExtra(MediaPlayerService.ARTWORK);
-            if (resultCode == Activity.RESULT_OK){
-                if(artwork.equals(playingArtwork)) {
-                    audioTotalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
-                    audioCurrentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
-                    if(!onPause) nowPlaying = true;
-                } else {
-                    audioCurrentDuration = 0;
-                    audioTotalDuration = 0;
-                    nowPlaying = false;
-                    onPause = false;
-                }
+        int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
+        Artwork playingArtwork = intent.getParcelableExtra(MediaPlayerService.ARTWORK);
+        if (resultCode == Activity.RESULT_OK){
+            if(artwork.equals(playingArtwork)) {
+                audioTotalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
+                audioCurrentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
 
-                showAudio();
-                updateSeekbar();
+                if(!onPause){
+                    if(callbacks != null) callbacks.onLoading(false);
+                    nowPlaying = true;
+                }
+            } else {
+                audioCurrentDuration = 0;
+                audioTotalDuration = 0;
+                nowPlaying = false;
+                onPause = false;
             }
+
+            showAudio();
+            updateSeekbar();
+        }
         }
     };
 

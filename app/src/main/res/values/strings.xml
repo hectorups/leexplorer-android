@@ -19,7 +19,7 @@
 
     <!-- BEACON SCAN SERVICE -->
     <string name="beacon_notification_title">LeExplorer</string>
-    <string name="beacon_notification_text">You are within range of a Gallery</string>
+    <string name="beacon_notification_text">You are within range of %1$s</string>
 
     <!-- GALLERY SCREEN -->
     <string name="title_activity_galery_list">GaleryListActivity</string>

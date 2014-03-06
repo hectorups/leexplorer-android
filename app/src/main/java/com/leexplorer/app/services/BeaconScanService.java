@@ -144,7 +144,7 @@ public class BeaconScanService extends IntentService {
                 .setTicker(r.getString(R.string.beacon_notification_title))
                 .setSmallIcon(R.drawable.ic_stat_artwork)
                 .setContentTitle(r.getString(R.string.beacon_notification_title))
-                .setContentText(r.getString(R.string.beacon_notification_text))
+                .setContentText(r.getString(R.string.beacon_notification_text, g.getName()))
                 .setContentIntent(pi)
                 .setAutoCancel(true)
                 .build();

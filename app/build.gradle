@@ -35,5 +35,6 @@ dependencies {
     compile 'com.etsy.android.grid:library:1.0.3'
     compile 'com.google.android.gms:play-services:3.2.+'
     compile project(':paralloidviews')
+    compile project (':cardui')
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 }

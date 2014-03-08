@@ -1,1 +1,1 @@
-include ':app', ':lib', ':paralloidviews', ':paralloid'
+include ':app', ':lib', ':paralloidviews', ':paralloid', ':cardui'

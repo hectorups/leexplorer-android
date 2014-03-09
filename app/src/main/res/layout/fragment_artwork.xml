@@ -53,7 +53,7 @@
     <uk.co.chrisjenx.paralloid.views.ParallaxScrollView
         android:id="@+id/svDescription"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:fillViewport="true">
 
         <include layout="@layout/artwork_content"/>

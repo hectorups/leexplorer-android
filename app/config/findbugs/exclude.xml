@@ -1,0 +1,10 @@
+<FindBugsFilter>
+    <Match>
+        <Class name="~.\.R\$." />
+        <Bug code="Nm" />
+        <!--<Method name="run"/>-->
+    </Match>
+    <Match>
+        <Class name="~.\.Manifest\$." />
+    </Match>
+</FindBugsFilter>

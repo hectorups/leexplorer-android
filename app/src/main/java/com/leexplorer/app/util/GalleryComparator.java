@@ -2,12 +2,13 @@ package com.leexplorer.app.util;
 
 import com.leexplorer.app.models.Gallery;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Created by deepakdhiman on 3/1/14.
  */
-public class GalleryComparator implements Comparator<Gallery> {
+public class GalleryComparator implements Comparator<Gallery>, Serializable {
 
     @Override
     public int compare(Gallery gallery, Gallery gallery2) {

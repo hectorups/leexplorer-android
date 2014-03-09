@@ -31,10 +31,10 @@ public class FacilitiesDialogFragment extends DialogFragment {
     public FacilitiesDialogFragment() {
     }
 
-    public static FacilitiesDialogFragment newInstance(List<String> facilities) {
+    public static FacilitiesDialogFragment newInstance(ArrayList<String> facilities) {
         FacilitiesDialogFragment frag = new FacilitiesDialogFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList("facilities", (ArrayList<String>) facilities);
+        args.putStringArrayList("facilities",  facilities);
         frag.setArguments(args);
         return frag;
     }

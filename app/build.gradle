@@ -1,4 +1,6 @@
 apply plugin: 'android'
+apply plugin: 'pmd'
+apply plugin: 'findbugs'
 
 android {
     compileSdkVersion 19
@@ -37,3 +39,48 @@ dependencies {
     compile project(':paralloidviews')
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 }
+
+pmd {
+    toolVersion = '5.1.0'
+}
+
+findbugs {
+    toolVersion = "2.0.3"
+}
+
+def compilePath = project.configurations.compile.asPath
+if (compilePath.contains(File.pathSeparator)) {
+    compilePath = compilePath.split(File.pathSeparator)
+} else if (compilePath.isEmpty()) {
+    compilePath = android.sourceSets.main.java.srcDirs
+}
+
+task findbugs(type: FindBugs) {
+    excludeFilter file('config/findbugs/exclude.xml')
+    classes = fileTree('build/classes/release')
+    source = fileTree('src/main/java')
+    println compilePath.toString()
+    classpath = files()
+    effort = 'max'
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+task pmd(type: Pmd) {
+    ruleSets = ["java-android",
+                "java-basic",
+                "java-braces",
+                "java-strings",
+                "java-unnecessary",
+                "java-unusedcode",
+                "java-sunsecure"]
+    source = fileTree('src/main/java')
+}
+
+task findbugsWrapper(dependsOn: 'findbugs') {}
+task pmdWrapper(dependsOn: 'pmd') {}
+
+check.dependsOn findbugsWrapper
+check.dependsOn pmdWrapper

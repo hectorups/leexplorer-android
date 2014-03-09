@@ -193,7 +193,7 @@ public class Artwork extends Model implements Parcelable, Comparable<Artwork> {
     }
 
     public boolean equals(Artwork aw2){
-        return this.mac.equals(aw2.mac);
+        return this.mac.contentEquals(aw2.mac);
     }
 
     public void like(){

@@ -29,8 +29,8 @@ Todo IF there is time (in priority order)
 
 Wireframes with [fluidui](https://www.fluidui.com/editor/live/preview/p_mRpzT3gfKXHfUKTFlfZtI11cEBcJfxba.1391367234090)
 
-![gallery_list](http://i.imgur.com/NkvfpYWl.png)
-![gallery_detail](http://i.imgur.com/NYG7eEml.png)
-![exhibit_list](http://i.imgur.com/8EoMNfVl.png)
-![exhibit_detail](http://i.imgur.com/GT5Z5nSl.png)
+![gallery_list](http://i.imgur.com/u2f4tUAl.png)
+![gallery_detail](http://i.imgur.com/Uno3Z1ul.png)
+![exhibit_list](http://i.imgur.com/5tGSP7El.png)
+![exhibit_detail](http://i.imgur.com/Opk8OJTl.png)
 

@@ -30,7 +30,6 @@ import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.util.Beacon;
 import com.leexplorer.app.util.BeaconArtworkUpdater;
-import com.leexplorer.app.util.BeaconsManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +56,7 @@ public class ArtworkListFragment extends Fragment {
     protected ArtworkAdapter artworkAdapter;
 
     private ArrayList<Artwork> artworks = new ArrayList<>();
-    private BeaconsManager beaconsManager;
+    private ArrayList<Beacon> beacons = new ArrayList<>();
     private boolean newBeaconInfo;
     private boolean scaningBeacons;
 
@@ -106,7 +105,6 @@ public class ArtworkListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        beaconsManager = BeaconsManager.getInstance();
         newBeaconInfo = false;
         scaningBeacons = false;
         gallery = getArguments().getParcelable(EXTRA_GALLERY);
@@ -252,7 +250,7 @@ public class ArtworkListFragment extends Fragment {
     }
 
     private void refreshArtworkAdapter(){
-        BeaconArtworkUpdater.updateDistances(artworks, beaconsManager.getAll());
+        BeaconArtworkUpdater.updateDistances(artworks, beacons);
 
         Collections.sort(artworks);
 
@@ -284,9 +282,11 @@ public class ArtworkListFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
-            ArrayList<Beacon> beacons = intent.getParcelableArrayListExtra(BeaconScanService.BEACONS);
+            ArrayList<Beacon> newBeacons = intent.getParcelableArrayListExtra(BeaconScanService.BEACONS);
             if (resultCode == Activity.RESULT_OK){
-                Log.d(TAG, "Beacons detected: " + beacons.size());
+                Log.d(TAG, "Beacons detected: " + newBeacons.size());
+
+                beacons = newBeacons;
 
                 // If this is true, it means we are able to satisfy the
                 // scanBeacons call

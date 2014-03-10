@@ -23,7 +23,6 @@ import com.leexplorer.app.api.Client;
 import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.Beacon;
-import com.leexplorer.app.util.BeaconsManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,9 +32,9 @@ import java.util.HashMap;
  */
 @TargetApi(18)
 public class BeaconScanService extends IntentService {
-    private static final int INTERVAL_FOREGROUND = 30 * 1000;
-    private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000; // Don't drain the battery when in bg!
-    private static final int SCAN_PERIOD = 3000;
+    private static final int INTERVAL_FOREGROUND = 2 * 60 * 1000;
+    private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000; // Don't drain the battery when in bg!
+    private static final int SCAN_PERIOD = 4000;
 
     public static final String ACTION = "com.leexplorer.services.beaconscanservice";
     public static final String BEACONS = "beacons";
@@ -122,9 +121,7 @@ public class BeaconScanService extends IntentService {
         Intent in = new Intent(ACTION);
         in.putExtra("resultCode", Activity.RESULT_OK);
 
-        BeaconsManager beaconManager = BeaconsManager.getInstance();
-        beaconManager.updateBeacons(new ArrayList<>(beacons.values()));
-        in.putExtra(BEACONS, beaconManager.getAll());
+        in.putExtra(BEACONS, new ArrayList<>(beacons.values()));
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
     }

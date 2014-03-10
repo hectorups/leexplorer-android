@@ -9,8 +9,8 @@
     <ImageView
         android:id="@+id/ivArtwork"
         android:layout_width="match_parent"
-        android:layout_marginTop="-80dp"
-        android:layout_height="320dp"
+        android:layout_marginTop="-100dp"
+        android:layout_height="380dp"
         android:scaleType="fitCenter"/>
 
     <!-- Like -->

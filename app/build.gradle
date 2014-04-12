@@ -1,4 +1,23 @@
+buildscript {
+    repositories {
+        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'http://download.crashlytics.com/maven' }
+
+    }
+
+    dependencies {
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+
+    }
+}
+
 apply plugin: 'android'
+apply plugin: 'crashlytics'
+repositories {
+    maven { url 'http://download.crashlytics.com/maven' }
+}
+
 apply plugin: 'pmd'
 apply plugin: 'findbugs'
 
@@ -38,6 +57,8 @@ dependencies {
     compile 'com.google.android.gms:play-services:3.2.+'
     compile project(':paralloidviews')
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
+    compile 'com.crashlytics.android:crashlytics:1.+'
+
 }
 
 pmd {

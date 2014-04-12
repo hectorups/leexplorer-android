@@ -2,15 +2,14 @@ package com.leexplorer.app.activities;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
@@ -35,6 +34,8 @@ public class GalleryListActivity extends BaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
+
         if(savedInstanceState != null){
             menuFragmentOn = savedInstanceState.getBoolean(MAP_FRAGMENT_ON, false);
         } else {

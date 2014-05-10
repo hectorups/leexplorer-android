@@ -12,7 +12,7 @@
     <string name="signal_close">close</string>
     <string name="signal_immediate">immediate</string>
     <string name="signal_far">far</string>
-    
+
     <!-- AUDIO SERVICE -->
     <string name="audio_notification_title">LeExplorer</string>
     <string name="audio_notification_text">Playing %1$s</string>

@@ -6,40 +6,40 @@
 
 
     <!-- BACKGROUND -->
-    
+
     <com.etsy.android.grid.util.DynamicHeightImageView
         android:id="@+id/ivArtworkThumb"
         android:layout_width="match_parent"
-        android:scaleType="centerCrop"
-        android:layout_height="match_parent"/>
-    
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
     <!-- SIGNAL INDICATOR -->
-    
+
     <FrameLayout
         android:id="@+id/flSignalIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_gravity="right|top">
+        android:layout_gravity="right|top"
+        android:layout_margin="5dp">
 
         <TextView
-            android:text="close"
-            android:textColor="@color/le_white"
-            android:padding="4dp"
             android:id="@+id/tvSignalIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/far_rounded_rectangle"/>
-    
+            android:background="@drawable/far_rounded_rectangle"
+            android:padding="4dp"
+            android:text="close"
+            android:textColor="@color/le_white" />
+
     </FrameLayout>
 
     <!-- ARTWORK INFO -->
 
     <FrameLayout
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:background="@color/le_black_more_transparent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:layout_gravity="bottom"
+        android:background="@color/le_black_more_transparent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,13 +48,13 @@
 
             <TextView
                 android:id="@+id/tvName"
+                style="@style/LE.ArtworkListText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="2dp"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                style="@style/LE.ArtworkListText"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvAuthorAndDate"
@@ -62,8 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="2dp"
-                android:textSize="16sp"
-                android:textColor="@color/le_white"/>
+                android:textColor="@color/le_white"
+                android:textSize="16sp" />
 
         </LinearLayout>
 

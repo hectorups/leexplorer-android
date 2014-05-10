@@ -1,18 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:leexplorer="http://schemas.android.com/apk/res-auto" >
+    xmlns:leexplorer="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:icon="@drawable/ic_action_map"
         android:id="@+id/menuMap"
+        android:icon="@drawable/ic_action_map"
         android:title="Map"
-        leexplorer:showAsAction="ifRoom"
-        />
+        leexplorer:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menuList"
         android:title="List"
-        leexplorer:showAsAction="ifRoom"
         android:visible="false"
-        />
+        leexplorer:showAsAction="ifRoom" />
 
 </menu>

@@ -35,12 +35,13 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
         this.fragment = fragment;
     }
 
-    @Override public View getView(int position, View view, ViewGroup parent) {
+    @Override
+    public View getView(int position, View view, ViewGroup parent) {
         ViewHolder holder;
         if (view != null) {
             holder = (ViewHolder) view.getTag();
         } else {
-            LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.gallery_item, parent, false);
             holder = new ViewHolder(view, fragment);
             view.setTag(holder);
@@ -61,13 +62,17 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
     }
 
     static class ViewHolder {
+        @InjectView(R.id.txGalleryName)
+        TextView txGalleryName;
+        @InjectView(R.id.txAddress)
+        TextView txAddress;
+        @InjectView(R.id.txGalleryType)
+        TextView txGalleryType;
+        @InjectView(R.id.txPrice)
+        TextView txPrice;
+        @InjectView(R.id.pager)
+        ViewPager pager;
         private GalleryListFragment fragment;
-
-        @InjectView(R.id.txGalleryName) TextView txGalleryName;
-        @InjectView(R.id.txAddress) TextView txAddress;
-        @InjectView(R.id.txGalleryType) TextView txGalleryType;
-        @InjectView(R.id.txPrice) TextView txPrice;
-        @InjectView(R.id.pager) ViewPager pager;
 
         public ViewHolder(View view, GalleryListFragment fragment) {
             ButterKnife.inject(this, view);
@@ -82,8 +87,9 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
 
     public static class MyAdapter extends PagerAdapter {
         Gallery gallery;
-        private LayoutInflater inflater;
         GalleryListFragment fragment;
+        private LayoutInflater inflater;
+
         public MyAdapter(GalleryListFragment fragment, Gallery gallery) {
             super();
             this.gallery = gallery;
@@ -98,8 +104,8 @@ public class GalleryAdapter extends ArrayAdapter<Gallery> {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.fragment_gallery_image, null);
-            ImageView ivGalleryImage = (ImageView)layout.findViewById(R.id.ivGallery);
+            RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.fragment_gallery_image, null);
+            ImageView ivGalleryImage = (ImageView) layout.findViewById(R.id.ivGallery);
             Picasso.with(fragment.getActivity())
                     .load(this.gallery.getArtworkImageUrls().get(position))
                     .fit()

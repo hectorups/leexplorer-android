@@ -24,10 +24,9 @@ public class Client {
     private static LeexplorerService service;
 
 
+    public static LeexplorerService getService() {
 
-    public static LeexplorerService getService(){
-
-        if(service == null){
+        if (service == null) {
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setEndpoint(API_URL)
                     .build();
@@ -39,29 +38,29 @@ public class Client {
     }
 
 
-    public static Observable<ArrayList<com.leexplorer.app.models.Artwork>> getArtworksData(final String galleryId){
+    public static Observable<ArrayList<com.leexplorer.app.models.Artwork>> getArtworksData(final String galleryId) {
         return Observable.create(new Observable.OnSubscribeFunc<ArrayList<com.leexplorer.app.models.Artwork>>() {
             @Override
             public Subscription onSubscribe(Observer<? super ArrayList<com.leexplorer.app.models.Artwork>> observer) {
                 try {
                     ArrayList<com.leexplorer.app.models.Artwork> artworks = new ArrayList<>();
 
-                    if( BuildConfig.FAKE_DATA ){
+                    if (BuildConfig.FAKE_DATA) {
                         artworks = FakeData.getArtworks();
                     } else {
-                        for(Artwork aaw: getService().getArtworks(galleryId)){
+                        for (Artwork aaw : getService().getArtworks(galleryId)) {
                             artworks.add(com.leexplorer.app.models.Artwork.fromJsonModel(aaw));
                         }
                     }
 
                     observer.onNext(artworks);
 
-                    try{
+                    try {
                         // Persist Artworks...
-                        for(com.leexplorer.app.models.Artwork aw: artworks){
+                        for (com.leexplorer.app.models.Artwork aw : artworks) {
                             aw.save();
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -75,7 +74,7 @@ public class Client {
         });
     }
 
-    public static Observable<ArrayList<Gallery>> getGalleriesData(){
+    public static Observable<ArrayList<Gallery>> getGalleriesData() {
         return Observable.create(new Observable.OnSubscribeFunc<ArrayList<com.leexplorer.app.models.Gallery>>() {
             @Override
             public Subscription onSubscribe(Observer<? super ArrayList<com.leexplorer.app.models.Gallery>> observer) {
@@ -83,18 +82,18 @@ public class Client {
                     ArrayList<Gallery> galleries = new ArrayList<>();
 
 
-                    for(com.leexplorer.app.api.models.Gallery gallery: getService().getGalleries()){
+                    for (com.leexplorer.app.api.models.Gallery gallery : getService().getGalleries()) {
                         galleries.add(Gallery.fromApiModel(gallery));
                     }
 
                     observer.onNext(galleries);
 
-                    try{
+                    try {
                         // Persist Galleries...
-                        for(Gallery gallery: galleries){
-//                            gallery.save();
+                        for (Gallery gallery : galleries) {
+                            gallery.save();
                         }
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 

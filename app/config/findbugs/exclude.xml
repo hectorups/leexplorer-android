@@ -1,10 +1,24 @@
 <FindBugsFilter>
     <Match>
-        <Class name="~.\.R\$." />
-        <Bug code="Nm" />
+        <Class name="~.*\.R\$.*" />
         <!--<Method name="run"/>-->
     </Match>
     <Match>
-        <Class name="~.\.Manifest\$." />
+        <Class name="~.*\.Manifest\$.*" />
     </Match>
+    <!--<Match>-->
+    <!--<Class name="com.samsungaccelerator.team9.memodot.BluetoothLeService"/>-->
+    <!--<Bug code="ST"/>-->
+    <!--</Match>-->
+    <!--<Match>-->
+    <!--<Class name="com.samsungaccelerator.team9.memodot.GestureDetectorService"/>-->
+    <!--</Match>-->
+    <!--<Match>-->
+    <!--<Class name="com.samsungaccelerator.team9.phoneactions.PhoneActionsService"/>-->
+    <!--<Bug code="ST"/>-->
+    <!--</Match>-->
+    <!--<Match>-->
+    <!--<Bug pattern="UUF_UNUSED_FIELD"/>-->
+    <!--<Field name="~ajc\$.*"/>-->
+    <!--</Match>-->
 </FindBugsFilter>

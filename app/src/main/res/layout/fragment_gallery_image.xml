@@ -4,10 +4,10 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/ivGallery"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/ivGallery"
-        android:src="@drawable/ic_painting"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true" />
+        android:src="@drawable/ic_painting" />
 </RelativeLayout>

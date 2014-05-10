@@ -13,12 +13,12 @@ import com.leexplorer.app.models.Artwork;
 
 import java.util.ArrayList;
 
-public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Callbacks{
+public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Callbacks {
     public static final String EXTRA_ARTWORK = "extra_artwork";
     public static final String EXTRA_ARTWORKS = "extra_artworks";
 
     private ArrayList<Artwork> artworks;
-    private ViewPager   mViewPager;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,26 +51,28 @@ public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Cal
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int i, float v, int i2) {}
+            public void onPageScrolled(int i, float v, int i2) {
+            }
 
             @Override
             public void onPageSelected(int i) {
                 Artwork aw = artworks.get(i);
-                if( aw != null){
+                if (aw != null) {
                     setTitle(aw.getName());
                 }
 
             }
 
             @Override
-            public void onPageScrollStateChanged(int i) {}
+            public void onPageScrollStateChanged(int i) {
+            }
         });
 
         // Set page in ViewPager
         setTitle(currentAw.getName());
-        for(int i = 0; i < artworks.size(); i++){
+        for (int i = 0; i < artworks.size(); i++) {
             Artwork aw = artworks.get(i);
-            if( currentAw.equals(aw) ){
+            if (currentAw.equals(aw)) {
                 mViewPager.setCurrentItem(i);
                 break;
             }
@@ -90,10 +92,6 @@ public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Cal
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
-
-
 
 
 }

@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="fragment_artwork_list_responsive" type="layout">@layout/fragment_artwork_list_tablet</item>
-    <item name="fragment_gallery_list_responsive" type="layout">@layout/activity_gallery_list_tablet</item>
+    <item name="fragment_artwork_list_responsive" type="layout">
+        @layout/fragment_artwork_list_tablet
+    </item>
+    <item name="fragment_gallery_list_responsive" type="layout">
+        @layout/activity_gallery_list_tablet
+    </item>
 </resources>

@@ -10,8 +10,8 @@ public class BeaconsManager {
 
     private ArrayList<Beacon> activeBeacons = new ArrayList<>();
 
-    public static BeaconsManager getInstance(){
-        if( instance == null){
+    public static BeaconsManager getInstance() {
+        if (instance == null) {
             instance = new BeaconsManager();
         }
 
@@ -19,11 +19,11 @@ public class BeaconsManager {
     }
 
 
-    public void updateBeacons(ArrayList<Beacon> newList){
+    public void updateBeacons(ArrayList<Beacon> newList) {
         activeBeacons = newList;
     }
 
-    public ArrayList<Beacon> getAll(){
+    public ArrayList<Beacon> getAll() {
         return activeBeacons;
     }
 

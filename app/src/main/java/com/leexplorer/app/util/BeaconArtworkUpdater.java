@@ -9,18 +9,18 @@ import java.util.ArrayList;
  */
 public class BeaconArtworkUpdater {
 
-    public static ArrayList<Artwork> updateDistances( ArrayList<Artwork> artworks,
-                                                      ArrayList<Beacon> beacons ){
+    public static ArrayList<Artwork> updateDistances(ArrayList<Artwork> artworks,
+                                                     ArrayList<Beacon> beacons) {
         // Reset Distance
-        for(Artwork aw: artworks){
+        for (Artwork aw : artworks) {
             aw.setDistance(0);
         }
 
         // Assign Distances according to beacons
-        for(Beacon b: beacons){
-            for(Artwork aw: artworks){
-                if(aw.getMac().equals(b.getMac())){
-                    aw.setDistance( b.getRssi() );
+        for (Beacon b : beacons) {
+            for (Artwork aw : artworks) {
+                if (aw.getMac().equals(b.getMac())) {
+                    aw.setDistance(b.getRssi());
                     break;
                 }
             }
@@ -28,7 +28,6 @@ public class BeaconArtworkUpdater {
 
         return artworks;
     }
-
 
 
 }

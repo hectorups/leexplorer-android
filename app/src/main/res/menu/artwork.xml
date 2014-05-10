@@ -3,15 +3,13 @@
 
     <item
         android:id="@+id/menuPlay"
-        leexplorer:showAsAction="always"
         android:icon="@drawable/ic_action_play"
-        />
+        leexplorer:showAsAction="always" />
 
     <item
         android:id="@+id/menuShare"
         android:title="@string/share_image"
-        leexplorer:showAsAction="always"
         leexplorer:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        />
+        leexplorer:showAsAction="always" />
 
 </menu>

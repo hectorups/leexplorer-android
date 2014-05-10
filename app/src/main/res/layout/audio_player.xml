@@ -3,52 +3,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
     android:background="@color/le_dark_grey_transparent"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp">
 
     <LinearLayout
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:orientation="vertical">
 
         <!-- Timer Display -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
+            android:layout_marginBottom="-6dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginBottom="-6dp">
+            android:layout_marginRight="20dp">
             <!-- Current Duration Label -->
             <TextView
-                android:text="00:00"
                 android:id="@+id/tvDuration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="left"
+                android:text="00:00"
                 android:textColor="@color/le_white"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
             <!-- Total Duration Label -->
             <TextView
-                android:text="00:00"
                 android:id="@+id/tvTotalDuration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="right"
+                android:text="00:00"
                 android:textColor="@color/le_white"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Progress Bar/Seek bar -->
         <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/sbAudio"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
@@ -60,21 +59,21 @@
         android:layout_marginRight="10dp">
 
         <ImageButton
-            android:layout_gravity="center_vertical"
             android:id="@+id/btnPlay"
-            android:src="@drawable/ic_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@null"/>
+            android:layout_gravity="center_vertical"
+            android:background="@null"
+            android:src="@drawable/ic_play" />
 
         <ImageButton
-            android:layout_gravity="center_vertical"
             android:id="@+id/btnPause"
-            android:src="@drawable/ic_pause"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:background="@null"
-            android:visibility="gone"/>
+            android:src="@drawable/ic_pause"
+            android:visibility="gone" />
 
     </FrameLayout>
 

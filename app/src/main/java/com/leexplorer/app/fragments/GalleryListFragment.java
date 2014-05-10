@@ -2,8 +2,6 @@ package com.leexplorer.app.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,9 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.api.Client;
@@ -22,8 +18,6 @@ import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.LocationService;
 import com.leexplorer.app.util.GalleryComparator;
 
-import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +33,9 @@ import rx.schedulers.Schedulers;
  */
 public class GalleryListFragment extends Fragment {
 
-    @InjectView(R.id.lvGalleries) ListView lvGalleries;
+    public Callbacks callbacks;
+    @InjectView(R.id.lvGalleries)
+    ListView lvGalleries;
     private List<Gallery> galleries;
     private GalleryAdapter galleryAdapter;
 
@@ -55,21 +51,11 @@ public class GalleryListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery_list, container, false);
-        ButterKnife.inject(this,view);
+        ButterKnife.inject(this, view);
         lvGalleries.setAdapter(galleryAdapter);
         loadArtworkList();
         return view;
     }
-
-
-    public interface Callbacks {
-        public void onLoading(boolean loading);
-        public void loadGalleryDetails(Gallery gallery);
-        public void loadMap(String address);
-        public boolean isTabletMode();
-    }
-
-    public Callbacks callbacks;
 
     @Override
     public void onAttach(Activity activity) {
@@ -77,7 +63,7 @@ public class GalleryListFragment extends Fragment {
 
         super.onAttach(activity);
         if (activity instanceof Callbacks) {
-            callbacks = (Callbacks)activity;
+            callbacks = (Callbacks) activity;
         } else {
             throw new ClassCastException(activity.toString()
                     + " must implement GalleryListFragment.Callbacks");
@@ -91,40 +77,75 @@ public class GalleryListFragment extends Fragment {
         callbacks = null;
     }
 
-    private void loadArtworkList(){
+    private void loadArtworkList() {
         loadGalleryListFromApi();
         // Get data from Api or DB
-        if( LeexplorerApplication.isOnline() ){
-
-        } else {
-            //loadGalleryListFromDB();
-        }
+//        if (LeexplorerApplication.isOnline()) {
+//
+//        } else {
+//            //loadGalleryListFromDB();
+//        }
     }
 
-    private void loadGalleryListFromApi(){
-        if(callbacks != null) callbacks.onLoading(true);
+    private void loadGalleryListFromApi() {
+        if (callbacks != null) {
+            callbacks.onLoading(true);
+        }
         Client.getGalleriesData()
                 .subscribeOn(Schedulers.threadPoolForIO())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Observer<ArrayList<Gallery>>() {
-                            @Override public void onCompleted() {}
-
-                            @Override public void onError(Throwable throwable) {
-                                throwable.printStackTrace();
-                                if(callbacks != null) callbacks.onLoading(false);
-                                if(galleries == null || galleries.size() == 0){
-                                    //loadGalleryListFromDB();
-                                }
+                            @Override
+                            public void onCompleted() {
                             }
 
-                            @Override public void onNext(ArrayList<Gallery> galleries) {
+                            @Override
+                            public void onError(Throwable throwable) {
+                                throwable.printStackTrace();
+                                if (callbacks != null) {
+                                    callbacks.onLoading(false);
+                                }
+//                                if (galleries == null || galleries.size() == 0) {
+//                                    loadGalleryListFromDB();
+//                                }
+                            }
+
+                            @Override
+                            public void onNext(ArrayList<Gallery> galleries) {
                                 updateAdapterDataset(galleries);
-                                if(callbacks != null) callbacks.onLoading(false);
+                                if (callbacks != null) {
+                                    callbacks.onLoading(false);
+                                }
                             }
                         }
                 );
 
+    }
+
+    private void updateAdapterDataset(ArrayList<Gallery> galleries) {
+        this.galleries.clear();
+        LocationService service = new LocationService(getActivity());
+        Location currentLocation = null;
+        if (service.isLocationAvailable()) {
+            currentLocation = service.getLocation();
+        }
+
+        for (Gallery gallery : galleries) {
+            if (currentLocation != null) {
+                float[] results = new float[4];
+                Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
+                        gallery.getLatitude(), gallery.getLongitude(), results);
+                //float distanceInMiles = /1609.344f;
+                gallery.setDistanceFromCurrentLocation(results[0]);
+            }
+            this.galleries.add(gallery);
+        }
+        Collections.sort(this.galleries, new GalleryComparator());
+        galleryAdapter.notifyDataSetChanged();
+        if (callbacks.isTabletMode()) {
+            callbacks.loadGalleryDetails(this.galleries.get(0));
+        }
     }
 
 //    private void loadGalleryListFromDB(){
@@ -152,33 +173,18 @@ public class GalleryListFragment extends Fragment {
 //        if(callbacks != null) callbacks.onLoading(false);
 //    }
 
-    private void updateAdapterDataset(ArrayList<Gallery> galleries){
-        this.galleries.clear();
-        LocationService service = new LocationService(getActivity());
-        Location currentLocation = null;
-        if(service.isLocationAvailable()){
-            currentLocation = service.getLocation();
-        }
-
-        for(Gallery gallery: galleries){
-            if(currentLocation!=null){
-                float[] results = new float[4];
-                Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
-                        gallery.getLatitude(), gallery.getLongitude(),results);
-                //float distanceInMiles = /1609.344f;
-                gallery.setDistanceFromCurrentLocation(results[0]);
-            }
-            this.galleries.add(gallery);
-        }
-        Collections.sort(this.galleries, new GalleryComparator());
-        galleryAdapter.notifyDataSetChanged();
-        if(callbacks.isTabletMode()){
-            callbacks.loadGalleryDetails(this.galleries.get(0));
-        }
+    public ArrayList<Gallery> getGalleries() {
+        return new ArrayList<Gallery>(galleries);
     }
 
-    public ArrayList<Gallery> getGalleries(){
-        return new ArrayList<Gallery>(galleries);
+    public interface Callbacks {
+        void onLoading(boolean loading);
+
+        void loadGalleryDetails(Gallery gallery);
+
+        void loadMap(String address);
+
+        boolean isTabletMode();
     }
 
 }

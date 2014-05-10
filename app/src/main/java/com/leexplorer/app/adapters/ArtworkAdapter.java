@@ -42,7 +42,7 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         if (view != null) {
             holder = (ViewHolder) view.getTag();
         } else {
-            LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.artwork_item, parent, false);
             holder = new ViewHolder(view, fragment);
             view.setTag(holder);
@@ -54,7 +54,7 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         holder.tvName.setMaxLines(1);
         holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
 
-        holder.tvAuthorAndDate.setText(aw.getAuthor() + " - " + ArtDate.shortDate(aw.getPublishedAt()) );
+        holder.tvAuthorAndDate.setText(aw.getAuthor() + " - " + ArtDate.shortDate(aw.getPublishedAt()));
 
         holder.ivArtworkThumb.setTag(aw);
         holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));
@@ -67,29 +67,8 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         return view;
     }
 
-    static class ViewHolder {
-        @InjectView(R.id.tvName) TextView tvName;
-        @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
-        @InjectView(R.id.ivArtworkThumb) DynamicHeightImageView ivArtworkThumb;
-        @InjectView(R.id.flSignalIndicator) FrameLayout flSignalIndicator;
-        @InjectView(R.id.tvSignalIcon) TextView tvSignalIcon;
-
-        private ArtworkListFragment fragment;
-
-        public ViewHolder(View view, ArtworkListFragment fragment ) {
-            ButterKnife.inject(this, view);
-            this.fragment = fragment;
-        }
-
-        @OnClick(R.id.ivArtworkThumb)
-        public void onClickArtwork(View view) {
-            Artwork aw = (Artwork) view.getTag();
-            fragment.callbacks.onArtworkClicked(aw);
-        }
-    }
-
-    private void setSignalIndicator(ViewHolder holder, Artwork aw){
-        if( aw.getDistance() == Artwork.Distance.OUT_OF_RANGE ){
+    private void setSignalIndicator(ViewHolder holder, Artwork aw) {
+        if (aw.getDistance() == Artwork.Distance.OUT_OF_RANGE) {
             holder.flSignalIndicator.setVisibility(View.INVISIBLE);
             return;
         }
@@ -98,11 +77,11 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         int siganl_text = R.string.signal_immediate;
         int bg_drawable = R.drawable.immediate_rounded_rectanble;
 
-        if(aw.getDistance() == Artwork.Distance.CLOSE) {
+        if (aw.getDistance() == Artwork.Distance.CLOSE) {
             color = R.color.le_blue;
             siganl_text = R.string.signal_close;
             bg_drawable = R.drawable.close_rounded_rectangle;
-        } else if(aw.getDistance() == Artwork.Distance.FAR) {
+        } else if (aw.getDistance() == Artwork.Distance.FAR) {
             color = R.color.le_yellow;
             siganl_text = R.string.signal_far;
             bg_drawable = R.drawable.far_rounded_rectangle;
@@ -114,18 +93,43 @@ public class ArtworkAdapter extends ArrayAdapter<Artwork> {
         holder.flSignalIndicator.setVisibility(View.VISIBLE);
     }
 
-
     // @todo: this is for testing, needs to be implemted depending on
     // the overal gallery score
     private double getHeightRatioFromPopularity(Artwork aw) {
         double factor = 0;
-        if(aw.getLikesCount() > 100){
+        if (aw.getLikesCount() > 100) {
             factor = 1;
-        } else if( (aw.getLikesCount() > 50)) {
+        } else if (aw.getLikesCount() > 50) {
             factor = 0.5;
         }
 
-        return (( factor / 2.0) + 1.0); // height will be 1.0 - 1.5 the width
+        return factor / 2.0 + 1.0; // height will be 1.0 - 1.5 the width
+    }
+
+    static class ViewHolder {
+        @InjectView(R.id.tvName)
+        TextView tvName;
+        @InjectView(R.id.tvAuthorAndDate)
+        TextView tvAuthorAndDate;
+        @InjectView(R.id.ivArtworkThumb)
+        DynamicHeightImageView ivArtworkThumb;
+        @InjectView(R.id.flSignalIndicator)
+        FrameLayout flSignalIndicator;
+        @InjectView(R.id.tvSignalIcon)
+        TextView tvSignalIcon;
+
+        private ArtworkListFragment fragment;
+
+        public ViewHolder(View view, ArtworkListFragment fragment) {
+            ButterKnife.inject(this, view);
+            this.fragment = fragment;
+        }
+
+        @OnClick(R.id.ivArtworkThumb)
+        public void onClickArtwork(View view) {
+            Artwork aw = (Artwork) view.getTag();
+            fragment.callbacks.onArtworkClicked(aw);
+        }
     }
 
 }

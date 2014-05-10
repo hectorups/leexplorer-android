@@ -32,28 +32,53 @@ import java.util.HashMap;
  */
 @TargetApi(18)
 public class BeaconScanService extends IntentService {
+    public static final String ACTION = "com.leexplorer.services.beaconscanservice";
+    public static final String BEACONS = "beacons";
+    public static final String ACTION_SHOW_NOTIFICATION = "com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION";
+    public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
     private static final int INTERVAL_FOREGROUND = 2 * 60 * 1000;
     private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000; // Don't drain the battery when in bg!
     private static final int SCAN_PERIOD = 4000;
-
-    public static final String ACTION = "com.leexplorer.services.beaconscanservice";
-    public static final String BEACONS = "beacons";
-
-    public static final String ACTION_SHOW_NOTIFICATION = "com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION";
-    public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
-
     private final String TAG = "com.leexplorer.app.services.beaconscanservice";
+    private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
+        @Override
+        public void onLeScan(final BluetoothDevice device,
+                             int rssi,
+                             byte[] scanRecord) {
+            Log.d(TAG, "Bluetooth found: "
+                            + device.getName() + " - "
+                            + device.getAddress() + " - "
+                            + rssi
+            );
 
+            if (beacons.get(device.getAddress()) == null) {
+                Beacon beacon = new Beacon(device.getAddress(), scanRecord, rssi);
+                beacons.put(device.getAddress(), beacon);
+            } else {
+                beacons.get(device.getAddress()).addRssi(rssi);
+            }
+        }
+    };
     private BluetoothManager bluetoothManager;
-
     private BluetoothAdapter bluetoothAdapter;
+    private HashMap<String, Beacon> beacons;
 
-    private HashMap<String,Beacon> beacons;
 
     public BeaconScanService() {
         super("beaconscan-service");
     }
 
+    public static void setScannerAlarm(Context context, boolean foreground) {
+        Intent i = new Intent(context, BeaconScanService.class);
+        PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
+
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pi);
+
+        int interval = foreground ? INTERVAL_FOREGROUND : INTERVAL_BACKGROUND;
+        alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), interval, pi);
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -72,52 +97,19 @@ public class BeaconScanService extends IntentService {
 
     }
 
-    private void setBluetoothAdapter(){
-        if( bluetoothAdapter == null ){
+    private void setBluetoothAdapter() {
+        if (bluetoothAdapter == null) {
             bluetoothManager = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
             bluetoothAdapter = bluetoothManager.getAdapter();
         }
     }
 
-    private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback(){
-                @Override
-                public void onLeScan(final BluetoothDevice device,
-                                     int rssi,
-                                     byte[] scanRecord) {
-                    Log.d(TAG, "Bluetooth found: "
-                            + device.getName() + " - "
-                            + device.getAddress() + " - "
-                            + rssi
-                    );
-
-                    if( beacons.get(device.getAddress()) == null ){
-                        Beacon beacon = new Beacon(device.getAddress(), scanRecord, rssi);
-                        beacons.put(device.getAddress(), beacon);
-                    } else {
-                        beacons.get(device.getAddress()).addRssi(rssi);
-                    }
-                }
-    };
-
-
-    private void endSearch(){
+    private void endSearch() {
         Log.d(TAG, "search finished");
         bluetoothAdapter.stopLeScan(leScanCallback);
     }
 
-    public static void setScannerAlarm(Context context, boolean foreground) {
-        Intent i = new Intent(context, BeaconScanService.class);
-        PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
-
-
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pi);
-
-        int interval = foreground ? INTERVAL_FOREGROUND : INTERVAL_BACKGROUND;
-        alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), interval, pi);
-    }
-
-    private void broadcastBeacons(){
+    private void broadcastBeacons() {
         Intent in = new Intent(ACTION);
         in.putExtra("resultCode", Activity.RESULT_OK);
 
@@ -126,9 +118,11 @@ public class BeaconScanService extends IntentService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
     }
 
-    private void sendNotification(){
+    private void sendNotification() {
         Gallery g = unseenGallery();
-        if(g == null) return; // nothing new ...
+        if (g == null) {
+            return;
+        }
 
         Resources r = getResources();
         Intent artworkIntent = new Intent(this, ArtworkListActivity.class);
@@ -153,12 +147,12 @@ public class BeaconScanService extends IntentService {
         sendOrderedBroadcast(notificationIntent, PERM_PRIVATE, null, null, Activity.RESULT_OK, null, null);
     }
 
-    private Gallery unseenGallery(){
+    private Gallery unseenGallery() {
         Gallery g = null;
-        for(Beacon beacon: beacons.values()){
+        for (Beacon beacon : beacons.values()) {
             g = galleryFromBeacon(beacon);
 
-            if( g != null ){
+            if (g != null) {
                 break;
             }
         }
@@ -166,41 +160,47 @@ public class BeaconScanService extends IntentService {
         return g;
     }
 
-    private Gallery galleryFromBeacon(Beacon b){
+    private Gallery galleryFromBeacon(Beacon b) {
         String galleryId = null;
         com.leexplorer.app.models.Artwork aw = com.leexplorer.app.models.Artwork.findByMac(b.getMac());
 
-        if( aw == null){
+        if (aw == null) {
             Artwork apiAw = null;
 
-            try{
+            try {
                 apiAw = Client.getService().getArtwork(b.getMac());
-            } catch(Exception e) {e.printStackTrace();}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            if( apiAw != null ){
+            if (apiAw != null) {
                 aw = com.leexplorer.app.models.Artwork.fromJsonModel(apiAw);
                 aw.save();
             }
         }
 
-        if( aw != null ){
+        if (aw != null) {
             galleryId = aw.getGalleryId();
         }
 
-        if(galleryId == null) return null;
+        if (galleryId == null) {
+            return null;
+        }
 
         Gallery g = Gallery.findById(galleryId);
 
-        if( g == null ){
+        if (g == null) {
             com.leexplorer.app.api.models.Gallery apiGallery = null;
-            try{
+            try {
                 apiGallery = Client.getService().getGallery(galleryId);
-            } catch(Exception e) {e.printStackTrace();}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            if(apiGallery != null){
+            if (apiGallery != null) {
                 g = Gallery.fromApiModel(apiGallery);
             }
-        } else if( g.isWasSeen() ) {
+        } else if (g.isWasSeen()) {
             return null;
         }
 

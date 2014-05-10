@@ -41,25 +41,29 @@ public class GalleryMapFragment extends SupportMapFragment {
     private static final String EXTRA_GALLERIES = "extra_galleries";
 
     private static final double MIN_LAT_BOUNDS = 0.2;
-
+    private static final int ANIMATE_LOCATION_DURATION = 600;
+    private static final int ANIMATE_INFOBOX_DURATION = 300;
+    private static final int ANIMATE_DELAY = 200;
+    public Callbacks callbacks;
     private CameraPosition savedCameraPosition;
     private GoogleMap map;
     private boolean created;
     private List<Gallery> galleries;
     private HashMap<Marker, List<Gallery>> markerGalleryHashMap =
             new HashMap<Marker, List<Gallery>>();
-    private static final int ANIMATE_LOCATION_DURATION = 600;
-    private static final int ANIMATE_INFOBOX_DURATION = 300;
-    private static final int ANIMATE_DELAY = 200;
     private int markerHeight;
     private int markerWidth;
     private float lastZoom;
 
-    public interface Callbacks {
-        public void onGalleryMapClicked(Gallery gallery);
-    }
+    public static GalleryMapFragment newInstance(ArrayList<Gallery> galleries) {
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(EXTRA_GALLERIES, galleries);
 
-    public Callbacks callbacks;
+        GalleryMapFragment fragment = new GalleryMapFragment();
+        fragment.setArguments(args);
+
+        return fragment;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -67,7 +71,7 @@ public class GalleryMapFragment extends SupportMapFragment {
 
         super.onAttach(activity);
         if (activity instanceof Callbacks) {
-            callbacks = (Callbacks)activity;
+            callbacks = (Callbacks) activity;
         } else {
             throw new ClassCastException(activity.toString()
                     + " must implement GalleryListFragment.Callbacks");
@@ -79,16 +83,6 @@ public class GalleryMapFragment extends SupportMapFragment {
     public void onDetach() {
         super.onDetach();
         callbacks = null;
-    }
-
-    public static GalleryMapFragment newInstance(ArrayList<Gallery> galleries) {
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(EXTRA_GALLERIES, galleries);
-
-        GalleryMapFragment fragment = new GalleryMapFragment();
-        fragment.setArguments(args);
-
-        return fragment;
     }
 
     @Override
@@ -110,7 +104,7 @@ public class GalleryMapFragment extends SupportMapFragment {
         showGalleries();
     }
 
-    public void showGalleries(){
+    public void showGalleries() {
         if (initMap()) {
 
             //If the map has no size listen for a camera event until setting it up
@@ -145,7 +139,7 @@ public class GalleryMapFragment extends SupportMapFragment {
             public boolean onMarkerClick(Marker marker) {
                 List<Gallery> galleries = markerGalleryHashMap.get(marker);
 
-                if(galleries != null && galleries.size() == 1){
+                if (galleries != null && galleries.size() == 1) {
                     Gallery g = galleries.get(0);
                     Picasso.with(getActivity())
                             .load(g.getArtworkImageUrls().get(0))
@@ -167,7 +161,7 @@ public class GalleryMapFragment extends SupportMapFragment {
                     LatLngBounds bounds = buildBounds(galleries);
                     showBounds(bounds, true);
                 } else {
-                    if(callbacks != null){
+                    if (callbacks != null) {
                         callbacks.onGalleryMapClicked(galleries.get(0));
                     }
                 }
@@ -181,7 +175,8 @@ public class GalleryMapFragment extends SupportMapFragment {
     private void setCameraListeningMode(boolean mapBuilt) {
         if (mapBuilt) {
             map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-                @Override public void onCameraChange(CameraPosition cameraPosition) {
+                @Override
+                public void onCameraChange(CameraPosition cameraPosition) {
 
                     if (cameraPosition.zoom != lastZoom) {
                         lastZoom = map.getCameraPosition().zoom;
@@ -191,7 +186,8 @@ public class GalleryMapFragment extends SupportMapFragment {
             });
         } else {
             map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-                @Override public void onCameraChange(CameraPosition cameraPosition) {
+                @Override
+                public void onCameraChange(CameraPosition cameraPosition) {
                     // we were waiting for the map to be drawn before we could build the map
                     buildMap();
                     setCameraListeningMode(true);
@@ -251,20 +247,23 @@ public class GalleryMapFragment extends SupportMapFragment {
         return bounds;
     }
 
-
     private void showMarkers() {
 
         //create new mapping of marker delegates - will become markers
         HashMap<MarkerDelegate, List<Gallery>> markerDelegateHashMap =
-                new HashMap<MarkerDelegate, List<Gallery>>();
+                new HashMap<>();
 
         //Add markers - checking for overlap
         Projection projection = map.getProjection();
         for (Gallery gallery : galleries) {
-            if (gallery.getLongitude() == 0 && gallery.getLatitude() == 0) continue;
+            if (gallery.getLongitude() == 0 && gallery.getLatitude() == 0) {
+                continue;
+            }
             LatLng newPosition = new LatLng(gallery.getLatitude(), gallery.getLongitude());
 
             boolean isNewMarker = true;
+
+
             for (MarkerDelegate marker : markerDelegateHashMap.keySet()) {
 
                 //check for overlap, consolidate if it does
@@ -323,10 +322,10 @@ public class GalleryMapFragment extends SupportMapFragment {
         Point existingPoint = projection.toScreenLocation(existingLatLng);
         Point newPoint = projection.toScreenLocation(newLatLng);
 
-        return (existingPoint.x + markerWidth >= newPoint.x
+        return existingPoint.x + markerWidth >= newPoint.x
                 && existingPoint.x - markerWidth <= newPoint.x
                 && existingPoint.y + markerHeight >= newPoint.y
-                && existingPoint.y - markerHeight <= newPoint.y);
+                && existingPoint.y - markerHeight <= newPoint.y;
     }
 
     /**
@@ -340,11 +339,12 @@ public class GalleryMapFragment extends SupportMapFragment {
             marker.setGallery(g);
         } else {
             marker.setTitle(getResources().getString(R.string.consolidated_marker_title, galleries.size()));
-            String consolidatedDescription = "";
-            for(Gallery g: galleries){
-                consolidatedDescription += (consolidatedDescription.compareTo("") == 0 ? "" : ", ") + g.getName();
+            StringBuffer consolidatedDescription = new StringBuffer();
+            for (Gallery g : galleries) {
+                consolidatedDescription.append(consolidatedDescription.length() == 0 ? "" : ", ");
+                consolidatedDescription.append(g.getName());
             }
-            marker.setSnippet(consolidatedDescription);
+            marker.setSnippet(consolidatedDescription.toString());
             marker.setGallery(null);
         }
     }
@@ -368,7 +368,7 @@ public class GalleryMapFragment extends SupportMapFragment {
             outerloop:
             for (Map.Entry<Marker, List<Gallery>> oldEntry : oldMarkerHashMap.entrySet()) {
                 for (Gallery newGallery : newEntry.getValue()) {
-                    if ( isGalleryContained( oldEntry.getValue(), newGallery)
+                    if (isGalleryContained(oldEntry.getValue(), newGallery)
                             && oldEntry.getValue().size() > newEntry.getValue().size()) {
                         finalPosition = newEntry.getKey().getPosition();
                         newEntry.getKey().setPosition(oldEntry.getKey().getPosition());
@@ -388,7 +388,7 @@ public class GalleryMapFragment extends SupportMapFragment {
             markerInfo.put(marker.getId(), newEntry.getKey().getGallery());
         }
 
-        map.setInfoWindowAdapter(new GalleryInfoAdapter(getActivity().getApplicationContext(), getActivity().getLayoutInflater(), markerInfo ));
+        map.setInfoWindowAdapter(new GalleryInfoAdapter(getActivity().getApplicationContext(), getActivity().getLayoutInflater(), markerInfo));
 
         if (animatorList.size() > 0) {
             AnimatorSet animatorSet = new AnimatorSet();
@@ -400,9 +400,11 @@ public class GalleryMapFragment extends SupportMapFragment {
         return newMarkerHashMap;
     }
 
-    private boolean isGalleryContained(List<Gallery> galleries, Gallery g){
-        for(Gallery testGallery: galleries){
-            if( g.equals(testGallery) ) return true;
+    private boolean isGalleryContained(List<Gallery> galleries, Gallery g) {
+        for (Gallery testGallery : galleries) {
+            if (g.equals(testGallery)) {
+                return true;
+            }
         }
         return false;
     }
@@ -476,6 +478,10 @@ public class GalleryMapFragment extends SupportMapFragment {
         return null;
     }
 
+    public interface Callbacks {
+        void onGalleryMapClicked(Gallery gallery);
+    }
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private static class MarkerAnimatorListener implements Animator.AnimatorListener {
         private Marker marker;
@@ -487,19 +493,23 @@ public class GalleryMapFragment extends SupportMapFragment {
             this.finalPosition = finalPosition;
         }
 
-        @Override public void onAnimationStart(Animator animation) {
+        @Override
+        public void onAnimationStart(Animator animation) {
 
         }
 
-        @Override public void onAnimationEnd(Animator animation) {
+        @Override
+        public void onAnimationEnd(Animator animation) {
             marker.setPosition(finalPosition);
         }
 
-        @Override public void onAnimationCancel(Animator animation) {
+        @Override
+        public void onAnimationCancel(Animator animation) {
             marker.setPosition(finalPosition);
         }
 
-        @Override public void onAnimationRepeat(Animator animation) {
+        @Override
+        public void onAnimationRepeat(Animator animation) {
 
         }
     }
@@ -534,18 +544,21 @@ public class GalleryMapFragment extends SupportMapFragment {
             this.snippet = snippet;
         }
 
-        public void setGallery(Gallery gallery){
-            this.gallery = gallery;
+        public Gallery getGallery() {
+            return gallery;
         }
 
-        public Gallery getGallery(){ return gallery; }
+        public void setGallery(Gallery gallery) {
+            this.gallery = gallery;
+        }
 
         public Marker createMarker(GoogleMap map) {
             return map.addMarker(
                     new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin))
                             .position(position)
                             .title(title)
-                            .snippet(snippet));
+                            .snippet(snippet)
+            );
         }
     }
 
@@ -558,7 +571,7 @@ public class GalleryMapFragment extends SupportMapFragment {
     private class InfoWindowImage implements Target {
         private Marker marker;
 
-        public InfoWindowImage(Marker marker){
+        public InfoWindowImage(Marker marker) {
             this.marker = marker;
         }
 
@@ -567,8 +580,13 @@ public class GalleryMapFragment extends SupportMapFragment {
             animateToOpenInfoWindow(marker);
         }
 
-        @Override public void onBitmapFailed(Drawable d) {}
-        @Override public void onPrepareLoad(android.graphics.drawable.Drawable drawable){}
+        @Override
+        public void onBitmapFailed(Drawable d) {
+        }
+
+        @Override
+        public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
+        }
     }
 }
 

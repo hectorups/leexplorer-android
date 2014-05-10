@@ -13,19 +13,21 @@ import java.util.Date;
 public class ArtDate {
     private static Context context;
 
-    public static void initialize(Context c){
+    public static void initialize(Context c) {
         context = c;
     }
 
-    public static String shortDate(Date date){
+    public static String shortDate(Date date) {
         return formatDate(date, "yyyy");
     }
 
 
-    private static String formatDate(Date date, String format){
+    private static String formatDate(Date date, String format) {
         String formatedString;
 
-        if(date == null) return context.getResources().getString(R.string.unknown_date);
+        if (date == null) {
+            return context.getResources().getString(R.string.unknown_date);
+        }
 
         SimpleDateFormat sf = new SimpleDateFormat(format);
         formatedString = sf.format(date);

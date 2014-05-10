@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <FrameLayout
         android:id="@+id/flGalleryListView"
         android:layout_width="160dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:layout_gravity="left"
-        android:layout_height="match_parent">
+        android:layout_weight="1">
 
     </FrameLayout>
 
     <FrameLayout
         android:id="@+id/flGalleryDetailView"
         android:layout_width="403dp"
-        android:layout_weight="1"
         android:layout_height="match_parent"
-        android:layout_gravity="right">
+        android:layout_gravity="right"
+        android:layout_weight="1">
 
     </FrameLayout>
 

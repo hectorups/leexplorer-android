@@ -1,50 +1,51 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.leexplorer.app.activities.ArtworkActivity$PlaceholderFragment">
 
     <!-- Profile Image -->
     <ImageView
         android:id="@+id/ivArtwork"
         android:layout_width="match_parent"
-        android:layout_marginTop="-100dp"
         android:layout_height="380dp"
-        android:scaleType="fitCenter"/>
+        android:layout_marginTop="-100dp"
+        android:scaleType="fitCenter" />
 
     <!-- Like -->
     <FrameLayout
         android:id="@+id/flLike"
-        android:layout_marginTop="5dp"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_gravity="left|top">
+        android:layout_gravity="left|top"
+        android:layout_marginTop="5dp">
 
         <ImageView
-            android:layout_gravity="center"
             android:layout_width="38dp"
             android:layout_height="38dp"
-            android:src="@drawable/signal_bg"/>
+            android:layout_gravity="center"
+            android:src="@drawable/signal_bg" />
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_gravity="center"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
             <ImageView
                 android:id="@+id/ivLike"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_heart"
                 android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_heart" />
 
             <ImageView
                 android:id="@+id/ivLiked"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_full_heart"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:visibility="invisible"/>
+                android:layout_gravity="center"
+                android:src="@drawable/ic_full_heart"
+                android:visibility="invisible" />
         </FrameLayout>
 
     </FrameLayout>
@@ -56,19 +57,19 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <include layout="@layout/artwork_content"/>
+        <include layout="@layout/artwork_content" />
 
     </uk.co.chrisjenx.paralloid.views.ParallaxScrollView>
 
     <FrameLayout
         android:id="@+id/flPlayAudio"
-        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center">
+        android:layout_gravity="bottom|center"
+        android:visibility="invisible">
 
-        <include layout="@layout/audio_player"/>
+        <include layout="@layout/audio_player" />
 
-     </FrameLayout>
+    </FrameLayout>
 
 </FrameLayout>

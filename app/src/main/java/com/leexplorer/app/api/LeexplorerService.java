@@ -16,7 +16,7 @@ import retrofit.http.Path;
  */
 public interface LeexplorerService {
     @GET("/artwork/{id}")
-    Artwork getArtwork( @Path("id") String mac  );
+    Artwork getArtwork(@Path("id") String mac);
 
     @GET("/gallery/{id}/artworks")
     List<Artwork> getArtworks(@Path("id") String galleryId);
@@ -25,7 +25,7 @@ public interface LeexplorerService {
     List<Gallery> getGalleries();
 
     @GET("/gallery/{id}")
-    Gallery getGallery( @Path("id") String galleryId  );
+    Gallery getGallery(@Path("id") String galleryId);
 
     @POST("/gallery_list")
     List<Gallery> getGalleryList(@Body List<String> galleryIds);

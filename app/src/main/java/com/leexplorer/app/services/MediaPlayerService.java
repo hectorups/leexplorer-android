@@ -25,10 +25,6 @@ import java.util.ArrayList;
 
 public class MediaPlayerService extends Service {
 
-    private static final String LOG = "com.leexplorer.services.mediaplayerservice";
-
-    private static final int STATUS_INTERVAL = 500;
-
     public static final String TOTAL_DURATION = "com.leexplorer.mediaplayerservice.total_duration";
     public static final String CURRENT_DURATION = "com.leexplorer.mediaplayerservice.current_duration";
     public static final String ARTWORK = "com.leexplorer.mediaplayerservice.artworks";
@@ -39,28 +35,16 @@ public class MediaPlayerService extends Service {
     public static final int ACTION_STOP = 2;
     public static final int ACTION_PAUSE = 3;
     public static final int ACTION_SEEK_TO = 4;
-
+    private static final String LOG = "com.leexplorer.services.mediaplayerservice";
+    private static final int STATUS_INTERVAL = 500;
     private static final int NOTIFICATION_ID = 11;
     private static MediaPlayer mediaPlayer;
-    private static int currentPosition = 0;
     private static Artwork artwork;
     private static ArrayList<Artwork> artworks;
 
-    private int startId;
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
-
-    private final class ServiceHandler extends Handler {
-        public ServiceHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            startId = msg.arg1;
-            onHandleIntent((Intent) msg.obj);
-        }
-    }
+    private Handler progressHandler = new Handler();
 
     @Override
     public void onCreate() {
@@ -90,7 +74,7 @@ public class MediaPlayerService extends Service {
 
     protected void onHandleIntent(Intent intent) {
         Log.d(LOG, "Intent received");
-        switch (intent.getIntExtra(ACTION, 0)){
+        switch (intent.getIntExtra(ACTION, 0)) {
             case ACTION_PLAY:
                 //artworks = intent.getParcelableArrayListExtra(ARTWORKS);
                 play((Artwork) intent.getParcelableExtra(ARTWORK));
@@ -104,6 +88,8 @@ public class MediaPlayerService extends Service {
             case ACTION_SEEK_TO:
                 seek_to(intent.getIntExtra(SEEK_TO_VALUE, 0));
                 break;
+            default:
+                return;
         }
     }
 
@@ -118,9 +104,9 @@ public class MediaPlayerService extends Service {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pi = PendingIntent.getActivity(getApplicationContext()
-                                            , 0
-                                            , intent
-                                            , PendingIntent.FLAG_UPDATE_CURRENT);
+                , 0
+                , intent
+                , PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.ic_white_play)
@@ -135,24 +121,24 @@ public class MediaPlayerService extends Service {
     }
 
 
-    private void stop(){
+    private void stop() {
         progressHandler.removeCallbacks(updateTimeTask);
 
-        if(mediaPlayer != null){
+        if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
             stopForeground(true);
         }
     }
 
-    synchronized private void play(Artwork artwork){
+    synchronized private void play(Artwork artwork) {
 
-        if(artwork.getAudioUrl() == null){
+        if (artwork.getAudioUrl() == null) {
             Log.e(LOG, "I got an artwork to play without an audio file !!!");
             return;
         }
 
-        if(mediaPlayer != null && this.artwork != null && this.artwork.equals(artwork)){
+        if (mediaPlayer != null && this.artwork != null && this.artwork.equals(artwork)) {
             mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
             mediaPlayer.start();
         } else {
@@ -175,8 +161,8 @@ public class MediaPlayerService extends Service {
         prepareNotification();
     }
 
-    synchronized private void pause(){
-        if(mediaPlayer == null){
+    synchronized private void pause() {
+        if (mediaPlayer == null) {
             return;
         }
 
@@ -184,8 +170,8 @@ public class MediaPlayerService extends Service {
         mediaPlayer.pause();
     }
 
-    synchronized private void seek_to(int position){
-        if(mediaPlayer == null){
+    synchronized private void seek_to(int position) {
+        if (mediaPlayer == null) {
             return;
         }
 
@@ -196,29 +182,7 @@ public class MediaPlayerService extends Service {
         progressHandler.postDelayed(updateTimeTask, STATUS_INTERVAL);
     }
 
-    private Handler progressHandler = new Handler();
-    private Runnable updateTimeTask = new Runnable() {
-        public void run() {
-            synchronized (MediaPlayerService.this){
-                if( mediaPlayer == null){
-                    progressHandler.removeCallbacks(updateTimeTask);
-                    return;
-                }
-
-                try{
-                    long totalDuration = mediaPlayer.getDuration();
-                    long currentDuration = mediaPlayer.getCurrentPosition();
-                    broadcastProgress(totalDuration, currentDuration);
-                }catch (Exception e){
-                    e.printStackTrace();
-                } finally {
-                    progressHandler.postDelayed(this, STATUS_INTERVAL);
-                }
-            }
-        }
-    };
-
-    private void broadcastProgress(long totalDuration, long currentDuration){
+    private void broadcastProgress(long totalDuration, long currentDuration) {
         Intent in = new Intent(ACTION);
         in.putExtra("resultCode", Activity.RESULT_OK);
         in.putExtra(ARTWORK, artwork);
@@ -227,6 +191,38 @@ public class MediaPlayerService extends Service {
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(in);
     }
+
+    private final class ServiceHandler extends Handler {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            onHandleIntent((Intent) msg.obj);
+        }
+    }
+
+    private Runnable updateTimeTask = new Runnable() {
+        public void run() {
+            synchronized (MediaPlayerService.this) {
+                if (mediaPlayer == null) {
+                    progressHandler.removeCallbacks(updateTimeTask);
+                    return;
+                }
+
+                try {
+                    long totalDuration = mediaPlayer.getDuration();
+                    long currentDuration = mediaPlayer.getCurrentPosition();
+                    broadcastProgress(totalDuration, currentDuration);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    progressHandler.postDelayed(this, STATUS_INTERVAL);
+                }
+            }
+        }
+    };
 
 
 }

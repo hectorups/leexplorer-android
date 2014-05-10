@@ -34,7 +34,7 @@ public class FacilitiesDialogFragment extends DialogFragment {
     public static FacilitiesDialogFragment newInstance(ArrayList<String> facilities) {
         FacilitiesDialogFragment frag = new FacilitiesDialogFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList("facilities",  facilities);
+        args.putStringArrayList("facilities", facilities);
         frag.setArguments(args);
         return frag;
     }
@@ -44,8 +44,8 @@ public class FacilitiesDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         List<Facility> facilities = new ArrayList<Facility>();
         List<String> facilitiesStr = getArguments().getStringArrayList("facilities");
-        for(String facilityStr:facilitiesStr){
-            facilities.add(new Facility(facilityStr,FACILITIES_IMG_MAP.get(facilityStr)));
+        for (String facilityStr : facilitiesStr) {
+            facilities.add(new Facility(facilityStr, FACILITIES_IMG_MAP.get(facilityStr)));
         }
         facilitiesAdapter = new FacilitiesAdapter(this, facilities);
     }

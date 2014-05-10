@@ -24,14 +24,12 @@ import static com.leexplorer.app.util.AppConstants.FACILITIES_LABEL_MAP;
 /**
  * Created by deepakdhiman on 3/3/14.
  */
-public class FacilitiesAdapter extends ArrayAdapter<Facility>{
+public class FacilitiesAdapter extends ArrayAdapter<Facility> {
 
-    List<Facility> facilities;
     FacilitiesDialogFragment fragment;
 
-    public FacilitiesAdapter(FacilitiesDialogFragment fragment, List<Facility> facilities){
-        super(fragment.getActivity(),0, facilities);
-        this.facilities = facilities;
+    public FacilitiesAdapter(FacilitiesDialogFragment fragment, List<Facility> facilities) {
+        super(fragment.getActivity(), 0, facilities);
         this.fragment = fragment;
     }
 
@@ -41,9 +39,9 @@ public class FacilitiesAdapter extends ArrayAdapter<Facility>{
         if (view != null) {
             holder = (ViewHolder) view.getTag();
         } else {
-            LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.facilities_item, parent, false);
-            holder = new ViewHolder(view, fragment);
+            holder = new ViewHolder(view);
             view.setTag(holder);
         }
         Facility facility = getItem(position);
@@ -55,16 +53,13 @@ public class FacilitiesAdapter extends ArrayAdapter<Facility>{
     }
 
     static class ViewHolder {
-        private FacilitiesDialogFragment fragment;
-
         @InjectView(R.id.ivFacilitiesDetailImg)
         ImageView ivFacilitiesDetailImg;
         @InjectView(R.id.txFacilitiesDetailLabel)
         TextView txFacilitiesDetailLabel;
 
-        public ViewHolder(View view, FacilitiesDialogFragment fragment) {
+        public ViewHolder(View view) {
             ButterKnife.inject(this, view);
-            this.fragment = fragment;
         }
 
     }

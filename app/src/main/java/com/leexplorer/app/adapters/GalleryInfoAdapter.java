@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.leexplorer.app.R;
-import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
 import com.squareup.picasso.Picasso;
 
@@ -27,12 +26,11 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
     private LayoutInflater mInflater;
     private HashMap<String, Gallery> mGalleries;
 
-    public GalleryInfoAdapter(Context c, LayoutInflater i, HashMap<String, Gallery> images ){
+    public GalleryInfoAdapter(Context c, LayoutInflater i, HashMap<String, Gallery> images) {
         mInflater = i;
         mGalleries = images;
         mContext = c;
     }
-
 
 
     @Override
@@ -69,11 +67,12 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
     }
 
     static class ViewHolder {
-        private GalleryListFragment fragment;
-
-        @InjectView(R.id.tvName) TextView tvName;
-        @InjectView(R.id.tvDescription) TextView tvDescription;
-        @InjectView(R.id.ivImage) ImageView ivImage;
+        @InjectView(R.id.tvName)
+        TextView tvName;
+        @InjectView(R.id.tvDescription)
+        TextView tvDescription;
+        @InjectView(R.id.ivImage)
+        ImageView ivImage;
 
         public ViewHolder(View view) {
             ButterKnife.inject(this, view);

@@ -1,9 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:leexplorer="http://schemas.android.com/apk/res-auto">
-    
-    <item android:id="@+id/menuRefresh"
+
+    <item
+        android:id="@+id/menuRefresh"
         android:icon="@drawable/ic_action_refresh"
         leexplorer:showAsAction="always"
 
-    />
+        />
 </menu>

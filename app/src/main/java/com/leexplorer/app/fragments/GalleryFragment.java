@@ -29,9 +29,7 @@ import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
 public class GalleryFragment extends Fragment {
 
     private static String GALLERY_KEY = "gallery";
-
-    private Gallery gallery;
-
+    public Callbacks callbacks;
     @InjectView(R.id.ivGalleryDetail)
     ImageView ivGalleryDetail;
     @InjectView(R.id.txDetailAddress)
@@ -49,8 +47,9 @@ public class GalleryFragment extends Fragment {
     TextView txDescription;
     @InjectView(R.id.llFacilitiesImg)
     LinearLayout llFacilitiesImg;
+    private Gallery gallery;
 
-    public static GalleryFragment newInstance(Gallery gallery){
+    public static GalleryFragment newInstance(Gallery gallery) {
         Bundle args = new Bundle();
         args.putParcelable(GALLERY_KEY, gallery);
         GalleryFragment galleryFragment = new GalleryFragment();
@@ -61,9 +60,6 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments()==null){
-
-        }
         this.gallery = getArguments().getParcelable(GALLERY_KEY);
     }
 
@@ -81,11 +77,12 @@ public class GalleryFragment extends Fragment {
         txDetailAddress.setText(gallery.getAddress());
         txDetailGalleryType.setText(gallery.getType());
 
-        String languages = "";
-        for(String language:gallery.getLanguages()){
-            languages += (languages.equals("") ? "":", ") + language;
+        StringBuffer languages = new StringBuffer();
+        for (String language : gallery.getLanguages()) {
+            languages.append(languages.length() == 0 ? "" : ", ");
+            languages.append(language);
         }
-        txLanguage.setText(languages);
+        txLanguage.setText(languages.toString());
 
         txHours.setText(gallery.getHours());
         txDetailedPrice.setText(gallery.getDetailedPrice());
@@ -97,9 +94,9 @@ public class GalleryFragment extends Fragment {
         return view;
     }
 
-    private void setFacilities(){
-        for(String facility: gallery.getFacilities()){
-            if(FACILITIES_IMG_MAP.get(facility.trim())!=null){
+    private void setFacilities() {
+        for (String facility : gallery.getFacilities()) {
+            if (FACILITIES_IMG_MAP.get(facility.trim()) != null) {
                 ImageView ivFacility = new ImageView(getActivity());
                 Bitmap bm = BitmapFactory.decodeResource(getResources(), FACILITIES_IMG_MAP.get(facility.trim()));
                 ivFacility.setImageBitmap(bm);
@@ -110,7 +107,7 @@ public class GalleryFragment extends Fragment {
     }
 
     @OnClick(R.id.ivGalleryDetail)
-    public void loadArtworks(View view){
+    public void loadArtworks(View view) {
         callbacks.loadArtworks(gallery);
     }
 
@@ -120,21 +117,13 @@ public class GalleryFragment extends Fragment {
     }
 
     @OnClick(R.id.llFacilitiesImg)
-    public void showFacilitiesList(View v){
+    public void showFacilitiesList(View v) {
         FragmentManager fm = getChildFragmentManager();
         FacilitiesDialogFragment dialog = FacilitiesDialogFragment.newInstance(gallery.getFacilities());
 
-        dialog.show(fm,"fragment_facilities_desc");
+        dialog.show(fm, "fragment_facilities_desc");
 
     }
-
-    public interface Callbacks {
-        public void onLoading(boolean loading);
-        public void loadArtworks(Gallery gallery);
-        public void loadMap(String address);
-    }
-
-    public Callbacks callbacks;
 
     @Override
     public void onAttach(Activity activity) {
@@ -142,7 +131,7 @@ public class GalleryFragment extends Fragment {
 
         super.onAttach(activity);
         if (activity instanceof Callbacks) {
-            callbacks = (Callbacks)activity;
+            callbacks = (Callbacks) activity;
         } else {
             throw new ClassCastException(activity.toString()
                     + " must implement GalleryFragment.Callbacks");
@@ -154,5 +143,13 @@ public class GalleryFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         callbacks = null;
+    }
+
+    public interface Callbacks {
+        void onLoading(boolean loading);
+
+        void loadArtworks(Gallery gallery);
+
+        void loadMap(String address);
     }
 }

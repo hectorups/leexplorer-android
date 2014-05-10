@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <skip/>
+    <skip />
     <color name="le_white">#FFFFFF</color>
     <color name="le_black">#FF333333</color>
     <color name="le_dark_grey">#FF747474</color>
@@ -10,7 +10,6 @@
     <color name="le_dark_grey_transparent">#BBABABAB</color>
     <color name="le_white_trans">#88FFFFFF</color>
     <color name="le_off_white">#FFF7F7F7</color>
-
 
 
     <color name="le_blue">#FF0098C6</color>

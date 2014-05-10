@@ -26,8 +26,17 @@ import static com.leexplorer.app.util.AppConstants.APP_NAME;
  * Created by hectormonserrate on 20/02/14.
  */
 public class BaseActivity extends ActionBarActivity {
-    private int processesLoading = 0;
     public static final String TAG = "com.leexplorer.activities.baseactivity";
+    // This Receiver is ON when the activity is displaying. When on it catches the notification
+    // before NotificationReceiver does and cancels it.
+    private BroadcastReceiver onShowNotification = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "canceling notification");
+            setResultCode(Activity.RESULT_CANCELED);
+        }
+    };
+    private int processesLoading = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +46,9 @@ public class BaseActivity extends ActionBarActivity {
 
     }
 
-    public void onLoading(boolean loading){
+    public void onLoading(boolean loading) {
         processesLoading += loading ? 1 : -1;
-        if( processesLoading < 1 ){
+        if (processesLoading < 1) {
             processesLoading = 0;
             setProgressBarIndeterminateVisibility(false);
         } else {
@@ -72,25 +81,13 @@ public class BaseActivity extends ActionBarActivity {
         BeaconScanService.setScannerAlarm(this, false);
     }
 
-
-    // This Receiver is ON when the activity is displaying. When on it catches the notification
-    // before NotificationReceiver does and cancels it.
-    private BroadcastReceiver onShowNotification = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "canceling notification");
-            setResultCode(Activity.RESULT_CANCELED);
-        }
-    };
-
     public void loadMap(String address) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = Uri.parse("geo:0,0+?q="+address);
+        Uri uri = Uri.parse("geo:0,0+?q=" + address);
         intent.setData(uri);
-        try{
+        try {
             startActivity(intent);
-        }
-        catch(ActivityNotFoundException e){
+        } catch (ActivityNotFoundException e) {
             Log.d(APP_NAME, "Error opening maps" + e.getMessage());
         }
 
@@ -101,7 +98,7 @@ public class BaseActivity extends ActionBarActivity {
         FragmentManager fm = getSupportFragmentManager();
         GalleryFragment fragment = (GalleryFragment) fm.findFragmentById(R.id.flGalleryDetailView);
 
-        if(fragment == null) {
+        if (fragment == null) {
             return;
         }
         Intent i = new Intent(this, ArtworkListActivity.class);
@@ -110,7 +107,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public boolean isTabletMode() {
-        if(findViewById(R.id.flGalleryDetailView)!=null){
+        if (findViewById(R.id.flGalleryDetailView) != null) {
             return true;
         }
         return false;

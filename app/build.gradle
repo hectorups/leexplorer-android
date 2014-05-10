@@ -58,7 +58,6 @@ dependencies {
     compile project(':paralloidviews')
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     compile 'com.crashlytics.android:crashlytics:1.+'
-
 }
 
 pmd {

@@ -50,28 +50,46 @@ public class ArtworkListFragment extends Fragment {
     private static final String TAG = "com.leexplorer.artworklistfragement";
 
     private static final String EXTRA_GALLERY = "extra_gallery";
-
-    @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
-
+    public Callbacks callbacks;
     protected ArtworkAdapter artworkAdapter;
-
+    @InjectView(R.id.sgvArtworks)
+    StaggeredGridView sgvArtworks;
     private ArrayList<Artwork> artworks = new ArrayList<>();
     private ArrayList<Beacon> beacons = new ArrayList<>();
     private boolean newBeaconInfo;
     private boolean scaningBeacons;
-
     private MenuItem menuReresh;
+    private BroadcastReceiver beaconsReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
+            ArrayList<Beacon> newBeacons = intent.getParcelableArrayListExtra(BeaconScanService.BEACONS);
+            if (resultCode == Activity.RESULT_OK) {
+                Log.d(TAG, "Beacons detected: " + newBeacons.size());
 
-    public interface Callbacks {
-        public void onLoading(boolean loading);
-        public void onArtworkClicked(Artwork aw);
-    }
+                beacons = newBeacons;
 
-    public Callbacks callbacks;
+                // If this is true, it means we are able to satisfy the
+                // scanBeacons call
+                if (scaningBeacons) {
+                    scaningBeacons = false;
+                    if (callbacks != null) {
+                        callbacks.onLoading(false);
+                    }
+                    if (menuReresh != null) {
+                        menuReresh.setVisible(true);
+                    }
+                    refreshArtworks();
+                    return;
+                }
 
+                distancesChangesCheck(beacons);
+            }
+        }
+    };
     private Gallery gallery;
 
-    public static ArtworkListFragment newInstance(Gallery gallery){
+    public static ArtworkListFragment newInstance(Gallery gallery) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_GALLERY, gallery);
 
@@ -87,7 +105,7 @@ public class ArtworkListFragment extends Fragment {
 
         super.onAttach(activity);
         if (activity instanceof Callbacks) {
-            callbacks = (Callbacks)activity;
+            callbacks = (Callbacks) activity;
         } else {
             throw new ClassCastException(activity.toString()
                     + " must implement ArtworkListFragment.Callbacks");
@@ -111,7 +129,7 @@ public class ArtworkListFragment extends Fragment {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(BeaconScanService.ACTION);
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(beaconsReceiver, filter);
@@ -120,9 +138,9 @@ public class ArtworkListFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        try{
+        try {
             getActivity().unregisterReceiver(beaconsReceiver);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
@@ -160,8 +178,8 @@ public class ArtworkListFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.menuRefresh:
                 scanBeacons();
                 return true;
@@ -170,46 +188,58 @@ public class ArtworkListFragment extends Fragment {
         }
     }
 
-    private void loadArtworkList(){
+    private void loadArtworkList() {
         // First explicitly call scan beacons to get info asap
         scanBeacons();
 
         // Get data from Api or DB
-        if( LeexplorerApplication.isOnline() ){
+        if (LeexplorerApplication.isOnline(getActivity())) {
             loadArtworkListFromApi();
         } else {
             loadArtworkListFromDB();
         }
     }
 
-    private void loadArtworkListFromApi(){
-        if(callbacks != null) callbacks.onLoading(true);
+    private void loadArtworkListFromApi() {
+        if (callbacks != null) {
+            callbacks.onLoading(true);
+        }
         Client.getArtworksData(gallery.getGalleryId())
                 .subscribeOn(Schedulers.threadPoolForIO())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Observer<ArrayList<Artwork>>() {
-                            @Override public void onCompleted() {}
+                            @Override
+                            public void onCompleted() {
+                            }
 
-                            @Override public void onError(Throwable throwable) {
+                            @Override
+                            public void onError(Throwable throwable) {
                                 throwable.printStackTrace();
-                                if(callbacks != null) callbacks.onLoading(false);
-                                if(artworks == null || artworks.size() == 0){
+                                if (callbacks != null) {
+                                    callbacks.onLoading(false);
+                                }
+                                if (artworks == null || artworks.size() == 0) {
                                     loadArtworkListFromDB();
                                 }
                             }
 
-                            @Override public void onNext(ArrayList<Artwork> aws) {
+                            @Override
+                            public void onNext(ArrayList<Artwork> aws) {
                                 updateAdapterDataset(aws);
-                                if(callbacks != null) callbacks.onLoading(false);
+                                if (callbacks != null) {
+                                    callbacks.onLoading(false);
+                                }
                             }
                         }
                 );
 
     }
 
-    private void loadArtworkListFromDB(){
-        if(callbacks != null) callbacks.onLoading(true);
+    private void loadArtworkListFromDB() {
+        if (callbacks != null) {
+            callbacks.onLoading(true);
+        }
 
         Observable.create(new Observable.OnSubscribeFunc<ArrayList<Artwork>>() {
             @Override
@@ -219,40 +249,50 @@ public class ArtworkListFragment extends Fragment {
                 return Subscriptions.empty();
             }
         }).subscribeOn(Schedulers.threadPoolForIO())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                    new Observer<ArrayList<Artwork>>() {
-                        @Override public void onCompleted() {callbacks.onLoading(false);}
-                        @Override public void onError(Throwable throwable) {}
-                        @Override public void onNext(ArrayList<Artwork> aws) {
-                            updateAdapterDataset(aws);
-                        }
-                    }
-            );
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Observer<ArrayList<Artwork>>() {
+                            @Override
+                            public void onCompleted() {
+                                callbacks.onLoading(false);
+                            }
 
-        if(callbacks != null) callbacks.onLoading(false);
+                            @Override
+                            public void onError(Throwable throwable) {
+                            }
+
+                            @Override
+                            public void onNext(ArrayList<Artwork> aws) {
+                                updateAdapterDataset(aws);
+                            }
+                        }
+                );
+
+        if (callbacks != null) {
+            callbacks.onLoading(false);
+        }
     }
 
-    private void refreshArtworks(){
-        if(artworks.size() > 0){
+    private void refreshArtworks() {
+        if (artworks.size() > 0) {
             refreshArtworkAdapter();
         } else {
             loadArtworkList();
         }
     }
 
-    private void updateAdapterDataset(ArrayList<Artwork> aws){
+    private void updateAdapterDataset(ArrayList<Artwork> aws) {
         artworks.clear();
-        for(Artwork aw: aws){
+        for (Artwork aw : aws) {
             artworks.add(aw);
         }
         refreshArtworkAdapter();
     }
 
-    private void refreshArtworkAdapter(){
+    private void refreshArtworkAdapter() {
         BeaconArtworkUpdater.updateDistances(artworks, beacons);
 
-        Collections.sort(artworks);
+        Collections.sort(artworks, new Artwork.ArtworkComparable());
 
         artworkAdapter.notifyDataSetChanged();
         newBeaconInfo = false;
@@ -261,16 +301,22 @@ public class ArtworkListFragment extends Fragment {
     /*
      * Called by the host activity to get the fragment artworks
      */
-    public ArrayList<Artwork> getArtworks(){
+    public ArrayList<Artwork> getArtworks() {
         return artworks;
     }
 
 
-    private void scanBeacons(){
-        if(getActivity() == null) return;
+    private void scanBeacons() {
+        if (getActivity() == null) {
+            return;
+        }
 
-        if(callbacks != null) callbacks.onLoading(true);
-        if(menuReresh != null) menuReresh.setVisible(false);
+        if (callbacks != null) {
+            callbacks.onLoading(true);
+        }
+        if (menuReresh != null) {
+            menuReresh.setVisible(false);
+        }
 
         scaningBeacons = true;
 
@@ -278,47 +324,34 @@ public class ArtworkListFragment extends Fragment {
         getActivity().startService(i);
     }
 
-    private BroadcastReceiver beaconsReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
-            ArrayList<Beacon> newBeacons = intent.getParcelableArrayListExtra(BeaconScanService.BEACONS);
-            if (resultCode == Activity.RESULT_OK){
-                Log.d(TAG, "Beacons detected: " + newBeacons.size());
-
-                beacons = newBeacons;
-
-                // If this is true, it means we are able to satisfy the
-                // scanBeacons call
-                if(scaningBeacons){
-                    scaningBeacons = false;
-                    if(callbacks != null) callbacks.onLoading(false);
-                    if(menuReresh != null) menuReresh.setVisible(true);
-                    refreshArtworks();
-                    return;
-                }
-
-                distancesChangesCheck(beacons);
-            }
+    private void distancesChangesCheck(ArrayList<Beacon> beacons) {
+        if (newBeaconInfo) {
+            return;
         }
-    };
-
-    private void distancesChangesCheck(ArrayList<Beacon> beacons){
-        if(newBeaconInfo) return;
 
         BeaconArtworkUpdater.updateDistances(artworks, beacons);
         ArrayList<String> currentOrderedMacs = new ArrayList<>();
         ArrayList<String> newOrderedMacs = new ArrayList<>();
-        for(Artwork aw: artworks){ currentOrderedMacs.add(aw.getMac());}
-        Collections.sort(artworks);
-        for(Artwork aw: artworks){ newOrderedMacs.add(aw.getMac());}
-
-        for(int i = 0; i < currentOrderedMacs.size() ; i++){
-          if(! currentOrderedMacs.get(i).equals(newOrderedMacs.get(i)) ){
-              newBeaconInfo = true;
-              break;
-          }
+        for (Artwork aw : artworks) {
+            currentOrderedMacs.add(aw.getMac());
         }
+        Collections.sort(artworks, new Artwork.ArtworkComparable());
+        for (Artwork aw : artworks) {
+            newOrderedMacs.add(aw.getMac());
+        }
+
+        for (int i = 0; i < currentOrderedMacs.size(); i++) {
+            if (!currentOrderedMacs.get(i).equals(newOrderedMacs.get(i))) {
+                newBeaconInfo = true;
+                break;
+            }
+        }
+    }
+
+    public interface Callbacks {
+        void onLoading(boolean loading);
+
+        void onArtworkClicked(Artwork aw);
     }
 
 }

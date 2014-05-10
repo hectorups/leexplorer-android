@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:fillViewport="true">
 
-        <include layout="@layout/fragment_gallery_content"/>
+        <include layout="@layout/fragment_gallery_content" />
 
     </ScrollView>
 

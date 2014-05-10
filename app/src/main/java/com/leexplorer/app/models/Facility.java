@@ -8,7 +8,7 @@ public class Facility {
     private String facilityName;
     private int facilityBitMapId;
 
-    public Facility(){
+    public Facility() {
 
     }
 

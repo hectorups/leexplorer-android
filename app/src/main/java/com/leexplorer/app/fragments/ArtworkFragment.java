@@ -62,59 +62,133 @@ import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 /**
  * Created by hectormonserrate on 11/02/14.
  */
-public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChangeListener{
-    private static final String TAG = "com.leexplorer.artworkfragment";
+public class ArtworkFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+    // private static final String TAG = "com.leexplorer.artworkfragment";
     private static final String EXTRA_ARTWORK = "extra_artwork";
     private static final String SAVED_CURRENT_DURAITON = "saved_current_duration";
     private static final String SAVED_TOTAL_DURAITON = "saved_total_duration";
     private static final String SAVED_NOW_PLAYING = "saved_now_playing";
     private static final String SAVED_ON_PAUSE = "saved_on_pause";
 
-    private final int LIKED_IMG_SIZE = 52;
-
+    private static final int LIKED_IMG_SIZE = 52;
+    public Callbacks callbacks;
     @InjectView(R.id.tvAuthorAndDate)
     TextView tvAuthorAndDate;
-
     @InjectView(R.id.tvDescription)
     TextView tvDescription;
-
     @InjectView(R.id.ivArtwork)
     ImageView ivArtwork;
-
     @InjectView(R.id.ivLiked)
     ImageView ivLiked;
-
     @InjectView(R.id.ivLike)
     ImageView ivLike;
-
     @InjectView(R.id.svDescription)
     FrameLayout svDescription;
-
-    @InjectView(R.id.flHeaderOverlay) FrameLayout flHeaderOverlay;
-    @InjectView(R.id.flLike) FrameLayout flLike;
-    @InjectView(R.id.tvLikesCount) TextView tvLikesCount;
-    @InjectView(R.id.ivLikesCount) ImageView ivLikesCount;
-
-    @InjectView(R.id.flPlayAudio) FrameLayout flPlayAudio;
-    @InjectView(R.id.btnPlay) ImageButton btnPlay;
-    @InjectView(R.id.btnPause) ImageButton btnPause;
-    @InjectView(R.id.sbAudio) SeekBar sbAudio;
-    @InjectView(R.id.tvDuration) TextView tvDuration;
-    @InjectView(R.id.tvTotalDuration) TextView tvTotalDuration;
-
-    private MenuItem menuPlay;
-
-
+    @InjectView(R.id.flHeaderOverlay)
+    FrameLayout flHeaderOverlay;
+    @InjectView(R.id.flLike)
+    FrameLayout flLike;
+    @InjectView(R.id.tvLikesCount)
+    TextView tvLikesCount;
+    @InjectView(R.id.ivLikesCount)
+    ImageView ivLikesCount;
+    @InjectView(R.id.flPlayAudio)
+    FrameLayout flPlayAudio;
+    @InjectView(R.id.btnPlay)
+    ImageButton btnPlay;
+    @InjectView(R.id.btnPause)
+    ImageButton btnPause;
+    @InjectView(R.id.sbAudio)
+    SeekBar sbAudio;
+    @InjectView(R.id.tvDuration)
+    TextView tvDuration;
+    @InjectView(R.id.tvTotalDuration)
+    TextView tvTotalDuration;
     Artwork artwork;
     ShareActionProvider miShareAction;
+    private MenuItem menuPlay;
+    private Target targetForShare = new Target() {
+        @Override
+        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+            // Do it in the bg so the ui feels fast
+            Observable.create(new Observable.OnSubscribeFunc<Uri>() {
+                @Override
+                public Subscription onSubscribe(Observer<? super Uri> bitmapObserver) {
+                    Uri bmpUri = null;
+                    try {
+                        File file = new File(Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_DOWNLOADS), "share_image.png");
+                        FileOutputStream out = new FileOutputStream(file);
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                        out.close();
+                        bmpUri = Uri.fromFile(file);
+                        if (bmpUri != null) {
+                            bitmapObserver.onNext(bmpUri);
+                        }
+                        bitmapObserver.onCompleted();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return Subscriptions.empty();
+                }
+            }).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Uri>() {
+                        @Override
+                        public void call(Uri bmpUri) {
+                            // Construct a ShareIntent with link to image
+                            Intent shareIntent = new Intent();
+                            shareIntent.setAction(Intent.ACTION_SEND);
+                            shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+                            shareIntent.setType("image/*");
 
-    public interface Callbacks {
-        public void onLoading(boolean loading);
-    }
+                            miShareAction.setShareIntent(shareIntent);
+                        }
+                    });
+        }
 
-    public Callbacks callbacks;
+        @Override
+        public void onBitmapFailed(Drawable d) {
+        }
 
-    public static ArtworkFragment newInstance(Artwork aw){
+        @Override
+        public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
+        }
+    };
+    private long audioTotalDuration = 0;
+    private long audioCurrentDuration = 0;
+    private boolean nowPlaying = false;
+    private boolean onPause = false;
+    private BroadcastReceiver audioProgressReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
+            Artwork playingArtwork = intent.getParcelableExtra(MediaPlayerService.ARTWORK);
+            if (resultCode == Activity.RESULT_OK) {
+                if (artwork.equals(playingArtwork)) {
+                    audioTotalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
+                    audioCurrentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
+
+                    if (!onPause) {
+                        if (callbacks != null) {
+                            callbacks.onLoading(false);
+                        }
+                        nowPlaying = true;
+                    }
+                } else {
+                    audioCurrentDuration = 0;
+                    audioTotalDuration = 0;
+                    nowPlaying = false;
+                    onPause = false;
+                }
+
+                showAudio();
+                updateSeekbar();
+            }
+        }
+    };
+
+    public static ArtworkFragment newInstance(Artwork aw) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_ARTWORK, aw);
 
@@ -130,7 +204,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
         super.onAttach(activity);
         if (activity instanceof Callbacks) {
-            callbacks = (Callbacks)activity;
+            callbacks = (Callbacks) activity;
         } else {
             throw new ClassCastException(activity.toString()
                     + " must implement ArtworkFragment.Callbacks");
@@ -152,7 +226,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         IntentFilter filter = new IntentFilter(MediaPlayerService.ACTION);
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(audioProgressReceiver, filter);
@@ -161,9 +235,9 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     @Override
     public void onPause() {
         super.onPause();
-        try{
+        try {
             getActivity().unregisterReceiver(audioProgressReceiver);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
@@ -177,7 +251,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
         savedInstanceState.putBoolean(SAVED_ON_PAUSE, onPause);
     }
 
-
+    @SuppressWarnings("PMD")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -206,22 +280,22 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 int offset[] = new int[2];
-                flLike.getLocationOnScreen( offset );
+                flLike.getLocationOnScreen(offset);
 
-                if( Math.abs(motionEvent.getRawX() - (offset[0] + LIKED_IMG_SIZE/2 ) ) < LIKED_IMG_SIZE * 2
-                    && Math.abs(motionEvent.getRawY() - (offset[1] + LIKED_IMG_SIZE/2 ) ) < LIKED_IMG_SIZE * 2
-                        ){
+                if (Math.abs(motionEvent.getRawX() - (offset[0] + LIKED_IMG_SIZE / 2)) < LIKED_IMG_SIZE * 2
+                        && Math.abs(motionEvent.getRawY() - (offset[1] + LIKED_IMG_SIZE / 2)) < LIKED_IMG_SIZE * 2
+                        ) {
                     onClickLike();
                 }
                 return false;
             }
         });
-        if( artwork.isiLiked() ){
+        if (artwork.isiLiked()) {
             ivLiked.setVisibility(View.VISIBLE);
         }
 
         tvLikesCount.setText(String.valueOf(artwork.getLikesCount()));
-         Picasso.with(getActivity())
+        Picasso.with(getActivity())
                 .load(artwork.getImageUrl())
                 .fit()
                 .centerCrop()
@@ -231,6 +305,11 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
         return rootView;
     }
+
+    /*
+     * AUDIO
+     *
+     */
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -242,7 +321,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
         menuPlay = menu.findItem(R.id.menuPlay);
 
-        if(artwork.getAudioUrl() != null ){
+        if (artwork.getAudioUrl() != null) {
             menuPlay.setVisible(true);
         } else {
             menuPlay.setVisible(false);
@@ -255,27 +334,32 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-        switch (item.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 navigateBack();
-                return true;
+                break;
             case R.id.menuPlay:
                 menuPlay.setVisible(false);
                 playAudio(btnPlay);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return true;
     }
 
     public void onClickLike() {
-        Client.getService().likeArtwork(artwork.isiLiked() ? 0:1, new Callback<Void>(){
-            public void failure( RetrofitError re){}
-            public void success( Void v, Response r){}
+        Client.getService().likeArtwork(artwork.isiLiked() ? 0 : 1, new Callback<Void>() {
+            public void failure(RetrofitError re) {
+            }
+
+            public void success(Void v, Response r) {
+            }
         });
 
 
-        if(artwork.isiLiked()){
+        if (artwork.isiLiked()) {
             artwork.unlike();
             ivLiked.setVisibility(View.INVISIBLE);
 
@@ -287,91 +371,37 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
             anim.start();
         }
 
-        tvLikesCount.setText( String.valueOf(artwork.getLikesCount()) );
+        tvLikesCount.setText(String.valueOf(artwork.getLikesCount()));
     }
 
-    private void navigateBack(){
-        if(NavUtils.getParentActivityName(getActivity()) != null){
+    private void navigateBack() {
+        if (NavUtils.getParentActivityName(getActivity()) != null) {
             NavUtils.navigateUpFromSameTask(getActivity());
         }
     }
 
-    private Target targetForShare = new Target() {
-        @Override
-        public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-            // Do it in the bg so the ui feels fast
-            Observable.create(new Observable.OnSubscribeFunc<Uri>() {
-                @Override
-                public Subscription onSubscribe(Observer<? super Uri> bitmapObserver) {
-                    Uri bmpUri = null;
-                    try {
-                        File file =  new File(Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_DOWNLOADS), "share_image.png");
-                        FileOutputStream out = new FileOutputStream(file);
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-                        out.close();
-                        bmpUri = Uri.fromFile(file);
-                        if(bmpUri != null) bitmapObserver.onNext(bmpUri);
-                        bitmapObserver.onCompleted();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return Subscriptions.empty();
-                }
-            }).subscribeOn(Schedulers.newThread())
-              .observeOn(AndroidSchedulers.mainThread())
-              .subscribe(new Action1<Uri>() {
-                  @Override
-                  public void call(Uri bmpUri) {
-                      // Construct a ShareIntent with link to image
-                      Intent shareIntent = new Intent();
-                      shareIntent.setAction(Intent.ACTION_SEND);
-                      shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-                      shareIntent.setType("image/*");
-
-                      miShareAction.setShareIntent(shareIntent);
-                  }
-              });
-        }
-
-        @Override
-        public void onBitmapFailed(Drawable d) {
-        }
-
-        @Override
-        public void onPrepareLoad(android.graphics.drawable.Drawable drawable){}
-    };
-
-    /*
-     * AUDIO
-     *
-     */
-
-    private long audioTotalDuration = 0;
-    private long audioCurrentDuration = 0;
-    private boolean nowPlaying = false;
-    private boolean onPause = false;
-
     @OnClick(R.id.btnPlay)
-    public void playAudio(View view){
+    public void playAudio(View view) {
 
         Intent i = new Intent(getActivity(), MediaPlayerService.class);
         i.putExtra(MediaPlayerService.ARTWORK, artwork);
         //i.putExtra(MediaPlayerService.ARTWORKS, );
-        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PLAY );
+        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PLAY);
         getActivity().startService(i);
 
         updateSeekbar();
-        if(onPause == false && callbacks != null) callbacks.onLoading(true);
+        if (onPause == false && callbacks != null) {
+            callbacks.onLoading(true);
+        }
         nowPlaying = true;
         onPause = false;
         showAudio();
     }
 
-    private void updateSeekbar(){
+    private void updateSeekbar() {
         sbAudio.setMax(100);
 
-        if( audioCurrentDuration > 0 && audioTotalDuration > 0){
+        if (audioCurrentDuration > 0 && audioTotalDuration > 0) {
             // Displaying Total Duration time
             tvTotalDuration.setText(String.valueOf(AudioTime.milliSecondsToTimer(audioTotalDuration)));
             // Displaying time completed playing
@@ -384,23 +414,23 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
 
     }
 
-    private void showAudio(){
+    private void showAudio() {
 
-        if(menuPlay != null){
-            if(audioCurrentDuration == 0 && artwork.getAudioUrl() != null ){
+        if (menuPlay != null) {
+            if (audioCurrentDuration == 0 && artwork.getAudioUrl() != null) {
                 menuPlay.setVisible(true);
             } else {
                 menuPlay.setVisible(false);
             }
         }
 
-        if(!nowPlaying && !onPause){
+        if (!nowPlaying && !onPause) {
             flPlayAudio.setVisibility(View.GONE);
             return;
         }
 
         flPlayAudio.setVisibility(View.VISIBLE);
-        if(nowPlaying){
+        if (nowPlaying) {
             btnPause.setVisibility(View.VISIBLE);
             btnPlay.setVisibility(View.GONE);
         } else {
@@ -410,7 +440,7 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     }
 
     @OnClick(R.id.btnPause)
-    public void pauseAudio(View view){
+    public void pauseAudio(View view) {
         pause();
         onPause = true;
         nowPlaying = false;
@@ -418,57 +448,37 @@ public class ArtworkFragment extends Fragment implements  SeekBar.OnSeekBarChang
     }
 
 
-    public void pause(){
+    public void pause() {
         Intent i = new Intent(getActivity(), MediaPlayerService.class);
-        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PAUSE );
+        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PAUSE);
         getActivity().startService(i);
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {}
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+    }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {}
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
 
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
-        if(  !nowPlaying ) return;
+        if (!nowPlaying) {
+            return;
+        }
         int currentPosition = AudioTime.progressToTimer(seekBar.getProgress(), (int) audioTotalDuration);
 
         Intent i = new Intent(getActivity(), MediaPlayerService.class);
-        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_SEEK_TO );
+        i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_SEEK_TO);
         i.putExtra(MediaPlayerService.SEEK_TO_VALUE, currentPosition);
         getActivity().startService(i);
 
     }
 
-    private BroadcastReceiver audioProgressReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-        int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
-        Artwork playingArtwork = intent.getParcelableExtra(MediaPlayerService.ARTWORK);
-        if (resultCode == Activity.RESULT_OK){
-            if(artwork.equals(playingArtwork)) {
-                audioTotalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
-                audioCurrentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
-
-                if(!onPause){
-                    if(callbacks != null) callbacks.onLoading(false);
-                    nowPlaying = true;
-                }
-            } else {
-                audioCurrentDuration = 0;
-                audioTotalDuration = 0;
-                nowPlaying = false;
-                onPause = false;
-            }
-
-            showAudio();
-            updateSeekbar();
-        }
-        }
-    };
-
+    public interface Callbacks {
+        void onLoading(boolean loading);
+    }
 
 
 }

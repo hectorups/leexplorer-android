@@ -17,7 +17,9 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context c, Intent i) {
         Log.i(TAG, "received result: " + getResultCode());
-        if (getResultCode() != Activity.RESULT_OK) return;
+        if (getResultCode() != Activity.RESULT_OK) {
+            return;
+        }
 
         int requestCode = i.getIntExtra("REQUEST_CODE", 0);
         Notification notification = i.getParcelableExtra("NOTIFICATION");

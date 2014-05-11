@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +17,8 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.models.Gallery;
 import com.squareup.picasso.Picasso;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -26,7 +28,7 @@ import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
 /**
  * Created by deepakdhiman on 2/23/14.
  */
-public class GalleryFragment extends Fragment {
+public class GalleryFragment extends BaseFragment {
 
     private static String GALLERY_KEY = "gallery";
     public Callbacks callbacks;
@@ -49,6 +51,8 @@ public class GalleryFragment extends Fragment {
     LinearLayout llFacilitiesImg;
     private Gallery gallery;
 
+    @Inject Picasso picasso;
+
     public static GalleryFragment newInstance(Gallery gallery) {
         Bundle args = new Bundle();
         args.putParcelable(GALLERY_KEY, gallery);
@@ -68,8 +72,9 @@ public class GalleryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gallery_content, container, false);
         ButterKnife.inject(this, view);
 
-        Picasso.with(getActivity())
-                .load(gallery.getArtworkImageUrls().get(0))
+        Log.d("adsf", gallery.getArtworkImageUrls().get(0));
+
+        picasso.load(gallery.getArtworkImageUrls().get(0))
                 .fit()
                 .centerCrop()
                 .into(ivGalleryDetail);

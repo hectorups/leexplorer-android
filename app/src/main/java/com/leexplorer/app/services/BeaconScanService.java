@@ -14,11 +14,14 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkListActivity;
+import com.leexplorer.app.activities.GalleryActivity;
+import com.leexplorer.app.activities.GalleryListActivity;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.models.Gallery;
@@ -125,11 +128,21 @@ public class BeaconScanService extends IntentService {
         }
 
         Resources r = getResources();
-        Intent artworkIntent = new Intent(this, ArtworkListActivity.class);
-        artworkIntent.putExtra(ArtworkListActivity.EXTRA_GALLERY, g);
-        artworkIntent.putExtra(ArtworkListActivity.EXTRA_FROM_NOTIFICATION, true);
-        PendingIntent pi = PendingIntent
-                .getActivity(this, 0, artworkIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+
+        stackBuilder.addNextIntent(new Intent(this, GalleryListActivity.class));
+
+        Intent galleryIntent = new Intent(this, GalleryActivity.class);
+        galleryIntent.putExtra(GalleryActivity.GALLERY_KEY, g);
+        stackBuilder.addNextIntent(galleryIntent);
+
+        Intent artworkListIntent = new Intent(this, ArtworkListActivity.class);
+        artworkListIntent.putExtra(ArtworkListActivity.EXTRA_GALLERY, g);
+        artworkListIntent.putExtra(ArtworkListActivity.EXTRA_FROM_NOTIFICATION, true);
+        stackBuilder.addNextIntent(artworkListIntent);
+
+        PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Notification notification = new NotificationCompat.Builder(this)
                 .setTicker(r.getString(R.string.beacon_notification_title))
@@ -160,36 +173,36 @@ public class BeaconScanService extends IntentService {
         return g;
     }
 
-    private Gallery galleryFromBeacon(Beacon b) {
+    private Gallery galleryFromBeacon(Beacon beacon) {
         String galleryId = null;
-        com.leexplorer.app.models.Artwork aw = com.leexplorer.app.models.Artwork.findByMac(b.getMac());
+        com.leexplorer.app.models.Artwork artwork = com.leexplorer.app.models.Artwork.findByMac(beacon.getMac());
 
-        if (aw == null) {
+        if (artwork == null) {
             Artwork apiAw = null;
 
             try {
-                apiAw = Client.getService().getArtwork(b.getMac());
+                apiAw = Client.getService().getArtwork(beacon.getMac());
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             if (apiAw != null) {
-                aw = com.leexplorer.app.models.Artwork.fromJsonModel(apiAw);
-                aw.save();
+                artwork = com.leexplorer.app.models.Artwork.fromJsonModel(apiAw);
+                artwork.save();
             }
         }
 
-        if (aw != null) {
-            galleryId = aw.getGalleryId();
+        if (artwork != null) {
+            galleryId = artwork.getGalleryId();
         }
 
         if (galleryId == null) {
             return null;
         }
 
-        Gallery g = Gallery.findById(galleryId);
+        Gallery gallery = Gallery.findById(galleryId);
 
-        if (g == null) {
+        if (gallery == null) {
             com.leexplorer.app.api.models.Gallery apiGallery = null;
             try {
                 apiGallery = Client.getService().getGallery(galleryId);
@@ -198,13 +211,13 @@ public class BeaconScanService extends IntentService {
             }
 
             if (apiGallery != null) {
-                g = Gallery.fromApiModel(apiGallery);
+                gallery = Gallery.fromApiModel(apiGallery);
             }
-        } else if (g.isWasSeen()) {
+        } else if (gallery.isWasSeen()) {
             return null;
         }
 
-        return g;
+        return gallery;
     }
 
 }

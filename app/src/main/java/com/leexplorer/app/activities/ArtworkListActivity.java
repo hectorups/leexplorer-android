@@ -28,11 +28,11 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
 
         gallery = getIntent().getParcelableExtra(EXTRA_GALLERY);
 
-        boolean from_notification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
-        if (from_notification) {
-            gallery.setWasSeen(true);
-            gallery.save();
-        }
+//        boolean from_notification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
+//        if (from_notification) {
+//            gallery.setWasSeen(true);
+//            gallery.save();
+//        }
 
         setTitle(gallery.getName());
 

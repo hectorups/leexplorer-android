@@ -14,7 +14,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Window;
 
-import com.crashlytics.android.Crashlytics;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
@@ -42,8 +41,6 @@ public class BaseActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        Crashlytics.start(this);
-
     }
 
     public void onLoading(boolean loading) {

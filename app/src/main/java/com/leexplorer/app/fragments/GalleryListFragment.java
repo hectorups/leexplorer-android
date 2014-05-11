@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +30,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by deepakdhiman on 2/17/14.
  */
-public class GalleryListFragment extends Fragment {
+public class GalleryListFragment extends BaseFragment {
 
     public Callbacks callbacks;
     @InjectView(R.id.lvGalleries)
@@ -42,7 +41,7 @@ public class GalleryListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        galleries = new ArrayList<Gallery>();
+        galleries = new ArrayList<>();
         galleryAdapter = new GalleryAdapter(this, galleries);
 
     }

@@ -130,13 +130,10 @@ public class Gallery extends Model implements Parcelable {
     if (!(o instanceof Gallery)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     Gallery gallery = (Gallery) o;
 
-    if (!galleryId.equals(gallery.galleryId)) {
+    if (!galleryId.contentEquals(gallery.galleryId)) {
       return false;
     }
 

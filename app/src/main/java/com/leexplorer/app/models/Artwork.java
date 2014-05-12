@@ -219,13 +219,10 @@ public class Artwork extends Model implements Parcelable {
     if (!(o instanceof Artwork)) {
       return false;
     }
-    if (!super.equals(o)) {
-      return false;
-    }
 
     Artwork artwork = (Artwork) o;
 
-    if (!mac.equals(artwork.mac)) {
+    if (!mac.contentEquals(artwork.mac)) {
       return false;
     }
 

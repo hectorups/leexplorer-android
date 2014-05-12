@@ -27,8 +27,8 @@ import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
  * Created by deepakdhiman on 2/23/14.
  */
 public class GalleryFragment extends BaseFragment {
-
-  private static String GALLERY_KEY = "gallery";
+  private static final String TAG = "GalleryFragment";
+  private static final String GALLERY_KEY = "gallery";
   public Callbacks callbacks;
   @InjectView(R.id.ivGalleryDetail) ImageView ivGalleryDetail;
   @InjectView(R.id.txDetailAddress) TextView txDetailAddress;
@@ -54,7 +54,17 @@ public class GalleryFragment extends BaseFragment {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    this.gallery = getArguments().getParcelable(GALLERY_KEY);
+
+    if( savedInstanceState != null ) {
+      this.gallery = savedInstanceState.getParcelable(GALLERY_KEY);
+    } else {
+      this.gallery = getArguments().getParcelable(GALLERY_KEY);
+    }
+  }
+
+  @Override public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelable(GALLERY_KEY, gallery);
   }
 
   @Override
@@ -63,7 +73,7 @@ public class GalleryFragment extends BaseFragment {
     View view = inflater.inflate(R.layout.fragment_gallery_content, container, false);
     ButterKnife.inject(this, view);
 
-    Log.d("adsf", gallery.getArtworkImageUrls().get(0));
+    Log.d(TAG, gallery.getArtworkImageUrls().get(0));
 
     int thumborBucket = (int) getActivity().getResources().getDimension(R.dimen.thumbor_medium);
     String url =

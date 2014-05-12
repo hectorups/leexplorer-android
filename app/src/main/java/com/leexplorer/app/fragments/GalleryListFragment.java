@@ -90,29 +90,29 @@ public class GalleryListFragment extends BaseFragment {
         .subscribeOn(Schedulers.threadPoolForIO())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Gallery>>() {
-              @Override
-              public void onCompleted() {
-              }
+                     @Override
+                     public void onCompleted() {
+                     }
 
-              @Override
-              public void onError(Throwable throwable) {
-                throwable.printStackTrace();
-                if (callbacks != null) {
-                  callbacks.onLoading(false);
-                }
-                //                                if (galleries == null || galleries.size() == 0) {
-                //                                    loadGalleryListFromDB();
-                //                                }
-              }
+                     @Override
+                     public void onError(Throwable throwable) {
+                       throwable.printStackTrace();
+                       if (callbacks != null) {
+                         callbacks.onLoading(false);
+                       }
+                       //                                if (galleries == null || galleries.size() == 0) {
+                       //                                    loadGalleryListFromDB();
+                       //                                }
+                     }
 
-              @Override
-              public void onNext(ArrayList<Gallery> galleries) {
-                updateAdapterDataset(galleries);
-                if (callbacks != null) {
-                  callbacks.onLoading(false);
-                }
-              }
-            }
+                     @Override
+                     public void onNext(ArrayList<Gallery> galleries) {
+                       updateAdapterDataset(galleries);
+                       if (callbacks != null) {
+                         callbacks.onLoading(false);
+                       }
+                     }
+                   }
         );
   }
 

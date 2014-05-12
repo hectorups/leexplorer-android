@@ -5,71 +5,71 @@
     android:fillViewport="true"
     tools:context="com.leexplorer.app.activities.ArtworkActivity$PlaceholderFragment">
 
-    <!-- Profile Image -->
+  <!-- Profile Image -->
+  <ImageView
+      android:id="@+id/ivArtwork"
+      android:layout_width="match_parent"
+      android:layout_height="380dp"
+      android:layout_marginTop="-100dp"
+      android:scaleType="fitCenter"/>
+
+  <!-- Like -->
+  <FrameLayout
+      android:id="@+id/flLike"
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:layout_gravity="left|top"
+      android:layout_marginTop="5dp">
+
     <ImageView
-        android:id="@+id/ivArtwork"
-        android:layout_width="match_parent"
-        android:layout_height="380dp"
-        android:layout_marginTop="-100dp"
-        android:scaleType="fitCenter" />
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_gravity="center"
+        android:src="@drawable/signal_bg"/>
 
-    <!-- Like -->
     <FrameLayout
-        android:id="@+id/flLike"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="left|top"
-        android:layout_marginTop="5dp">
-
-        <ImageView
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_gravity="center"
-            android:src="@drawable/signal_bg" />
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center">
-
-            <ImageView
-                android:id="@+id/ivLike"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_heart" />
-
-            <ImageView
-                android:id="@+id/ivLiked"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_full_heart"
-                android:visibility="invisible" />
-        </FrameLayout>
-
-    </FrameLayout>
-
-    <!-- Contents -->
-    <uk.co.chrisjenx.paralloid.views.ParallaxScrollView
-        android:id="@+id/svDescription"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_gravity="center">
 
-        <include layout="@layout/artwork_content" />
+      <ImageView
+          android:id="@+id/ivLike"
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:layout_gravity="center"
+          android:src="@drawable/ic_heart"/>
 
-    </uk.co.chrisjenx.paralloid.views.ParallaxScrollView>
-
-    <FrameLayout
-        android:id="@+id/flPlayAudio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:visibility="invisible">
-
-        <include layout="@layout/audio_player" />
-
+      <ImageView
+          android:id="@+id/ivLiked"
+          android:layout_width="30dp"
+          android:layout_height="30dp"
+          android:layout_gravity="center"
+          android:src="@drawable/ic_full_heart"
+          android:visibility="invisible"/>
     </FrameLayout>
+
+  </FrameLayout>
+
+  <!-- Contents -->
+  <uk.co.chrisjenx.paralloid.views.ParallaxScrollView
+      android:id="@+id/svDescription"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:fillViewport="true">
+
+    <include layout="@layout/artwork_content"/>
+
+  </uk.co.chrisjenx.paralloid.views.ParallaxScrollView>
+
+  <FrameLayout
+      android:id="@+id/flPlayAudio"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="bottom|center"
+      android:visibility="invisible">
+
+    <include layout="@layout/audio_player"/>
+
+  </FrameLayout>
 
 </FrameLayout>

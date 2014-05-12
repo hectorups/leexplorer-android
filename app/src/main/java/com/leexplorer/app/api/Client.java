@@ -69,7 +69,8 @@ public class Client {
 
             return Subscriptions.empty();
           }
-        });
+        }
+    );
   }
 
   public Observable<ArrayList<Gallery>> getGalleriesData() {
@@ -103,6 +104,7 @@ public class Client {
 
             return Subscriptions.empty();
           }
-        });
+        }
+    );
   }
 }

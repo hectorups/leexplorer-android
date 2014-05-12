@@ -203,29 +203,29 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribeOn(Schedulers.threadPoolForIO())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Artwork>>() {
-              @Override
-              public void onCompleted() {
-              }
+                     @Override
+                     public void onCompleted() {
+                     }
 
-              @Override
-              public void onError(Throwable throwable) {
-                throwable.printStackTrace();
-                if (callbacks != null) {
-                  callbacks.onLoading(false);
-                }
-                if (artworks == null || artworks.size() == 0) {
-                  loadArtworkListFromDB();
-                }
-              }
+                     @Override
+                     public void onError(Throwable throwable) {
+                       throwable.printStackTrace();
+                       if (callbacks != null) {
+                         callbacks.onLoading(false);
+                       }
+                       if (artworks == null || artworks.size() == 0) {
+                         loadArtworkListFromDB();
+                       }
+                     }
 
-              @Override
-              public void onNext(ArrayList<Artwork> aws) {
-                updateAdapterDataset(aws);
-                if (callbacks != null) {
-                  callbacks.onLoading(false);
-                }
-              }
-            }
+                     @Override
+                     public void onNext(ArrayList<Artwork> aws) {
+                       updateAdapterDataset(aws);
+                       if (callbacks != null) {
+                         callbacks.onLoading(false);
+                       }
+                     }
+                   }
         );
   }
 
@@ -245,20 +245,20 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribeOn(Schedulers.threadPoolForIO())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Artwork>>() {
-              @Override
-              public void onCompleted() {
-                callbacks.onLoading(false);
-              }
+                     @Override
+                     public void onCompleted() {
+                       callbacks.onLoading(false);
+                     }
 
-              @Override
-              public void onError(Throwable throwable) {
-              }
+                     @Override
+                     public void onError(Throwable throwable) {
+                     }
 
-              @Override
-              public void onNext(ArrayList<Artwork> aws) {
-                updateAdapterDataset(aws);
-              }
-            }
+                     @Override
+                     public void onNext(ArrayList<Artwork> aws) {
+                       updateAdapterDataset(aws);
+                     }
+                   }
         );
 
     if (callbacks != null) {

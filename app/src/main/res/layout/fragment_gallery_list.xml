@@ -3,10 +3,10 @@
     android:layout_height="match_parent"
     android:layout_margin="0dp">
 
-    <ListView
-        android:id="@+id/lvGalleries"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:divider="@null"
-        android:dividerHeight="0dp" />
+  <ListView
+      android:id="@+id/lvGalleries"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:divider="@null"
+      android:dividerHeight="0dp"/>
 </FrameLayout>

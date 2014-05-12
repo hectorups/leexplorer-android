@@ -55,7 +55,7 @@ public class GalleryFragment extends BaseFragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    if( savedInstanceState != null ) {
+    if (savedInstanceState != null) {
       this.gallery = savedInstanceState.getParcelable(GALLERY_KEY);
     } else {
       this.gallery = getArguments().getParcelable(GALLERY_KEY);

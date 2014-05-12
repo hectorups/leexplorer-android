@@ -16,8 +16,10 @@
      limitations under the License.
 -->
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
-    <item android:drawable="@drawable/list_focused_generator" android:state_focused="true" android:state_pressed="false" />
-    <item android:drawable="@drawable/list_pressed_generator" android:state_pressed="true" />
-    <item android:drawable="@android:color/transparent" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:exitFadeDuration="@android:integer/config_mediumAnimTime">
+  <item android:drawable="@drawable/list_focused_generator" android:state_focused="true"
+      android:state_pressed="false"/>
+  <item android:drawable="@drawable/list_pressed_generator" android:state_pressed="true"/>
+  <item android:drawable="@android:color/transparent"/>
 </selector>

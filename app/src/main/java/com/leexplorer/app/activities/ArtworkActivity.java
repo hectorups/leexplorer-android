@@ -18,13 +18,25 @@ public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Cal
   private ArrayList<Artwork> artworks;
   private ViewPager mViewPager;
 
+  @Override protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelableArrayList(EXTRA_ARTWORKS, artworks);
+    outState.putParcelable(EXTRA_ARTWORK, artworks.get(mViewPager.getCurrentItem()));
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_artwork);
 
-    Artwork currentAw = getIntent().getParcelableExtra(EXTRA_ARTWORK);
-    artworks = getIntent().getParcelableArrayListExtra(EXTRA_ARTWORKS);
+    Artwork currentAw;
+    if (savedInstanceState == null) {
+      currentAw = getIntent().getParcelableExtra(EXTRA_ARTWORK);
+      artworks = getIntent().getParcelableArrayListExtra(EXTRA_ARTWORKS);
+    } else {
+      currentAw = savedInstanceState.getParcelable(EXTRA_ARTWORK);
+      artworks = savedInstanceState.getParcelableArrayList(EXTRA_ARTWORKS);
+    }
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

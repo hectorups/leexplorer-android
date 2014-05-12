@@ -4,12 +4,12 @@
     android:layout_height="match_parent"
     android:background="@color/le_background">
 
-    <com.etsy.android.grid.StaggeredGridView
-        android:id="@+id/sgvArtworks"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:column_count_landscape="4"
-        app:column_count_portrait="3"
-        app:item_margin="2dp" />
+  <com.etsy.android.grid.StaggeredGridView
+      android:id="@+id/sgvArtworks"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      app:column_count_landscape="4"
+      app:column_count_portrait="3"
+      app:item_margin="2dp"/>
 
 </FrameLayout>

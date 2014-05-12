@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">LeExplorer</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_artwork">Exhibit</string>
-    <string name="unknown_date">unknown</string>
+  <string name="app_name">LeExplorer</string>
+  <string name="action_settings">Settings</string>
+  <string name="title_activity_artwork">Exhibit</string>
+  <string name="unknown_date">unknown</string>
 
-    <!-- ARWORK SCREEN -->
-    <string name="artwork_description_header">Description</string>
-    <string name="share_image">Share</string>
-    <string name="signal_close">close</string>
-    <string name="signal_immediate">immediate</string>
-    <string name="signal_far">far</string>
+  <!-- ARWORK SCREEN -->
+  <string name="artwork_description_header">Description</string>
+  <string name="share_image">Share</string>
+  <string name="signal_close">close</string>
+  <string name="signal_immediate">immediate</string>
+  <string name="signal_far">far</string>
 
-    <!-- AUDIO SERVICE -->
-    <string name="audio_notification_title">LeExplorer</string>
-    <string name="audio_notification_text">Playing %1$s</string>
+  <!-- AUDIO SERVICE -->
+  <string name="audio_notification_title">LeExplorer</string>
+  <string name="audio_notification_text">Playing %1$s</string>
 
-    <!-- BEACON SCAN SERVICE -->
-    <string name="beacon_notification_title">LeExplorer</string>
-    <string name="beacon_notification_text">You are within range of %1$s</string>
+  <!-- BEACON SCAN SERVICE -->
+  <string name="beacon_notification_title">LeExplorer</string>
+  <string name="beacon_notification_text">You are within range of %1$s</string>
 
-    <!-- GALLERY SCREEN -->
-    <string name="title_activity_galery_list">GaleryListActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_gallery">GalleryActivity</string>
+  <!-- GALLERY SCREEN -->
+  <string name="title_activity_galery_list">GaleryListActivity</string>
+  <string name="hello_world">Hello world!</string>
+  <string name="title_activity_gallery">GalleryActivity</string>
 
-    <!-- GALLERY LIST SCREEN -->
-    <string name="menu_gallery_map">map</string>
-    <string name="manu_gallery_list">list</string>
+  <!-- GALLERY LIST SCREEN -->
+  <string name="menu_gallery_map">map</string>
+  <string name="manu_gallery_list">list</string>
 
-    <!-- GALLERY MAP SCREEN -->
-    <string name="consolidated_marker_title">%1$d Galleries</string>
+  <!-- GALLERY MAP SCREEN -->
+  <string name="consolidated_marker_title">%1$d Galleries</string>
 
 </resources>

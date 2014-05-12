@@ -93,14 +93,23 @@ public class GalleryMapFragment extends SupportMapFragment {
         BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_map_pin);
     markerHeight = marker.getHeight();
     markerWidth = marker.getWidth();
-    galleries = getArguments().getParcelableArrayList(EXTRA_GALLERIES);
+
+    if (state == null) {
+      galleries = getArguments().getParcelableArrayList(EXTRA_GALLERIES);
+    } else {
+      galleries = state.getParcelableArrayList(EXTRA_GALLERIES);
+    }
 
     ((LeexplorerApplication) getActivity().getApplicationContext()).inject(this);
   }
 
+  @Override public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelableArrayList(EXTRA_GALLERIES, new ArrayList<>(galleries));
+  }
+
   @Override
   public void onStart() {
-    // TODO Auto-generated method stub
     super.onStart();
 
     showGalleries();

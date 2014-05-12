@@ -1,34 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <skip />
-    <color name="le_white">#FFFFFE</color>
-    <color name="le_black">#FF333333</color>
-    <color name="le_dark_grey">#FF747474</color>
-    <color name="le_mid_grey">#FFABABAB</color>
-    <color name="le_mid_grey_transparent">#80ABABAB</color>
-    <color name="le_dark_grey_transparent">#BBABABAB</color>
-    <color name="le_white_trans">#88FFFFFF</color>
-    <color name="le_off_white">#FFF7F7F7</color>
+  <skip/>
+  <color name="le_white">#FFFFFE</color>
+  <color name="le_black">#FF333333</color>
+  <color name="le_dark_grey">#FF747474</color>
+  <color name="le_mid_grey">#FFABABAB</color>
+  <color name="le_mid_grey_transparent">#80ABABAB</color>
+  <color name="le_dark_grey_transparent">#BBABABAB</color>
+  <color name="le_white_trans">#88FFFFFF</color>
+  <color name="le_off_white">#FFF7F7F7</color>
 
 
-    <color name="le_blue">#FF0098C6</color>
-    <color name="le_mid_blue">#88D3ED</color>
-    <color name="le_light_blue">#E5F5FC</color>
-    <color name="le_black_transparent">#99000000</color>
-    <color name="le_black_more_transparent">#29000000</color>
-    <color name="le_black_very_transparent">#20000000</color>
+  <color name="le_blue">#FF0098C6</color>
+  <color name="le_mid_blue">#88D3ED</color>
+  <color name="le_light_blue">#E5F5FC</color>
+  <color name="le_black_transparent">#99000000</color>
+  <color name="le_black_more_transparent">#29000000</color>
+  <color name="le_black_very_transparent">#20000000</color>
 
-    <color name="le_navy">#363e48</color>
-    <color name="le_slate">#6E6F72</color>
-    <color name="le_green">#39B54A</color>
-    <color name="le_focus_gray">#F4F6F9</color>
-    <color name="le_border">#DCDEE0</color>
-    <color name="le_background">#F0F0F0</color>
-    <color name="le_navy_gray">#58616F</color>
-    <color name="le_gray">#9B9b9B</color>
-    <color name="le_red">#C1272D</color>
-    <color name="le_emphasis_blue">#00C4f1</color>
-    <color name="le_yellow">#f1c300</color>
+  <color name="le_navy">#363e48</color>
+  <color name="le_slate">#6E6F72</color>
+  <color name="le_green">#39B54A</color>
+  <color name="le_focus_gray">#F4F6F9</color>
+  <color name="le_border">#DCDEE0</color>
+  <color name="le_background">#F0F0F0</color>
+  <color name="le_navy_gray">#58616F</color>
+  <color name="le_gray">#9B9b9B</color>
+  <color name="le_red">#C1272D</color>
+  <color name="le_emphasis_blue">#00C4f1</color>
+  <color name="le_yellow">#f1c300</color>
 
 </resources>

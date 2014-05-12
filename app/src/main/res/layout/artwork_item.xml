@@ -5,69 +5,69 @@
     android:layout_height="wrap_content">
 
 
-    <!-- BACKGROUND -->
+  <!-- BACKGROUND -->
 
-    <com.etsy.android.grid.util.DynamicHeightImageView
-        android:id="@+id/ivArtworkThumb"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+  <com.etsy.android.grid.util.DynamicHeightImageView
+      android:id="@+id/ivArtworkThumb"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scaleType="centerCrop"/>
 
-    <!-- SIGNAL INDICATOR -->
+  <!-- SIGNAL INDICATOR -->
 
-    <FrameLayout
-        android:id="@+id/flSignalIndicator"
+  <FrameLayout
+      android:id="@+id/flSignalIndicator"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="right|top"
+      android:layout_margin="5dp">
+
+    <TextView
+        android:id="@+id/tvSignalIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right|top"
-        android:layout_margin="5dp">
+        android:background="@drawable/far_rounded_rectangle"
+        android:padding="4dp"
+        android:text="close"
+        android:textColor="@color/le_white"/>
 
-        <TextView
-            android:id="@+id/tvSignalIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/far_rounded_rectangle"
-            android:padding="4dp"
-            android:text="close"
-            android:textColor="@color/le_white" />
+  </FrameLayout>
 
-    </FrameLayout>
+  <!-- ARTWORK INFO -->
 
-    <!-- ARTWORK INFO -->
+  <FrameLayout
+      android:layout_width="match_parent"
+      android:layout_height="48dp"
+      android:layout_gravity="bottom"
+      android:background="@color/le_black_more_transparent">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom"
-        android:background="@color/le_black_more_transparent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+      <TextView
+          android:id="@+id/tvName"
+          style="@style/LE.ArtworkListText"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="2dp"
+          android:textSize="16sp"
+          android:textStyle="bold"/>
 
-            <TextView
-                android:id="@+id/tvName"
-                style="@style/LE.ArtworkListText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="2dp"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+      <TextView
+          android:id="@+id/tvAuthorAndDate"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:layout_marginLeft="2dp"
+          android:textColor="@color/le_white"
+          android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/tvAuthorAndDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="2dp"
-                android:textColor="@color/le_white"
-                android:textSize="16sp" />
-
-        </LinearLayout>
+    </LinearLayout>
 
 
-    </FrameLayout>
+  </FrameLayout>
 
 </FrameLayout>

@@ -10,21 +10,32 @@ import com.leexplorer.app.models.Gallery;
 
 public class GalleryActivity extends BaseActivity implements GalleryFragment.Callbacks {
   public static final String GALLERY_KEY = "gallery";
+  private Gallery gallery;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_gallery);
 
+    if (savedInstanceState == null) {
+      gallery = getIntent().getParcelableExtra(GALLERY_KEY);
+    } else {
+      gallery = savedInstanceState.getParcelable(GALLERY_KEY);
+    }
+
     FragmentManager fm = getSupportFragmentManager();
     Fragment fragment = fm.findFragmentById(R.id.flGalleryDetailView);
 
     if (fragment == null) {
-      Gallery gallery = getIntent().getParcelableExtra(GALLERY_KEY);
       getSupportActionBar().setTitle(gallery.getName());
       fragment = GalleryFragment.newInstance(gallery);
       fm.beginTransaction().add(R.id.flGalleryDetailView, fragment).commit();
     }
+  }
+
+  @Override protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelable(GALLERY_KEY, gallery);
   }
 
   @Override

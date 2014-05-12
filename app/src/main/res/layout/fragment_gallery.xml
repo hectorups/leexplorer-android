@@ -3,14 +3,14 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <ScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fillViewport="true">
+  <ScrollView
+      android:id="@+id/scroll_view"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fillViewport="true">
 
-        <include layout="@layout/fragment_gallery_content" />
+    <include layout="@layout/fragment_gallery_content"/>
 
-    </ScrollView>
+  </ScrollView>
 
 </FrameLayout>

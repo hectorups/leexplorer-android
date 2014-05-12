@@ -8,74 +8,74 @@
     android:paddingBottom="8dp"
     android:paddingTop="8dp">
 
+  <LinearLayout
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:orientation="vertical">
+
+    <!-- Timer Display -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <!-- Timer Display -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="-6dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp">
-            <!-- Current Duration Label -->
-            <TextView
-                android:id="@+id/tvDuration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:text="00:00"
-                android:textColor="@color/le_white"
-                android:textStyle="bold" />
-            <!-- Total Duration Label -->
-            <TextView
-                android:id="@+id/tvTotalDuration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:text="00:00"
-                android:textColor="@color/le_white"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Progress Bar/Seek bar -->
-        <SeekBar
-            android:id="@+id/sbAudio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+        android:layout_marginBottom="-6dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+      <!-- Current Duration Label -->
+      <TextView
+          android:id="@+id/tvDuration"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:gravity="left"
+          android:text="00:00"
+          android:textColor="@color/le_white"
+          android:textStyle="bold"/>
+      <!-- Total Duration Label -->
+      <TextView
+          android:id="@+id/tvTotalDuration"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="1"
+          android:gravity="right"
+          android:text="00:00"
+          android:textColor="@color/le_white"
+          android:textStyle="bold"/>
     </LinearLayout>
 
-    <!-- Play Button -->
-    <FrameLayout
+    <!-- Progress Bar/Seek bar -->
+    <SeekBar
+        android:id="@+id/sbAudio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+  </LinearLayout>
+
+  <!-- Play Button -->
+  <FrameLayout
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_vertical"
+      android:layout_marginRight="10dp">
+
+    <ImageButton
+        android:id="@+id/btnPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_marginRight="10dp">
+        android:background="@null"
+        android:src="@drawable/ic_play"/>
 
-        <ImageButton
-            android:id="@+id/btnPlay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@null"
-            android:src="@drawable/ic_play" />
+    <ImageButton
+        android:id="@+id/btnPause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@null"
+        android:src="@drawable/ic_pause"
+        android:visibility="gone"/>
 
-        <ImageButton
-            android:id="@+id/btnPause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@null"
-            android:src="@drawable/ic_pause"
-            android:visibility="gone" />
-
-    </FrameLayout>
+  </FrameLayout>
 
 
 </LinearLayout>

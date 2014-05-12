@@ -1,15 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:leexplorer="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/menuPlay"
-        android:icon="@drawable/ic_action_play"
-        leexplorer:showAsAction="always" />
+  <item
+      android:id="@+id/menuPlay"
+      android:icon="@drawable/ic_action_play"
+      leexplorer:showAsAction="always"/>
 
-    <item
-        android:id="@+id/menuShare"
-        android:title="@string/share_image"
-        leexplorer:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        leexplorer:showAsAction="always" />
+  <item
+      android:id="@+id/menuShare"
+      android:title="@string/share_image"
+      leexplorer:actionProviderClass="android.support.v7.widget.ShareActionProvider"
+      leexplorer:showAsAction="always"/>
 
 </menu>

@@ -1,64 +1,64 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-    </style>
+  <!-- Base application theme. -->
+  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- Customize your theme here. -->
+  </style>
 
-    <style name="LE" />
+  <style name="LE"/>
 
-    <!-- Text styles -->
+  <!-- Text styles -->
 
-    <style name="LE.TextStyle">
-        <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/le_black</item>
-    </style>
+  <style name="LE.TextStyle">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="android:textColor">@color/le_black</item>
+  </style>
 
-    <style name="LE.HeadlineText" parent="LE.TextStyle">
-        <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
+  <style name="LE.HeadlineText" parent="LE.TextStyle">
+    <item name="android:textSize">20sp</item>
+    <item name="android:textStyle">bold</item>
+  </style>
 
-    <style name="LE.HeadlineText.Normal" parent="LE.TextStyle">
-        <item name="android:textColor">@color/le_dark_grey</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">normal</item>
-    </style>
+  <style name="LE.HeadlineText.Normal" parent="LE.TextStyle">
+    <item name="android:textColor">@color/le_dark_grey</item>
+    <item name="android:textSize">14sp</item>
+    <item name="android:textStyle">normal</item>
+  </style>
 
-    <style name="LE.ArtworkListText" parent="LE.TextStyle">
-        <item name="android:textColor">@color/le_white</item>
-    </style>
+  <style name="LE.ArtworkListText" parent="LE.TextStyle">
+    <item name="android:textColor">@color/le_white</item>
+  </style>
 
-    <!-- Profile Styles -->
+  <!-- Profile Styles -->
 
-    <style name="LE.ProfileTitle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">@style/LE.HeadlineText</item>
-        <item name="android:layout_marginBottom">10dp</item>
-    </style>
+  <style name="LE.ProfileTitle">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textAppearance">@style/LE.HeadlineText</item>
+    <item name="android:layout_marginBottom">10dp</item>
+  </style>
 
-    <style name="LE.ProfileBody">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">@style/LE.HeadlineText.Normal</item>
-        <item name="android:freezesText">true</item>
-    </style>
+  <style name="LE.ProfileBody">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textAppearance">@style/LE.HeadlineText.Normal</item>
+    <item name="android:freezesText">true</item>
+  </style>
 
-    <style name="LE.InfoWindowTitle" parent="LE.InfoWindowTitle">
-        <item name="android:layout_marginBottom">5dp</item>
-    </style>
+  <style name="LE.InfoWindowTitle" parent="LE.InfoWindowTitle">
+    <item name="android:layout_marginBottom">5dp</item>
+  </style>
 
-    <style name="LE.InfoWindowBody" parent="LE.ProfileBody"></style>
+  <style name="LE.InfoWindowBody" parent="LE.ProfileBody"></style>
 
-    <style name="LE.TitleShadowed">
-        <item name="android:textColor">@color/le_white</item>
-        <item name="android:textSize">30sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:shadowColor">#000000</item>
-        <item name="android:shadowDx">5</item>
-        <item name="android:shadowDy">5</item>
-        <item name="android:shadowRadius">5</item>
-    </style>
+  <style name="LE.TitleShadowed">
+    <item name="android:textColor">@color/le_white</item>
+    <item name="android:textSize">30sp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:shadowColor">#000000</item>
+    <item name="android:shadowDx">5</item>
+    <item name="android:shadowDy">5</item>
+    <item name="android:shadowRadius">5</item>
+  </style>
 
 </resources>

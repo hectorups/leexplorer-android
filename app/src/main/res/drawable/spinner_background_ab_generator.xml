@@ -17,8 +17,9 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/spinner_ab_disabled_generator" android:state_enabled="false" />
-    <item android:drawable="@drawable/spinner_ab_pressed_generator" android:state_pressed="true" />
-    <item android:drawable="@drawable/spinner_ab_focused_generator" android:state_focused="true" android:state_pressed="false" />
-    <item android:drawable="@drawable/spinner_ab_default_generator" />
+  <item android:drawable="@drawable/spinner_ab_disabled_generator" android:state_enabled="false"/>
+  <item android:drawable="@drawable/spinner_ab_pressed_generator" android:state_pressed="true"/>
+  <item android:drawable="@drawable/spinner_ab_focused_generator" android:state_focused="true"
+      android:state_pressed="false"/>
+  <item android:drawable="@drawable/spinner_ab_default_generator"/>
 </selector>

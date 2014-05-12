@@ -25,10 +25,17 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     FragmentManager fm = getSupportFragmentManager();
     Fragment fragment = fm.findFragmentById(R.id.container);
 
-    gallery = getIntent().getParcelableExtra(EXTRA_GALLERY);
+    boolean fromNotification;
 
-    boolean from_notification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
-    if (from_notification) {
+    if (savedInstanceState == null) {
+      gallery = getIntent().getParcelableExtra(EXTRA_GALLERY);
+      fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
+    } else {
+      fromNotification = false;
+      gallery = savedInstanceState.getParcelable(EXTRA_GALLERY);
+    }
+
+    if (fromNotification) {
       gallery.setWasSeen(true);
       gallery.save();
     }
@@ -41,6 +48,11 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     }
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  }
+
+  @Override protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelable(EXTRA_GALLERY, gallery);
   }
 
   @Override

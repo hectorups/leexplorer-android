@@ -7,27 +7,26 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Artwork {
 
-    public String mac;
+  public String mac;
 
-    public String description;
+  public String description;
 
-    @SerializedName("image_url")
-    public String imageUrl;
+  @SerializedName("image_url")
+  public String imageUrl;
 
-    @SerializedName("gallery_id")
-    public String galleryId;
+  @SerializedName("gallery_id")
+  public String galleryId;
 
-    public String name;
+  public String name;
 
-    @SerializedName("published_at")
-    public String publishedAt;
+  @SerializedName("published_at")
+  public String publishedAt;
 
-    public String author;
+  public String author;
 
-    @SerializedName("likes_count")
-    public int likesCount;
+  @SerializedName("likes_count")
+  public int likesCount;
 
-    @SerializedName("audio_url")
-    public String audioUrl;
-
+  @SerializedName("audio_url")
+  public String audioUrl;
 }

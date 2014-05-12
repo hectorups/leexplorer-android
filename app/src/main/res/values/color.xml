@@ -2,7 +2,7 @@
 <resources>
 
     <skip />
-    <color name="le_white">#FFFFFF</color>
+    <color name="le_white">#FFFFFE</color>
     <color name="le_black">#FF333333</color>
     <color name="le_dark_grey">#FF747474</color>
     <color name="le_mid_grey">#FFABABAB</color>

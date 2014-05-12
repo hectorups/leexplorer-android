@@ -9,127 +9,126 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.ArtDate;
 import com.squareup.picasso.Picasso;
-
+import com.squareup.pollexor.Thumbor;
 import java.util.List;
+import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
+  protected ArtworkListFragment fragment;
 
+  @Inject Picasso picasso;
 
-public class ArtworkAdapter extends ArrayAdapter<Artwork> {
-    protected ArtworkListFragment fragment;
+  @Inject Thumbor thumbor;
 
-    public ArtworkAdapter(ArtworkListFragment fragment, List<Artwork> objects) {
-        super(fragment.getActivity(), 0, objects);
-        this.fragment = fragment;
+  public ArtworkAdapter(ArtworkListFragment fragment, List<Artwork> objects) {
+    super(fragment.getActivity(), objects);
+    this.fragment = fragment;
+  }
+
+  @Override
+  public View getView(int position, View view, ViewGroup parent) {
+    ViewHolder holder;
+
+    if (view != null) {
+      holder = (ViewHolder) view.getTag();
+    } else {
+      LayoutInflater inflater =
+          (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      view = inflater.inflate(R.layout.artwork_item, parent, false);
+      holder = new ViewHolder(view, fragment);
+      view.setTag(holder);
     }
 
-    @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder holder;
+    Artwork aw = getItem(position);
 
-        if (view != null) {
-            holder = (ViewHolder) view.getTag();
-        } else {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.artwork_item, parent, false);
-            holder = new ViewHolder(view, fragment);
-            view.setTag(holder);
-        }
+    holder.tvName.setText(aw.getName());
+    holder.tvName.setMaxLines(1);
+    holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
 
-        Artwork aw = getItem(position);
+    holder.tvAuthorAndDate.setText(aw.getAuthor() + " - " + ArtDate.shortDate(aw.getPublishedAt()));
 
-        holder.tvName.setText(aw.getName());
-        holder.tvName.setMaxLines(1);
-        holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
+    holder.ivArtworkThumb.setTag(aw);
+    holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));
 
-        holder.tvAuthorAndDate.setText(aw.getAuthor() + " - " + ArtDate.shortDate(aw.getPublishedAt()));
+    int thumborBucket =
+        (int) fragment.getActivity().getResources().getDimension(R.dimen.thumbor_medium);
+    String url = thumbor.buildImage(aw.getImageUrl()).resize(thumborBucket, 0).toUrl();
 
-        holder.ivArtworkThumb.setTag(aw);
-        holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));
-        Picasso.with(getContext())
-                .load(aw.getImageUrl())
-                .into(holder.ivArtworkThumb);
+    picasso.load(url).into(holder.ivArtworkThumb);
 
-        setSignalIndicator(holder, aw);
+    setSignalIndicator(holder, aw);
 
-        return view;
+    return view;
+  }
+
+  private void setSignalIndicator(ViewHolder holder, Artwork aw) {
+    if (aw.getDistance() == Artwork.Distance.OUT_OF_RANGE) {
+      holder.flSignalIndicator.setVisibility(View.INVISIBLE);
+      return;
     }
 
-    private void setSignalIndicator(ViewHolder holder, Artwork aw) {
-        if (aw.getDistance() == Artwork.Distance.OUT_OF_RANGE) {
-            holder.flSignalIndicator.setVisibility(View.INVISIBLE);
-            return;
-        }
+    int color = R.color.le_green;
+    int siganl_text = R.string.signal_immediate;
+    int bg_drawable = R.drawable.immediate_rounded_rectanble;
 
-        int color = R.color.le_green;
-        int siganl_text = R.string.signal_immediate;
-        int bg_drawable = R.drawable.immediate_rounded_rectanble;
-
-        if (aw.getDistance() == Artwork.Distance.CLOSE) {
-            color = R.color.le_blue;
-            siganl_text = R.string.signal_close;
-            bg_drawable = R.drawable.close_rounded_rectangle;
-        } else if (aw.getDistance() == Artwork.Distance.FAR) {
-            color = R.color.le_yellow;
-            siganl_text = R.string.signal_far;
-            bg_drawable = R.drawable.far_rounded_rectangle;
-        }
-
-        holder.tvSignalIcon.setText(fragment.getResources().getString(siganl_text));
-        holder.tvSignalIcon.setTextColor(fragment.getResources().getColor(color));
-        holder.tvSignalIcon.setBackgroundResource(bg_drawable);
-        holder.flSignalIndicator.setVisibility(View.VISIBLE);
+    if (aw.getDistance() == Artwork.Distance.CLOSE) {
+      color = R.color.le_blue;
+      siganl_text = R.string.signal_close;
+      bg_drawable = R.drawable.close_rounded_rectangle;
+    } else if (aw.getDistance() == Artwork.Distance.FAR) {
+      color = R.color.le_yellow;
+      siganl_text = R.string.signal_far;
+      bg_drawable = R.drawable.far_rounded_rectangle;
     }
 
-    // @todo: this is for testing, needs to be implemted depending on
-    // the overal gallery score
-    private double getHeightRatioFromPopularity(Artwork aw) {
-        double factor = 0;
-        if (aw.getLikesCount() > 100) {
-            factor = 1;
-        } else if (aw.getLikesCount() > 50) {
-            factor = 0.5;
-        }
+    holder.tvSignalIcon.setText(fragment.getResources().getString(siganl_text));
+    holder.tvSignalIcon.setTextColor(fragment.getResources().getColor(color));
+    holder.tvSignalIcon.setBackgroundResource(bg_drawable);
+    holder.flSignalIndicator.setVisibility(View.VISIBLE);
+  }
 
-        return factor / 2.0 + 1.0; // height will be 1.0 - 1.5 the width
+  // @todo: this is for testing, needs to be implemted depending on
+  // the overal gallery score
+  private double getHeightRatioFromPopularity(Artwork aw) {
+    double factor = 0;
+    if (aw.getLikesCount() > 100) {
+      factor = 1;
+    } else if (aw.getLikesCount() > 50) {
+      factor = 0.5;
     }
 
-    static class ViewHolder {
-        @InjectView(R.id.tvName)
-        TextView tvName;
-        @InjectView(R.id.tvAuthorAndDate)
-        TextView tvAuthorAndDate;
-        @InjectView(R.id.ivArtworkThumb)
-        DynamicHeightImageView ivArtworkThumb;
-        @InjectView(R.id.flSignalIndicator)
-        FrameLayout flSignalIndicator;
-        @InjectView(R.id.tvSignalIcon)
-        TextView tvSignalIcon;
+    return factor / 2.0 + 1.0; // height will be 1.0 - 1.5 the width
+  }
 
-        private ArtworkListFragment fragment;
+  static class ViewHolder {
+    @InjectView(R.id.tvName) TextView tvName;
+    @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
+    @InjectView(R.id.ivArtworkThumb) DynamicHeightImageView ivArtworkThumb;
+    @InjectView(R.id.flSignalIndicator) FrameLayout flSignalIndicator;
+    @InjectView(R.id.tvSignalIcon) TextView tvSignalIcon;
 
-        public ViewHolder(View view, ArtworkListFragment fragment) {
-            ButterKnife.inject(this, view);
-            this.fragment = fragment;
-        }
+    private ArtworkListFragment fragment;
 
-        @OnClick(R.id.ivArtworkThumb)
-        public void onClickArtwork(View view) {
-            Artwork aw = (Artwork) view.getTag();
-            fragment.callbacks.onArtworkClicked(aw);
-        }
+    public ViewHolder(View view, ArtworkListFragment fragment) {
+      ButterKnife.inject(this, view);
+      this.fragment = fragment;
     }
 
+    @OnClick(R.id.ivArtworkThumb)
+    public void onClickArtwork(View view) {
+      Artwork aw = (Artwork) view.getTag();
+      fragment.callbacks.onArtworkClicked(aw);
+    }
+  }
 }

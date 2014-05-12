@@ -4,19 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
 import com.leexplorer.app.services.BeaconScanService;
 
 /**
  * Created by hectormonserrate on 22/02/14.
  */
 public class StartupReceiver extends BroadcastReceiver {
-    private static final String TAG = "com.leexplorer.services.receivers.startupreceiver";
+  private static final String TAG = "com.leexplorer.services.receivers.startupreceiver";
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, "Received broadcast intent: " + intent.getAction());
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    Log.i(TAG, "Received broadcast intent: " + intent.getAction());
 
-        BeaconScanService.setScannerAlarm(context, false);
-    }
+    BeaconScanService.setScannerAlarm(context, false);
+  }
 }

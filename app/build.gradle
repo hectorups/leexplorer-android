@@ -49,6 +49,7 @@ dependencies {
     compile 'com.squareup.dagger:dagger:1.2.1'
     apt 'com.squareup.dagger:dagger-compiler:1.2.1'
     compile 'com.squareup.okhttp:okhttp:1.5.4'
+    compile 'com.squareup:pollexor:2.0.2'
 }
 
 pmd {

@@ -2,7 +2,6 @@ package com.leexplorer.app.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-
 import com.leexplorer.app.LeexplorerApplication;
 
 /**
@@ -10,8 +9,8 @@ import com.leexplorer.app.LeexplorerApplication;
  */
 public class BaseFragment extends Fragment {
 
-    @Override public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ((LeexplorerApplication) getActivity().getApplication()).inject(this);
-    }
+  @Override public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    ((LeexplorerApplication) getActivity().getApplication()).inject(this);
+  }
 }

@@ -215,6 +215,7 @@ public class BeaconScanService extends IntentService {
 
       if (apiGallery != null) {
         gallery = Gallery.fromApiModel(apiGallery);
+        gallery.save();
       }
     } else if (gallery.isWasSeen()) {
       return null;

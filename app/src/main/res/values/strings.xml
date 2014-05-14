@@ -17,6 +17,10 @@
   <string name="audio_notification_title">LeExplorer</string>
   <string name="audio_notification_text">Playing %1$s</string>
 
+  <!-- GALLERY DOWNLOAD SERVICE -->
+  <string name="download_notification_title">LeExplorer</string>
+  <string name="download_notification_text">Downloading %1$s</string>
+
   <!-- BEACON SCAN SERVICE -->
   <string name="beacon_notification_title">LeExplorer</string>
   <string name="beacon_notification_text">You are within range of %1$s</string>

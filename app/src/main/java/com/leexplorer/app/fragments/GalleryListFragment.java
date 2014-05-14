@@ -87,7 +87,7 @@ public class GalleryListFragment extends BaseFragment {
       callbacks.onLoading(true);
     }
     client.getGalleriesData()
-        .subscribeOn(Schedulers.threadPoolForIO())
+        .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Gallery>>() {
                      @Override

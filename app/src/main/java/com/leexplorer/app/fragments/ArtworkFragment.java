@@ -50,10 +50,8 @@ import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.concurrency.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.Subscriptions;
-import rx.util.functions.Action1;
 import uk.co.chrisjenx.paralloid.Parallaxor;
 import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 
@@ -121,10 +119,16 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
         }
       })
           .subscribeOn(Schedulers.newThread())
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribe(new Action1<Uri>() {
+          .observeOn(Schedulers.io())
+          .subscribe(new Observer<Uri>() {
+            @Override public void onCompleted() {
+            }
+
+            @Override public void onError(Throwable e) {
+            }
+
             @Override
-            public void call(Uri bmpUri) {
+            public void onNext(Uri bmpUri) {
               // Construct a ShareIntent with link to image
               Intent shareIntent = new Intent();
               shareIntent.setAction(Intent.ACTION_SEND);

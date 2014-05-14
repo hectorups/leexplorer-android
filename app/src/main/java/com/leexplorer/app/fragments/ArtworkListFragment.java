@@ -200,7 +200,7 @@ public class ArtworkListFragment extends BaseFragment {
       callbacks.onLoading(true);
     }
     client.getArtworksData(gallery.getGalleryId())
-        .subscribeOn(Schedulers.threadPoolForIO())
+        .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Artwork>>() {
                      @Override
@@ -242,7 +242,7 @@ public class ArtworkListFragment extends BaseFragment {
         return Subscriptions.empty();
       }
     })
-        .subscribeOn(Schedulers.threadPoolForIO())
+        .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Artwork>>() {
                      @Override

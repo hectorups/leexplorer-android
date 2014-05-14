@@ -38,10 +38,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile 'com.squareup.picasso:picasso:2.2.0'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.netflix.rxjava:rxjava-android:0.16.1'
-    compile 'com.jakewharton:butterknife:4.0.1'
-    compile 'com.squareup.retrofit:retrofit:1.4.1'
-    compile 'com.etsy.android.grid:library:1.0.3'
+    compile 'com.netflix.rxjava:rxjava-android:0.18.3'
+    compile 'com.netflix.rxjava:rxjava-core:0.18.3'
+    compile 'com.jakewharton:butterknife:5.0.1'
+    compile 'com.squareup.retrofit:retrofit:1.5.1'
+    compile 'com.etsy.android.grid:library:1.0.4'
     compile 'com.google.android.gms:play-services:3.2.+'
     compile project(':paralloidviews')
     compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])

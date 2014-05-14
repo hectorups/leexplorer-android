@@ -43,6 +43,10 @@
         android:name="com.leexplorer.app.services.BeaconScanService"
         android:exported="false"/>
 
+    <service
+        android:name="com.leexplorer.app.services.GalleryDownloaderService"
+        android:exported="false"/>
+
     <receiver android:name="com.leexplorer.app.receivers.StartupReceiver">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED"/>

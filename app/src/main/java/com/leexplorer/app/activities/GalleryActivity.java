@@ -3,7 +3,6 @@ package com.leexplorer.app.activities;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.Menu;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
@@ -36,14 +35,6 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Cal
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelable(GALLERY_KEY, gallery);
-  }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.gallery, menu);
-    return true;
   }
 
   //    @Override

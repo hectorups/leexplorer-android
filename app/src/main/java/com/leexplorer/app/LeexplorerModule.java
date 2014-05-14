@@ -15,7 +15,9 @@ import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.services.BeaconScanService;
+import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.AppConstants;
+import com.leexplorer.app.util.FileDownloader;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -30,7 +32,7 @@ import javax.inject.Singleton;
         GalleryFragment.class, GalleryListFragment.class, ArtworkFragment.class,
         ArtworkListFragment.class, BeaconScanService.class, ArtworkAdapter.class,
         GalleryAdapter.class, GalleryPagerAdapter.class, GalleryInfoAdapter.class,
-        GalleryMapFragment.class
+        GalleryMapFragment.class, GalleryDownloaderService.class
     },
     library = true)
 public class LeexplorerModule {
@@ -55,6 +57,10 @@ public class LeexplorerModule {
 
   @Provides @Singleton Client provideLeexplorerClient(OkHttpClient client) {
     return new Client(client);
+  }
+
+  @Provides @Singleton FileDownloader privideFileDownloader(OkHttpClient client) {
+    return new FileDownloader(client);
   }
 
   @Provides @Singleton Picasso providePicasso(LeexplorerApplication application,

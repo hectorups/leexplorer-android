@@ -40,10 +40,9 @@ public class GalleryListActivity extends BaseActivity
       setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
-    FragmentManager fm = getSupportFragmentManager();
-    Fragment fragment = fm.findFragmentByTag(LIST_FRAGMENT_TAG);
-    if (fragment == null) {
-      fragment = new GalleryListFragment();
+    if (savedInstanceState == null) {
+      FragmentManager fm = getSupportFragmentManager();
+      Fragment fragment = new GalleryListFragment();
       fm.beginTransaction().add(R.id.flGalleryListView, fragment, LIST_FRAGMENT_TAG).commit();
     }
   }

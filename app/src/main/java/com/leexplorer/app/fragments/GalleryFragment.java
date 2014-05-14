@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,6 +20,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.leexplorer.app.R;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.services.GalleryDownloaderService;
 import com.squareup.picasso.Picasso;
 import com.squareup.pollexor.Thumbor;
 import javax.inject.Inject;
@@ -60,6 +64,8 @@ public class GalleryFragment extends BaseFragment {
     } else {
       this.gallery = getArguments().getParcelable(GALLERY_KEY);
     }
+
+    setHasOptionsMenu(true);
   }
 
   @Override public void onSaveInstanceState(Bundle outState) {
@@ -99,6 +105,22 @@ public class GalleryFragment extends BaseFragment {
     setFacilities();
 
     return view;
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.gallery, menu);
+  }
+
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.menuDownloadGallery:
+        GalleryDownloaderService.callService(getActivity(), gallery);
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
   }
 
   private void setFacilities() {

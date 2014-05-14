@@ -1,4 +1,11 @@
-<menu xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.leexplorer.app.activities.GalleryActivity">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:leexplorer="http://schemas.android.com/apk/res-auto">
+
+  <item
+      android:id="@+id/menuDownloadGallery"
+      android:icon="@drawable/ic_action_download7"
+      android:title="@string/download_gallery"
+      leexplorer:showAsAction="always"
+      />
 
 </menu>

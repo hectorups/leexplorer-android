@@ -96,7 +96,6 @@ public class GalleryListActivity extends BaseActivity
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             .replace(R.id.flGalleryListView, mapFragment, MAP_FRAGMENT_TAG)
-            .addToBackStack(null)
             .commit();
 
         menuFragmentOn = true;

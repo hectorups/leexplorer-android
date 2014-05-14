@@ -41,8 +41,11 @@ public class GalleryListActivity extends BaseActivity
     }
 
     FragmentManager fm = getSupportFragmentManager();
-    Fragment fragment = new GalleryListFragment();
-    fm.beginTransaction().add(R.id.flGalleryListView, fragment, LIST_FRAGMENT_TAG).commit();
+    Fragment fragment = fm.findFragmentByTag(LIST_FRAGMENT_TAG);
+    if (fragment == null) {
+      fragment = new GalleryListFragment();
+      fm.beginTransaction().add(R.id.flGalleryListView, fragment, LIST_FRAGMENT_TAG).commit();
+    }
   }
 
   @Override

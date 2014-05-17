@@ -19,6 +19,7 @@ import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.util.offline.AudioSourcePicker;
 import java.util.ArrayList;
 
 public class MediaPlayerService extends Service {
@@ -142,7 +143,8 @@ public class MediaPlayerService extends Service {
       this.artwork = artwork;
       stop();
 
-      Uri audioUri = Uri.parse(artwork.getAudioUrl());
+      Uri audioUri = AudioSourcePicker.getUri(artwork.getGalleryId(), artwork.getAudioUrl());
+      //Uri audioUri = Uri.parse(artwork.getAudioUrl());
       mediaPlayer = MediaPlayer.create(getApplicationContext(), audioUri);
       mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
         public void onCompletion(MediaPlayer mp) {

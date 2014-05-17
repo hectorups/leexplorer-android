@@ -237,7 +237,7 @@ public class ArtworkListFragment extends BaseFragment {
     Observable.create(new Observable.OnSubscribeFunc<ArrayList<Artwork>>() {
       @Override
       public Subscription onSubscribe(Observer<? super ArrayList<Artwork>> observer) {
-        observer.onNext(Artwork.galleryArtworks());
+        observer.onNext(Artwork.galleryArtworks(gallery.getGalleryId()));
         observer.onCompleted();
         return Subscriptions.empty();
       }

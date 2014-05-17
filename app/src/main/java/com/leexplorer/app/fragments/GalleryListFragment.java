@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.api.Client;
@@ -21,9 +22,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.Subscriptions;
 
 /**
  * Created by deepakdhiman on 2/17/14.
@@ -73,13 +77,12 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void loadArtworkList() {
-    loadGalleryListFromApi();
-    // Get data from Api or DB
-    //        if (LeexplorerApplication.isOnline()) {
-    //
-    //        } else {
-    //            //loadGalleryListFromDB();
-    //        }
+    //Get data from Api or DB
+    if (LeexplorerApplication.isOnline(getActivity())) {
+      loadGalleryListFromApi();
+    } else {
+      loadGalleryListFromDB();
+    }
   }
 
   private void loadGalleryListFromApi() {
@@ -116,7 +119,7 @@ public class GalleryListFragment extends BaseFragment {
         );
   }
 
-  private void updateAdapterDataset(ArrayList<Gallery> galleries) {
+  private void updateAdapterDataset(List<Gallery> galleries) {
     this.galleries.clear();
     LocationService service = new LocationService(getActivity());
     Location currentLocation = null;
@@ -141,30 +144,35 @@ public class GalleryListFragment extends BaseFragment {
     }
   }
 
-  //    private void loadGalleryListFromDB(){
-  //        if(callbacks != null) callbacks.onLoading(true);
-  //
-  //        Observable.create(new Observable.OnSubscribeFunc<ArrayList<Gallery>>() {
-  //            @Override
-  //            public Subscription onSubscribe(Observer<? super ArrayList<Gallery>> observer) {
-  //                observer.onNext(Gallery.galleryGallerys());
-  //                observer.onCompleted();
-  //                return Subscriptions.empty();
-  //            }
-  //        }).subscribeOn(Schedulers.threadPoolForIO())
-  //                .observeOn(AndroidSchedulers.mainThread())
-  //                .subscribe(
-  //                        new Observer<ArrayList<Gallery>>() {
-  //                            @Override public void onCompleted() {callbacks.onLoading(false);}
-  //                            @Override public void onError(Throwable throwable) {}
-  //                            @Override public void onNext(ArrayList<Gallery> galleries) {
-  //                                updateAdapterDataset(galleries);
-  //                            }
-  //                        }
-  //                );
-  //
-  //        if(callbacks != null) callbacks.onLoading(false);
-  //    }
+  private void loadGalleryListFromDB() {
+    if (callbacks != null) callbacks.onLoading(true);
+
+    Observable.create(new Observable.OnSubscribeFunc<List<Gallery>>() {
+      @Override
+      public Subscription onSubscribe(Observer<? super List<Gallery>> observer) {
+        observer.onNext(Gallery.getAll());
+        observer.onCompleted();
+        return Subscriptions.empty();
+      }
+    })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<List<Gallery>>() {
+              @Override public void onCompleted() {
+                callbacks.onLoading(false);
+              }
+
+              @Override public void onError(Throwable throwable) {
+              }
+
+              @Override public void onNext(List<Gallery> galleries) {
+                updateAdapterDataset(galleries);
+              }
+            }
+        );
+
+    if (callbacks != null) callbacks.onLoading(false);
+  }
 
   public ArrayList<Gallery> getGalleries() {
     return new ArrayList<Gallery>(galleries);

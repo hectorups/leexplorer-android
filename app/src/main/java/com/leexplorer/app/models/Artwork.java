@@ -111,8 +111,8 @@ public class Artwork extends Model implements Parcelable {
   }
 
   // @todo: move this to gallery model
-  public static ArrayList<Artwork> galleryArtworks() {
-    List<Artwork> aws = new Select().from(Artwork.class).execute();
+  public static ArrayList<Artwork> galleryArtworks(String galleryId) {
+    List<Artwork> aws = new Select().from(Artwork.class).where("gallery_id = ?", galleryId).execute();
     return new ArrayList<>(aws);
   }
 

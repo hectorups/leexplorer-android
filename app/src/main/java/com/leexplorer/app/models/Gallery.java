@@ -2,6 +2,7 @@ package com.leexplorer.app.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -10,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by deepakdhiman on 2/18/14.
@@ -55,7 +57,7 @@ public class Gallery extends Model implements Parcelable {
   @Column(name = "was_seen")
   private boolean wasSeen;
   private double distanceFromCurrentLocation;
-  private ArrayList<String> artworkImageUrls;
+  private List<String> artworkImageUrls;
 
   public Gallery() {
     super();
@@ -164,11 +166,11 @@ public class Gallery extends Model implements Parcelable {
     parcel.writeInt(wasSeen ? 1 : 0);
   }
 
-  public ArrayList<String> getArtworkImageUrls() {
+  public List<String> getArtworkImageUrls() {
     return artworkImageUrls;
   }
 
-  public void setArtworkImageUrls(ArrayList<String> artworkImageUrls) {
+  public void setArtworkImageUrls(List<String> artworkImageUrls) {
     this.artworkImageUrls = artworkImageUrls;
   }
 
@@ -290,5 +292,20 @@ public class Gallery extends Model implements Parcelable {
 
   public void setDistanceFromCurrentLocation(double distanceFromCurrentLocation) {
     this.distanceFromCurrentLocation = distanceFromCurrentLocation;
+  }
+
+  public static List<Gallery> getAll(){
+    List<Gallery> galleries = new Select().from(Gallery.class).execute();
+    for(Gallery gallery: galleries){
+      List<String> imageUrls = new ArrayList<>();
+      List<Artwork> artworks = Artwork.galleryArtworks(gallery.getGalleryId());
+      for(Artwork artwork: artworks){
+        if(!TextUtils.isEmpty(artwork.getImageUrl())) {
+          imageUrls.add(artwork.getImageUrl());
+        }
+      }
+      gallery.setArtworkImageUrls(imageUrls);
+    }
+    return galleries;
   }
 }

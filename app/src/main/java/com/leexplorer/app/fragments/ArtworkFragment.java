@@ -35,6 +35,7 @@ import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.AudioTime;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorInflater;
 import com.squareup.picasso.Picasso;
@@ -72,6 +73,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @Inject Client client;
   @Inject Picasso picasso;
   @Inject Thumbor thumbor;
+  @Inject ImageSourcePicker imageSourcePicker;
 
   @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
   @InjectView(R.id.tvDescription) TextView tvDescription;
@@ -288,9 +290,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
     tvLikesCount.setText(String.valueOf(artwork.getLikesCount()));
 
-    int thumborBucket = (int) getActivity().getResources().getDimension(R.dimen.thumbor_large);
-    String url = thumbor.buildImage(artwork.getImageUrl()).resize(thumborBucket, 0).toUrl();
-    picasso.load(url).fit().centerCrop().into(ivArtwork);
+    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large).into(ivArtwork);
 
     sbAudio.setOnSeekBarChangeListener(this);
 
@@ -318,7 +318,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       menuPlay.setVisible(false);
     }
 
-    Picasso.with(getActivity()).load(artwork.getImageUrl()).into(targetForShare);
+    picasso.load(artwork.getImageUrl()).into(targetForShare);
   }
 
   @Override

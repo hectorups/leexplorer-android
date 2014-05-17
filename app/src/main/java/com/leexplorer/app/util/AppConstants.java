@@ -11,6 +11,8 @@ public class AppConstants {
 
   public static final String APP_NAME = "LEEXPLORER";
 
+  public static final String APP_FOLDER = "leexplorer";
+
   public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<String, Integer>();
 
   //public static final String API_URL = "http://10.12.34.255:1321"; // Hector 1

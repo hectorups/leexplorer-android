@@ -19,17 +19,14 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.ArtDate;
-import com.squareup.picasso.Picasso;
-import com.squareup.pollexor.Thumbor;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import java.util.List;
 import javax.inject.Inject;
 
 public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
   protected ArtworkListFragment fragment;
 
-  @Inject Picasso picasso;
-
-  @Inject Thumbor thumbor;
+  @Inject ImageSourcePicker imageSourcePicker;
 
   public ArtworkAdapter(ArtworkListFragment fragment, List<Artwork> objects) {
     super(fragment.getActivity(), objects);
@@ -61,11 +58,7 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     holder.ivArtworkThumb.setTag(aw);
     holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));
 
-    int thumborBucket =
-        (int) fragment.getActivity().getResources().getDimension(R.dimen.thumbor_medium);
-    String url = thumbor.buildImage(aw.getImageUrl()).resize(thumborBucket, 0).toUrl();
-
-    picasso.load(url).into(holder.ivArtworkThumb);
+    imageSourcePicker.getRequestCreator(aw, R.dimen.thumbor_medium).into(holder.ivArtworkThumb);
 
     setSignalIndicator(holder, aw);
 

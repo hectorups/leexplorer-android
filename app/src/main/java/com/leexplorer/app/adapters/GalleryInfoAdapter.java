@@ -13,8 +13,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.models.Gallery;
-import com.squareup.picasso.Picasso;
-import com.squareup.pollexor.Thumbor;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import java.util.HashMap;
 import javax.inject.Inject;
 
@@ -23,8 +22,7 @@ import javax.inject.Inject;
  */
 public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
   public static final int THUMNAIL_SIZE = R.dimen.thumbor_small;
-  @Inject Picasso picasso;
-  @Inject Thumbor thumbor;
+  @Inject ImageSourcePicker imageSourcePicker;
   private Context mContext;
   private LayoutInflater mInflater;
   private HashMap<String, Gallery> mGalleries;
@@ -58,10 +56,10 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
 
     Gallery gallery = mGalleries.get(marker.getId());
     if (gallery != null) {
-      int thumborBucket = (int) mContext.getResources().getDimension(THUMNAIL_SIZE);
-      String url =
-          thumbor.buildImage(gallery.getArtworkImageUrls().get(0)).resize(thumborBucket, 0).toUrl();
-      picasso.load(url).placeholder(R.drawable.ic_museum_black).into(holder.ivImage);
+      imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
+          gallery.getArtworkImageUrls().get(0), THUMNAIL_SIZE)
+          .placeholder(R.drawable.ic_museum_black)
+          .into(holder.ivImage);
     } else {
       holder.ivImage.setVisibility(View.GONE);
     }

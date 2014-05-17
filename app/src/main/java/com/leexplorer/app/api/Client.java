@@ -4,7 +4,7 @@ import com.leexplorer.app.BuildConfig;
 import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.AppConstants;
-import com.leexplorer.app.util.FakeData;
+import com.leexplorer.app.util.offline.FakeData;
 import com.squareup.okhttp.OkHttpClient;
 import java.util.ArrayList;
 import retrofit.RestAdapter;

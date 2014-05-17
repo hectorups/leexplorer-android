@@ -1,4 +1,4 @@
-package com.leexplorer.app.util;
+package com.leexplorer.app.util.offline;
 
 import android.util.Log;
 import com.squareup.okhttp.OkHttpClient;

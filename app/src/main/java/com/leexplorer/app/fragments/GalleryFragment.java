@@ -21,8 +21,7 @@ import butterknife.OnClick;
 import com.leexplorer.app.R;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
-import com.squareup.picasso.Picasso;
-import com.squareup.pollexor.Thumbor;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import javax.inject.Inject;
 
 import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
@@ -43,8 +42,7 @@ public class GalleryFragment extends BaseFragment {
   @InjectView(R.id.txDetailedPrice) TextView txDetailedPrice;
   @InjectView(R.id.txDescription) TextView txDescription;
   @InjectView(R.id.llFacilitiesImg) LinearLayout llFacilitiesImg;
-  @Inject Picasso picasso;
-  @Inject Thumbor thumbor;
+  @Inject ImageSourcePicker imageSourcePicker;
   private Gallery gallery;
 
   public static GalleryFragment newInstance(Gallery gallery) {
@@ -81,11 +79,11 @@ public class GalleryFragment extends BaseFragment {
 
     Log.d(TAG, gallery.getArtworkImageUrls().get(0));
 
-    int thumborBucket = (int) getActivity().getResources().getDimension(R.dimen.thumbor_medium);
-    String url =
-        thumbor.buildImage(gallery.getArtworkImageUrls().get(0)).resize(thumborBucket, 0).toUrl();
-
-    picasso.load(url).fit().centerCrop().into(ivGalleryDetail);
+    imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
+        gallery.getArtworkImageUrls().get(0), R.dimen.thumbor_medium)
+        .fit()
+        .centerCrop()
+        .into(ivGalleryDetail);
 
     txDetailAddress.setText(gallery.getAddress());
     txDetailGalleryType.setText(gallery.getType());

@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Environment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.leexplorer.app.LeexplorerApplication;
@@ -15,8 +14,8 @@ import com.leexplorer.app.activities.GalleryActivity;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;
-import com.leexplorer.app.util.FileDownloader;
-import java.io.File;
+import com.leexplorer.app.util.offline.FileDownloader;
+import com.leexplorer.app.util.offline.FilePathGenerator;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ public class GalleryDownloaderService extends IntentService {
 
   private static final String TAG = "GalleryDownloderService";
   private static final String EXTRA_GALLERY = "gallery";
-  private static final String APP_FOLDER = "leexplorer";
   private static final int NOTIFICATION_ID = 15;
 
   @Inject FileDownloader fileDownloader;
@@ -56,7 +54,7 @@ public class GalleryDownloaderService extends IntentService {
 
     Gallery gallery = intent.getParcelableExtra(EXTRA_GALLERY);
 
-    checkAppDirectory();
+    FilePathGenerator.checkAppDirectory();
 
     prepareNotification(gallery);
 
@@ -93,24 +91,7 @@ public class GalleryDownloaderService extends IntentService {
   }
 
   private void saveFile(Artwork artwork, String url) throws IOException {
-    fileDownloader.downloadToFile(getFileName(artwork, url), new URL(url));
-  }
-
-  private File appDirectory() {
-    return new File(Environment.getExternalStorageDirectory() + "/" + APP_FOLDER);
-  }
-
-  private void checkAppDirectory() {
-    File testDirectory = appDirectory();
-    if (!testDirectory.exists()) {
-      testDirectory.mkdir();
-    }
-  }
-
-  private String getFileName(Artwork artwork, String url) {
-    File testDirectory = appDirectory();
-    File theFile = new File(url);
-    return testDirectory.toString() + "/" + artwork.getId() + "-" + theFile.getName();
+    fileDownloader.downloadToFile(FilePathGenerator.getFileName(artwork.getGalleryId(), url), new URL(url));
   }
 
   private void prepareNotification(Gallery gallery) {

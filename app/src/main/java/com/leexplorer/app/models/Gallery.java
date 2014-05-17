@@ -90,6 +90,7 @@ public class Gallery extends Model implements Parcelable {
     this.latitude = parcel.readFloat();
     this.longitude = parcel.readFloat();
     this.artworkImageUrls = parcel.readArrayList(null);
+    this.wasSeen = parcel.readInt() == 1;
   }
 
   public static Gallery fromApiModel(com.leexplorer.app.api.models.Gallery apiGallery) {
@@ -160,6 +161,7 @@ public class Gallery extends Model implements Parcelable {
     parcel.writeFloat(latitude);
     parcel.writeFloat(longitude);
     parcel.writeList(artworkImageUrls);
+    parcel.writeInt(wasSeen ? 1 : 0);
   }
 
   public ArrayList<String> getArtworkImageUrls() {

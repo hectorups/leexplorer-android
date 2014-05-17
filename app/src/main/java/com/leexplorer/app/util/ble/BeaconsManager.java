@@ -1,4 +1,4 @@
-package com.leexplorer.app.util;
+package com.leexplorer.app.util.ble;
 
 import java.util.ArrayList;
 

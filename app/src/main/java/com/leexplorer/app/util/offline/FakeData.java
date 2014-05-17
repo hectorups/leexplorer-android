@@ -1,4 +1,4 @@
-package com.leexplorer.app.util;
+package com.leexplorer.app.util.offline;
 
 import com.google.gson.Gson;
 import com.leexplorer.app.models.Artwork;

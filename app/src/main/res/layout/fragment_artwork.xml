@@ -11,7 +11,7 @@
       android:layout_width="match_parent"
       android:layout_height="380dp"
       android:layout_marginTop="-100dp"
-      android:scaleType="fitCenter"/>
+      android:scaleType="centerCrop"/>
 
   <!-- Like -->
   <FrameLayout

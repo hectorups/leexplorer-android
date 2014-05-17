@@ -10,17 +10,14 @@ import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
-import com.squareup.picasso.Picasso;
-import com.squareup.pollexor.Thumbor;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import javax.inject.Inject;
 
 /**
  * Created by hectormonserrate on 11/05/14.
  */
 public class GalleryPagerAdapter extends PagerAdapter {
-  @Inject Picasso picasso;
-
-  @Inject Thumbor thumbor;
+  @Inject ImageSourcePicker imageSourcePicker;
 
   Gallery gallery;
   GalleryListFragment fragment;
@@ -46,13 +43,10 @@ public class GalleryPagerAdapter extends PagerAdapter {
         (RelativeLayout) inflater.inflate(R.layout.fragment_gallery_image, null);
     ImageView ivGalleryImage = (ImageView) layout.findViewById(R.id.ivGallery);
 
-    int thumborBucket =
-        (int) fragment.getActivity().getResources().getDimension(R.dimen.thumbor_small);
-    String url = thumbor.buildImage(this.gallery.getArtworkImageUrls().get(position))
-        .resize(thumborBucket, 0)
-        .toUrl();
-
-    picasso.load(url).fit().centerCrop().into(ivGalleryImage);
+    imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
+        gallery.getArtworkImageUrls().get(position), R.dimen.thumbor_small)
+        .placeholder(R.drawable.ic_museum_black)
+        .into(ivGalleryImage);
 
     ivGalleryImage.setOnClickListener(new View.OnClickListener() {
       @Override

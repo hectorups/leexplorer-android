@@ -25,7 +25,7 @@ import com.leexplorer.app.activities.GalleryListActivity;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.models.Gallery;
-import com.leexplorer.app.util.Beacon;
+import com.leexplorer.app.util.ble.Beacon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.inject.Inject;

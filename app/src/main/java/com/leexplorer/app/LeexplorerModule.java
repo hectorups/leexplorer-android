@@ -17,7 +17,8 @@ import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.AppConstants;
-import com.leexplorer.app.util.FileDownloader;
+import com.leexplorer.app.util.offline.FileDownloader;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -57,6 +58,10 @@ public class LeexplorerModule {
 
   @Provides @Singleton Client provideLeexplorerClient(OkHttpClient client) {
     return new Client(client);
+  }
+
+  @Provides @Singleton ImageSourcePicker provideImageSourcePicker(Picasso picasso, Thumbor thumbor) {
+    return new ImageSourcePicker(application, picasso, thumbor);
   }
 
   @Provides @Singleton FileDownloader privideFileDownloader(OkHttpClient client) {

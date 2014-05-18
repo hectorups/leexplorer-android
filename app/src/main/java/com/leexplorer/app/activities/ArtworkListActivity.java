@@ -35,6 +35,7 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     }
 
     if (fromNotification) {
+      gallery = Gallery.findById(gallery.getGalleryId());
       gallery.setWasSeen(true);
       gallery.save();
     }

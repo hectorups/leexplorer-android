@@ -30,7 +30,7 @@ public class Gallery extends Model implements Parcelable {
       return new Gallery[size];
     }
   };
-  @Column(name = "gallery_id")
+  @Column(name = "gallery_id", unique = true)
   private String galleryId;
   @Column(name = "name")
   private String name;
@@ -120,7 +120,14 @@ public class Gallery extends Model implements Parcelable {
   }
 
   public static Gallery findById(String galleryId) {
-    return new Select().from(Gallery.class).where("gallery_id = ?", galleryId).executeSingle();
+    Gallery gallery =
+        new Select().from(Gallery.class).where("gallery_id = ?", galleryId).executeSingle();
+
+    if (gallery == null) {
+      return null;
+    }
+
+    return gallery.fillWithImages();
   }
 
   @Override
@@ -294,18 +301,24 @@ public class Gallery extends Model implements Parcelable {
     this.distanceFromCurrentLocation = distanceFromCurrentLocation;
   }
 
-  public static List<Gallery> getAll(){
+  public static List<Gallery> getAll() {
     List<Gallery> galleries = new Select().from(Gallery.class).execute();
-    for(Gallery gallery: galleries){
-      List<String> imageUrls = new ArrayList<>();
-      List<Artwork> artworks = Artwork.galleryArtworks(gallery.getGalleryId());
-      for(Artwork artwork: artworks){
-        if(!TextUtils.isEmpty(artwork.getImageUrl())) {
-          imageUrls.add(artwork.getImageUrl());
-        }
-      }
-      gallery.setArtworkImageUrls(imageUrls);
+    for (Gallery gallery : galleries) {
+      gallery.fillWithImages();
     }
     return galleries;
+  }
+
+  private Gallery fillWithImages() {
+    List<String> imageUrls = new ArrayList<>();
+    List<Artwork> artworks = Artwork.galleryArtworks(this.getGalleryId());
+    for (Artwork artwork : artworks) {
+      if (!TextUtils.isEmpty(artwork.getImageUrl())) {
+        imageUrls.add(artwork.getImageUrl());
+      }
+    }
+    this.setArtworkImageUrls(imageUrls);
+
+    return this;
   }
 }

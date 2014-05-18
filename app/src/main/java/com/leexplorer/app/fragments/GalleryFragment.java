@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,7 +76,7 @@ public class GalleryFragment extends BaseFragment {
     View view = inflater.inflate(R.layout.fragment_gallery_content, container, false);
     ButterKnife.inject(this, view);
 
-    Log.d(TAG, gallery.getArtworkImageUrls().get(0));
+
 
     imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
         gallery.getArtworkImageUrls().get(0), R.dimen.thumbor_medium)

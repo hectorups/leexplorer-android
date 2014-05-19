@@ -36,4 +36,9 @@ public class AppConstants {
     FACILITIES_LABEL_MAP.put("wifi", "Wireless Internet");
     FACILITIES_LABEL_MAP.put("cafe", "Cafe");
   }
+
+  public static final int DISK_HTTP_CACHE_MAX_SIZE_BYTE = 1024 * 1024 * 5; // 5 MB
+  public static final long KEEP_ALIVE_DURATION_MS = 2 * 60 * 1000; // 2 min
+  public static final int CONNECTION_POOL_JSON = 4;
+  public static final String HTTP_PROTOCOL = "http/1.1";
 }

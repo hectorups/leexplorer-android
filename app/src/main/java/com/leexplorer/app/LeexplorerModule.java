@@ -19,12 +19,17 @@ import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.AppConstants;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
+import com.squareup.okhttp.ConnectionPool;
+import com.squareup.okhttp.HttpResponseCache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.squareup.pollexor.Thumbor;
 import dagger.Module;
 import dagger.Provides;
+import java.io.File;
+import java.io.IOException;
+import java.net.ResponseCache;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 
@@ -44,14 +49,30 @@ public class LeexplorerModule {
     this.application = application;
   }
 
+  @Provides @Singleton HttpResponseCache provideResponseCache() {
+    try {
+      HttpResponseCache httpResponseCache =
+          new HttpResponseCache(new File(application.getCacheDir(), "http"),
+              AppConstants.DISK_HTTP_CACHE_MAX_SIZE_BYTE);
+      ResponseCache.setDefault(httpResponseCache);
+      return httpResponseCache;
+    } catch (IOException e) {
+      return null;
+    }
+  }
+
   @Provides @Singleton LeexplorerApplication providesLeexplorerApplicationContext() {
     return application;
   }
 
-  @Provides @Singleton OkHttpClient providesOkHttpClient() {
+  @Provides @Singleton OkHttpClient providesOkHttpClient( HttpResponseCache responseCache) {
     OkHttpClient client = new OkHttpClient();
     client.setConnectTimeout(5, TimeUnit.SECONDS);
     client.setReadTimeout(30, TimeUnit.SECONDS);
+
+    client.setResponseCache(responseCache);
+    client.setConnectionPool(
+        new ConnectionPool(AppConstants.CONNECTION_POOL_JSON, AppConstants.KEEP_ALIVE_DURATION_MS));
 
     return client;
   }
@@ -60,7 +81,8 @@ public class LeexplorerModule {
     return new Client(client);
   }
 
-  @Provides @Singleton ImageSourcePicker provideImageSourcePicker(Picasso picasso, Thumbor thumbor) {
+  @Provides @Singleton ImageSourcePicker provideImageSourcePicker(Picasso picasso,
+      Thumbor thumbor) {
     return new ImageSourcePicker(application, picasso, thumbor);
   }
 

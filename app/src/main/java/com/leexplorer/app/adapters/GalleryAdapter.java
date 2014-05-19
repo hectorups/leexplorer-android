@@ -46,7 +46,7 @@ public class GalleryAdapter extends LeBaseAdapter<Gallery> {
     holder.txGalleryType.setText(gallery.getType());
     holder.txPrice.setText(String.valueOf(gallery.getPrice()));
 
-    GalleryPagerAdapter pagerAdapter = new GalleryPagerAdapter(fragment, gallery);
+    GalleryPagerAdapter pagerAdapter = new GalleryPagerAdapter(fragment, holder.pager, gallery);
     holder.pager.setAdapter(pagerAdapter);
     holder.pager.setCurrentItem(0);
 

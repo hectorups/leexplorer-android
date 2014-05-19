@@ -11,6 +11,8 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 /**
@@ -19,12 +21,19 @@ import javax.inject.Inject;
 public class GalleryPagerAdapter extends PagerAdapter {
   @Inject ImageSourcePicker imageSourcePicker;
 
+  List<String> images;
   Gallery gallery;
   GalleryListFragment fragment;
   private LayoutInflater inflater;
 
   public GalleryPagerAdapter(GalleryListFragment fragment, Gallery gallery) {
     super();
+
+    images = new ArrayList<>();
+    for(String url: gallery.getArtworkImageUrls()){
+      images.add(url);
+    }
+
     this.gallery = gallery;
     this.fragment = fragment;
     this.inflater = LayoutInflater.from(fragment.getActivity());
@@ -34,7 +43,7 @@ public class GalleryPagerAdapter extends PagerAdapter {
 
   @Override
   public int getCount() {
-    return this.gallery.getArtworkImageUrls().size();
+    return images.size();
   }
 
   @Override
@@ -44,7 +53,7 @@ public class GalleryPagerAdapter extends PagerAdapter {
     ImageView ivGalleryImage = (ImageView) layout.findViewById(R.id.ivGallery);
 
     imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
-        gallery.getArtworkImageUrls().get(position), R.dimen.thumbor_small)
+        images.get(position), R.dimen.thumbor_small)
         .placeholder(R.drawable.ic_museum_black)
         .into(ivGalleryImage);
 

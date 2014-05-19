@@ -175,7 +175,7 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   public ArrayList<Gallery> getGalleries() {
-    return new ArrayList<Gallery>(galleries);
+    return new ArrayList<>(galleries);
   }
 
   public interface Callbacks {

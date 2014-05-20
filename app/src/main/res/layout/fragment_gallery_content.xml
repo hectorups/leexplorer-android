@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -182,4 +182,14 @@
     </RelativeLayout>
   </ScrollView>
 
-</RelativeLayout>
+  <com.daimajia.numberprogressbar.NumberProgressBar
+      android:id="@+id/pbDownload"
+      android:visibility="gone"
+      android:layout_width="wrap_content"
+      android:background="@color/le_dark_grey_transparent"
+      android:padding="20dp"
+      style="@style/LE.DownloadProgressBar"
+      android:layout_gravity="bottom"
+      android:layout_height="wrap_content" />
+
+</FrameLayout>

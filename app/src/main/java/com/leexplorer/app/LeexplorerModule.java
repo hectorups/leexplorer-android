@@ -4,6 +4,10 @@ package com.leexplorer.app;
  * Created by hectormonserrate on 10/05/14.
  */
 
+import com.leexplorer.app.activities.ArtworkActivity;
+import com.leexplorer.app.activities.ArtworkListActivity;
+import com.leexplorer.app.activities.GalleryActivity;
+import com.leexplorer.app.activities.GalleryListActivity;
 import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.adapters.GalleryInfoAdapter;
@@ -22,6 +26,7 @@ import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.okhttp.ConnectionPool;
 import com.squareup.okhttp.HttpResponseCache;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.otto.Bus;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.squareup.pollexor.Thumbor;
@@ -38,7 +43,8 @@ import javax.inject.Singleton;
         GalleryFragment.class, GalleryListFragment.class, ArtworkFragment.class,
         ArtworkListFragment.class, BeaconScanService.class, ArtworkAdapter.class,
         GalleryAdapter.class, GalleryPagerAdapter.class, GalleryInfoAdapter.class,
-        GalleryMapFragment.class, GalleryDownloaderService.class
+        GalleryMapFragment.class, GalleryDownloaderService.class, ArtworkActivity.class,
+        GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class
     },
     library = true)
 public class LeexplorerModule {
@@ -59,6 +65,10 @@ public class LeexplorerModule {
     } catch (IOException e) {
       return null;
     }
+  }
+
+  @Provides @Singleton Bus provideBus() {
+    return new AndroidBus();
   }
 
   @Provides @Singleton LeexplorerApplication providesLeexplorerApplicationContext() {

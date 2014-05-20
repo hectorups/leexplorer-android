@@ -28,7 +28,6 @@ public class MediaPlayerService extends Service {
   public static final String CURRENT_DURATION =
       "com.leexplorer.mediaplayerservice.current_duration";
   public static final String ARTWORK = "com.leexplorer.mediaplayerservice.artworks";
-  public static final String ARTWORKS = "com.leexplorer.mediaplayerservice.artwork";
   public static final String SEEK_TO_VALUE = "com.leexplorer.mediaplayerservice.seek_to_value";
   public static final String ACTION = "com.leexplorer.mediaplayerservice.action";
   public static final int ACTION_PLAY = 1;

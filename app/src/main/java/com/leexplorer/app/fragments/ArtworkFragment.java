@@ -197,7 +197,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   public void onAttach(Activity activity) {
     super.onAttach(activity);
 
-    super.onAttach(activity);
     if (activity instanceof Callbacks) {
       callbacks = (Callbacks) activity;
     } else {
@@ -229,12 +228,8 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   @Override
   public void onPause() {
+    LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(audioProgressReceiver);
     super.onPause();
-    try {
-      getActivity().unregisterReceiver(audioProgressReceiver);
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override

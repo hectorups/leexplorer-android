@@ -132,12 +132,8 @@ public class ArtworkListFragment extends BaseFragment {
 
   @Override
   public void onPause() {
+    LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(beaconsReceiver);
     super.onPause();
-    try {
-      getActivity().unregisterReceiver(beaconsReceiver);
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override

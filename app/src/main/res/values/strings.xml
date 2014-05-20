@@ -30,6 +30,7 @@
   <string name="hello_world">Hello world!</string>
   <string name="title_activity_gallery">GalleryActivity</string>
   <string name="download_gallery">download</string>
+  <string name="gallery_downloaded">Gallery Downloaded</string>
 
   <!-- GALLERY LIST SCREEN -->
   <string name="menu_gallery_map">map</string>

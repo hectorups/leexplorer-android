@@ -13,10 +13,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Window;
+import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
+import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import javax.inject.Inject;
 
 import static com.leexplorer.app.util.AppConstants.APP_NAME;
 
@@ -27,6 +33,10 @@ public class BaseActivity extends ActionBarActivity {
   public static final String TAG = "com.leexplorer.activities.baseactivity";
   // This Receiver is ON when the activity is displaying. When on it catches the notification
   // before NotificationReceiver does and cancels it.
+
+  @Inject Bus bus;
+  private final EventHandler eventhandler = new EventHandler();
+
   private BroadcastReceiver onShowNotification = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -40,6 +50,16 @@ public class BaseActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+    ((LeexplorerApplication) getApplication()).inject(this);
+  }
+
+  @Override protected void onDestroy() {
+    Crouton.cancelAllCroutons();
+    super.onDestroy();
+  }
+
+  public void onProgressLoading(boolean loading){
+    onLoading(loading);
   }
 
   public void onLoading(boolean loading) {
@@ -55,6 +75,7 @@ public class BaseActivity extends ActionBarActivity {
   @Override
   public void onResume() {
     super.onResume();
+    bus.register(eventhandler);
 
     BeaconScanService.setScannerAlarm(this, true);
 
@@ -72,6 +93,8 @@ public class BaseActivity extends ActionBarActivity {
   @Override
   public void onPause() {
     super.onPause();
+    bus.unregister(eventhandler);
+
     unregisterReceiver(onShowNotification);
 
     BeaconScanService.setScannerAlarm(this, false);
@@ -106,5 +129,12 @@ public class BaseActivity extends ActionBarActivity {
       return true;
     }
     return false;
+  }
+
+
+  private class EventHandler {
+    @Subscribe public void onLoading(LoadingEvent event){
+      onProgressLoading(event.isLoading());
+    }
   }
 }

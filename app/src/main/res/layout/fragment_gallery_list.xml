@@ -7,6 +7,6 @@
       android:id="@+id/lvGalleries"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:divider="@null"
-      android:dividerHeight="0dp"/>
+      android:divider="@color/le_black"
+      android:dividerHeight="1.5dp"/>
 </FrameLayout>

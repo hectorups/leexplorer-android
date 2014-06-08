@@ -32,6 +32,7 @@ import com.leexplorer.app.util.ble.Beacon;
 import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
@@ -270,7 +271,7 @@ public class ArtworkListFragment extends BaseFragment {
     }
   }
 
-  private void updateAdapterDataset(ArrayList<Artwork> aws) {
+  public void updateAdapterDataset(List<Artwork> aws) {
     artworks.clear();
     for (Artwork aw : aws) {
       artworks.add(aw);

@@ -1,5 +1,7 @@
 package com.leexplorer.app.activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -7,8 +9,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import com.leexplorer.app.R;
+import com.leexplorer.app.events.ArtworkUpdated;
 import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.models.Artwork;
+import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 
 public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Callbacks {
@@ -99,5 +103,21 @@ public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Cal
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+
+  @Subscribe public void onArtworkChanged(ArtworkUpdated event) {
+    for (int i = 0; i < artworks.size(); i++) {
+      if (artworks.get(i).equals(event.getArtwork())) {
+        artworks.add(i, event.getArtwork());
+        break;
+      }
+    }
+  }
+
+  @Override public void onBackPressed() {
+    Intent data = new Intent();
+    data.putExtra(EXTRA_ARTWORKS, artworks);
+    setResult(Activity.RESULT_OK, data);
+    finish();
   }
 }

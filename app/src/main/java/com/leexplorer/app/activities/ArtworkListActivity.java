@@ -1,21 +1,24 @@
 package com.leexplorer.app.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;
+import java.util.List;
 
 public class ArtworkListActivity extends BaseActivity implements ArtworkListFragment.Callbacks {
 
   public static final String EXTRA_GALLERY = "extra_gallery";
   public static final String EXTRA_FROM_NOTIFICATION = "extra_from_notification";
+  public static final int ARTWORK_DETAIL_REQUEST = 0;
 
   private Gallery gallery;
+  private ArtworkListFragment fragment;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +26,7 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     setContentView(R.layout.activity_artwork_list);
 
     FragmentManager fm = getSupportFragmentManager();
-    Fragment fragment = fm.findFragmentById(R.id.container);
+    fragment = (ArtworkListFragment) fm.findFragmentById(R.id.container);
 
     boolean fromNotification = false;
 
@@ -84,6 +87,20 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     Intent i = new Intent(this, ArtworkActivity.class);
     i.putExtra(ArtworkActivity.EXTRA_ARTWORK, aw);
     i.putExtra(ArtworkActivity.EXTRA_ARTWORKS, fragment.getArtworks());
-    startActivity(i);
+    startActivityForResult(i, ARTWORK_DETAIL_REQUEST);
+  }
+
+  @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == ARTWORK_DETAIL_REQUEST) {
+      if (resultCode == Activity.RESULT_OK) {
+        List<Artwork> newArtworks =
+            data.getParcelableArrayListExtra(ArtworkActivity.EXTRA_ARTWORKS);
+        if (newArtworks != null && fragment != null) {
+          fragment.updateAdapterDataset(newArtworks);
+        }
+      }
+    }
   }
 }

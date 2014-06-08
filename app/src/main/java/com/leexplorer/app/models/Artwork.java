@@ -61,22 +61,8 @@ public class Artwork extends Model implements Parcelable {
     super();
   }
 
-  protected Artwork(Parcel in) {
-    name = in.readString();
-    mac = in.readString();
-    description = in.readString();
-    imageUrl = in.readString();
-    author = in.readString();
-    likesCount = in.readInt();
-    publishedAt = new Date(in.readLong());
-    iLiked = in.readInt() == 1 ? true : false;
-    audioUrl = in.readString();
-    distance = in.readInt();
-    galleryId = in.readString();
-  }
-
   public static Artwork fromJsonModel(com.leexplorer.app.api.models.Artwork jaw) {
-    Artwork aw = null;
+    Artwork aw;
 
     String mac = jaw.mac;
 
@@ -112,7 +98,8 @@ public class Artwork extends Model implements Parcelable {
 
   // @todo: move this to gallery model
   public static ArrayList<Artwork> galleryArtworks(String galleryId) {
-    List<Artwork> aws = new Select().from(Artwork.class).where("gallery_id = ?", galleryId).execute();
+    List<Artwork> aws =
+        new Select().from(Artwork.class).where("gallery_id = ?", galleryId).execute();
     return new ArrayList<>(aws);
   }
 
@@ -188,6 +175,10 @@ public class Artwork extends Model implements Parcelable {
     return likesCount;
   }
 
+  public void setiLiked(boolean iLiked) {
+    this.iLiked = iLiked;
+  }
+
   public void setLikesCount(int likesCount) {
     this.likesCount = likesCount;
   }
@@ -237,13 +228,13 @@ public class Artwork extends Model implements Parcelable {
   public void like() {
     this.iLiked = true;
     this.likesCount += 1;
-    //this.save();
+    this.save();
   }
 
   public void unlike() {
     this.iLiked = false;
     this.likesCount -= 1;
-    //this.save();
+    this.save();
   }
 
   public String getGalleryId() {
@@ -265,6 +256,7 @@ public class Artwork extends Model implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
+    dest.writeLong(getId());
     dest.writeString(name);
     dest.writeString(mac);
     dest.writeString(description);
@@ -273,9 +265,26 @@ public class Artwork extends Model implements Parcelable {
     dest.writeInt(likesCount);
     dest.writeLong(publishedAt.getTime());
     dest.writeInt(iLiked ? 1 : 0);
+    dest.writeInt(known ? 1 : 0);
     dest.writeString(audioUrl);
     dest.writeInt(distance);
     dest.writeString(galleryId);
+  }
+
+  protected Artwork(Parcel in) {
+    setId(in.readLong());
+    name = in.readString();
+    mac = in.readString();
+    description = in.readString();
+    imageUrl = in.readString();
+    author = in.readString();
+    likesCount = in.readInt();
+    publishedAt = new Date(in.readLong());
+    iLiked = in.readInt() == 1 ? true : false;
+    known = in.readInt() == 1 ? true : false;
+    audioUrl = in.readString();
+    distance = in.readInt();
+    galleryId = in.readString();
   }
 
   public static enum Distance {

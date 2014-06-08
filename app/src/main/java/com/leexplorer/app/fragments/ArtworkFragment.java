@@ -38,6 +38,7 @@ import com.leexplorer.app.util.AudioTime;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorInflater;
+import com.squareup.otto.Bus;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.pollexor.Thumbor;
@@ -74,6 +75,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @Inject Picasso picasso;
   @Inject Thumbor thumbor;
   @Inject ImageSourcePicker imageSourcePicker;
+  @Inject Bus bus;
 
   @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
   @InjectView(R.id.tvDescription) TextView tvDescription;
@@ -279,10 +281,10 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
         return false;
       }
     });
+
     if (artwork.isiLiked()) {
       ivLiked.setVisibility(View.VISIBLE);
     }
-
     tvLikesCount.setText(String.valueOf(artwork.getLikesCount()));
 
     imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large).into(ivArtwork);
@@ -291,11 +293,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
     return rootView;
   }
-
-    /*
-     * AUDIO
-     *
-     */
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -338,9 +335,12 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       }
 
       public void success(Void v, Response r) {
+        updateLiked();
       }
     });
+  }
 
+  private void updateLiked(){
     if (artwork.isiLiked()) {
       artwork.unlike();
       ivLiked.setVisibility(View.INVISIBLE);
@@ -395,7 +395,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   }
 
   private void showAudio() {
-
     if (menuPlay != null) {
       if (audioCurrentDuration == 0 && artwork.getAudioUrl() != null) {
         menuPlay.setVisible(true);

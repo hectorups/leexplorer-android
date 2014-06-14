@@ -31,6 +31,15 @@ public class FilePathGenerator {
     }
   }
 
+  public static boolean isGalleryDownloaded(String galleryId){
+    File galleryDirectory = galleryDirectory(galleryId);
+    if(galleryDirectory.exists() && galleryDirectory.listFiles().length > 0){
+      return true;
+    }
+
+    return false;
+  }
+
   public static String getFileName(String galleryId, String url) {
     checkGalleryDirectory(galleryId);
     File theFile = new File(url);

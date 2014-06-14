@@ -294,10 +294,9 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     return rootView;
   }
 
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    super.onCreateOptionsMenu(menu, inflater);
-    inflater.inflate(R.menu.artwork, menu);
+  @Override public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+
     MenuItem item = menu.findItem(R.id.menuShare);
 
     miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
@@ -311,6 +310,12 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     }
 
     picasso.load(artwork.getImageUrl()).into(targetForShare);
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.artwork, menu);
   }
 
   @Override

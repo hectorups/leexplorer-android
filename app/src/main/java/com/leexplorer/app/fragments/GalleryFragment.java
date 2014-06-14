@@ -29,6 +29,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
+import com.leexplorer.app.util.offline.FilePathGenerator;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Bus;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -170,16 +171,25 @@ public class GalleryFragment extends BaseFragment {
     return view;
   }
 
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    super.onCreateOptionsMenu(menu, inflater);
-    inflater.inflate(R.menu.gallery, menu);
+  @Override public void onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
 
     MenuItem item = menu.findItem(R.id.menuShare);
 
     miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
     menuDownload = menu.findItem(R.id.menuDownloadGallery);
+    if (FilePathGenerator.isGalleryDownloaded(gallery.getGalleryId())) {
+      menuDownload.setVisible(false);
+    } else {
+      menuDownload.setVisible(true);
+    }
+  }
+
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.gallery, menu);
   }
 
   @Override public boolean onOptionsItemSelected(MenuItem item) {

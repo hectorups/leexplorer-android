@@ -21,6 +21,7 @@ import com.leexplorer.app.util.offline.FilePathGenerator;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 
@@ -41,6 +42,9 @@ public class GalleryDownloaderService extends IntentService {
   @Inject FileDownloader fileDownloader;
   @Inject Client client;
 
+  private Gallery gallery;
+  private DownloadProgress downloadProgress;
+
   public static void callService(Context context, Gallery gallery) {
     Intent intent = new Intent(context, GalleryDownloaderService.class);
     intent.putExtra(EXTRA_GALLERY, gallery);
@@ -59,29 +63,33 @@ public class GalleryDownloaderService extends IntentService {
   @Override protected void onHandleIntent(Intent intent) {
     Log.d(TAG, "Intent received");
 
-    final Gallery gallery = intent.getParcelableExtra(EXTRA_GALLERY);
+    gallery = intent.getParcelableExtra(EXTRA_GALLERY);
 
     FilePathGenerator.checkAppDirectory();
 
-    prepareNotification(gallery);
+    prepareNotification();
 
     client.getArtworksData(gallery.getGalleryId()).subscribe(new Observer<ArrayList<Artwork>>() {
-      @Override public void onCompleted() {}
+      @Override public void onCompleted() {
+      }
 
-      @Override public void onError(Throwable throwable) { throwable.printStackTrace(); }
+      @Override public void onError(Throwable throwable) {
+        throwable.printStackTrace();
+      }
 
       @Override public void onNext(ArrayList<Artwork> artworks) {
         try {
-          int total = artworks.size();
+          int total = totalFiles(artworks);
+          downloadProgress = new DownloadProgress(total);
+
           for (int i = 0; i < total; i++) {
             saveArtwork(artworks.get(i));
-            broadcastProgress(gallery, Math.abs(i * 100 / total));
           }
         } catch (IOException e) {
           e.printStackTrace();
         } finally {
           stopForeground(true);
-          broadcastProgress(gallery, 100);
+          broadcastProgress(100);
         }
       }
     });
@@ -97,12 +105,29 @@ public class GalleryDownloaderService extends IntentService {
     }
   }
 
-  private void saveFile(Artwork artwork, String url) throws IOException {
-    fileDownloader.downloadToFile(FilePathGenerator.getFileName(artwork.getGalleryId(), url),
-        new URL(url));
+  private int totalFiles(List<Artwork> artworks) {
+    int total = 0;
+
+    for (Artwork artwork : artworks) {
+      if (artwork.getAudioUrl() != null) {
+        total++;
+      }
+
+      if (artwork.getImageUrl() != null) {
+        total++;
+      }
+    }
+
+    return total;
   }
 
-  private void prepareNotification(Gallery gallery) {
+  private void saveFile(Artwork artwork, String url) throws IOException {
+    downloadProgress.setCurrentFile(downloadProgress.getCurrentFile() + 1);
+    fileDownloader.downloadToFile(FilePathGenerator.getFileName(artwork.getGalleryId(), url),
+        new URL(url), downloadProgress);
+  }
+
+  private void prepareNotification() {
     Resources r = getResources();
     Intent intent = new Intent(this, GalleryActivity.class);
     intent.putExtra(GalleryActivity.GALLERY_KEY, gallery);
@@ -125,12 +150,45 @@ public class GalleryDownloaderService extends IntentService {
     startForeground(NOTIFICATION_ID, notification);
   }
 
-  private void broadcastProgress(Gallery gallery, int currentPercentage) {
+  private void broadcastProgress(int currentPercentage) {
     Intent in = new Intent(ACTION);
     in.putExtra("resultCode", Activity.RESULT_OK);
     in.putExtra(GALLERY, gallery);
     in.putExtra(CURRENT_PERCENTAGE, currentPercentage);
 
     LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+  }
+
+  private class DownloadProgress implements FileDownloader.Callbacks {
+    private int currentFile;
+    private int totalFiles;
+
+    public DownloadProgress(int totalFiles) {
+      currentFile = 0;
+      this.totalFiles = totalFiles;
+    }
+
+    public int getCurrentFile() {
+      return currentFile;
+    }
+
+    public void setCurrentFile(int currentFile) {
+      this.currentFile = currentFile;
+    }
+
+    public void publishContent(int total) {
+      int percentage = 0;
+      if (currentFile > 0) {
+        percentage = Math.abs(currentFile * 100 / totalFiles);
+      }
+      percentage += parcialPercentage(total);
+      Log.d(TAG, "Broadcast: " + String.valueOf(percentage));
+      broadcastProgress(percentage);
+    }
+
+    private int parcialPercentage(int value) {
+      int totalParcialPercentage = Math.abs(100 / totalFiles);
+      return Math.abs(value * totalParcialPercentage / 100);
+    }
   }
 }

@@ -15,12 +15,15 @@ public class FileDownloader {
   public static final String TAG = "FileDownloader";
   OkHttpClient client;
 
+  public interface Callbacks {
+    void publishContent(int status);
+  }
+
   public FileDownloader(OkHttpClient client) {
     this.client = client;
   }
 
-  public void downloadToFile(String filePath, URL url) throws IOException {
-
+  public void downloadToFile(String filePath, URL url, Callbacks callbacks) throws IOException {
     Log.d(TAG, "DOWNLOADING " + url.toString() + " to " + filePath);
 
     FileOutputStream fos = null;
@@ -31,12 +34,18 @@ public class FileDownloader {
       fos = new FileOutputStream(filePath);
       HttpURLConnection connection = client.open(url);
 
+      int totalBytes = connection.getContentLength();
       in = connection.getInputStream();
       byte data[] = new byte[1024];
 
       int count;
+      int totalDownloaded = 0;
       while ((count = in.read(data)) != -1) {
         fos.write(data, 0, count);
+        totalDownloaded += count;
+        if (callbacks != null) {
+          callbacks.publishContent(totalDownloaded * 100 / totalBytes);
+        }
       }
     } catch (Exception e) {
       e.printStackTrace();

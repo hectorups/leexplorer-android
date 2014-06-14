@@ -97,6 +97,10 @@ public class GalleryFragment extends BaseFragment {
   private BroadcastReceiver downloadProgressReceiver = new BroadcastReceiver() {
     @Override
     public void onReceive(Context context, Intent intent) {
+      if (!downloading) {
+        return;
+      }
+
       int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
       Gallery downloadingGallery = intent.getParcelableExtra(GalleryDownloaderService.GALLERY);
       if (resultCode == Activity.RESULT_OK) {

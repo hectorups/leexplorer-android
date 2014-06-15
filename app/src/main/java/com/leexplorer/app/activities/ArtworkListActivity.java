@@ -93,13 +93,10 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
-    if (requestCode == ARTWORK_DETAIL_REQUEST) {
-      if (resultCode == Activity.RESULT_OK) {
-        List<Artwork> newArtworks =
-            data.getParcelableArrayListExtra(ArtworkActivity.EXTRA_ARTWORKS);
-        if (newArtworks != null && fragment != null) {
-          fragment.updateAdapterDataset(newArtworks);
-        }
+    if (requestCode == ARTWORK_DETAIL_REQUEST && resultCode == Activity.RESULT_OK) {
+      List<Artwork> newArtworks = data.getParcelableArrayListExtra(ArtworkActivity.EXTRA_ARTWORKS);
+      if (newArtworks != null && fragment != null) {
+        fragment.updateAdapterDataset(newArtworks);
       }
     }
   }

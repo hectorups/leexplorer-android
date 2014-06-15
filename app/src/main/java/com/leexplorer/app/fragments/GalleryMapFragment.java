@@ -355,8 +355,8 @@ public class GalleryMapFragment extends SupportMapFragment {
           getResources().getString(R.string.consolidated_marker_title, galleries.size()));
       StringBuffer consolidatedDescription = new StringBuffer();
       for (Gallery g : galleries) {
-        consolidatedDescription.append(consolidatedDescription.length() == 0 ? "" : ", ");
-        consolidatedDescription.append(g.getName());
+        consolidatedDescription.append(consolidatedDescription.length() == 0 ? "" : ", ")
+            .append(g.getName());
       }
       marker.setSnippet(consolidatedDescription.toString());
       marker.setGallery(null);

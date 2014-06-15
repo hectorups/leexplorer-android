@@ -145,7 +145,9 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void loadGalleryListFromDB() {
-    if (callbacks != null) callbacks.onLoading(true);
+    if (callbacks != null){
+      callbacks.onLoading(true);
+    }
 
     Observable.create(new Observable.OnSubscribeFunc<List<Gallery>>() {
       @Override
@@ -171,7 +173,9 @@ public class GalleryListFragment extends BaseFragment {
             }
         );
 
-    if (callbacks != null) callbacks.onLoading(false);
+    if (callbacks != null){
+      callbacks.onLoading(false);
+    }
   }
 
   public ArrayList<Gallery> getGalleries() {

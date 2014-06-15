@@ -182,7 +182,7 @@ public class GalleryDownloaderService extends IntentService {
         percentage = Math.abs(currentFile * 100 / totalFiles);
       }
       percentage += parcialPercentage(total);
-      Log.d(TAG, "Broadcast: " + String.valueOf(percentage));
+      Log.d(TAG, "Broadcast: " + percentage);
       broadcastProgress(percentage);
     }
 

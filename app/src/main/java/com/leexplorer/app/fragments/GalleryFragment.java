@@ -104,15 +104,13 @@ public class GalleryFragment extends BaseFragment {
 
       int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
       Gallery downloadingGallery = intent.getParcelableExtra(GalleryDownloaderService.GALLERY);
-      if (resultCode == Activity.RESULT_OK) {
-        if (gallery.equals(downloadingGallery)) {
-          int percentage = intent.getIntExtra(GalleryDownloaderService.CURRENT_PERCENTAGE, 0);
-          if (percentage == 100) {
-            stopDownload();
-            Crouton.makeText(getActivity(), R.string.gallery_downloaded, Style.CONFIRM).show();
-          } else {
-            setupDownload(percentage);
-          }
+      if (resultCode == Activity.RESULT_OK && gallery.equals(downloadingGallery)) {
+        int percentage = intent.getIntExtra(GalleryDownloaderService.CURRENT_PERCENTAGE, 0);
+        if (percentage == 100) {
+          stopDownload();
+          Crouton.makeText(getActivity(), R.string.gallery_downloaded, Style.CONFIRM).show();
+        } else {
+          setupDownload(percentage);
         }
       }
     }
@@ -156,8 +154,7 @@ public class GalleryFragment extends BaseFragment {
 
     StringBuffer languages = new StringBuffer();
     for (String language : gallery.getLanguages()) {
-      languages.append(languages.length() == 0 ? "" : ", ");
-      languages.append(language);
+      languages.append(languages.length() == 0 ? "" : ", ").append(language);
     }
     txLanguage.setText(languages.toString());
 

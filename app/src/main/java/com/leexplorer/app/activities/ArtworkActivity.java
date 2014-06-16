@@ -3,12 +3,12 @@ package com.leexplorer.app.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
+import butterknife.ButterKnife;
 import com.leexplorer.app.R;
+import com.leexplorer.app.adapters.ArtworkViewPagerAdapter;
 import com.leexplorer.app.events.ArtworkUpdated;
 import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.models.Artwork;
@@ -19,13 +19,17 @@ public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Cal
   public static final String EXTRA_ARTWORK = "extra_artwork";
   public static final String EXTRA_ARTWORKS = "extra_artworks";
 
+  public final static float BIG_SCALE = 1.0f;
+  public final static float SMALL_SCALE = 0.7f;
+  public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
+
   private ArrayList<Artwork> artworks;
-  private ViewPager mViewPager;
+  private ViewPager viewPager;
 
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(EXTRA_ARTWORKS, artworks);
-    outState.putParcelable(EXTRA_ARTWORK, artworks.get(mViewPager.getCurrentItem()));
+    outState.putParcelable(EXTRA_ARTWORK, artworks.get(viewPager.getCurrentItem()));
   }
 
   @Override
@@ -33,60 +37,35 @@ public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Cal
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_artwork);
 
-    Artwork currentAw;
+    ButterKnife.inject(this);
+
+    Artwork currentArtwork;
     if (savedInstanceState == null) {
-      currentAw = getIntent().getParcelableExtra(EXTRA_ARTWORK);
+      currentArtwork = getIntent().getParcelableExtra(EXTRA_ARTWORK);
       artworks = getIntent().getParcelableArrayListExtra(EXTRA_ARTWORKS);
     } else {
-      currentAw = savedInstanceState.getParcelable(EXTRA_ARTWORK);
+      currentArtwork = savedInstanceState.getParcelable(EXTRA_ARTWORK);
       artworks = savedInstanceState.getParcelableArrayList(EXTRA_ARTWORKS);
     }
+
+    viewPager = new ViewPager(this);
+    viewPager.setId(R.id.viewPager);
+    setContentView(viewPager);
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     FragmentManager fm = getSupportFragmentManager();
 
-    mViewPager = new ViewPager(this);
-    mViewPager.setId(R.id.viewPager);
-    setContentView(mViewPager);
-
-    mViewPager.setAdapter(new FragmentStatePagerAdapter(fm) {
-      @Override
-      public Fragment getItem(int i) {
-        Artwork artwork = artworks.get(i);
-        return ArtworkFragment.newInstance(artwork);
-      }
-
-      @Override
-      public int getCount() {
-        return artworks.size();
-      }
-    });
-
-    mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-      @Override
-      public void onPageScrolled(int i, float v, int i2) {
-      }
-
-      @Override
-      public void onPageSelected(int i) {
-        Artwork aw = artworks.get(i);
-        if (aw != null) {
-          setTitle(aw.getName());
-        }
-      }
-
-      @Override
-      public void onPageScrollStateChanged(int i) {
-      }
-    });
+    ArtworkViewPagerAdapter adapter = new ArtworkViewPagerAdapter(fm, this, artworks);
+    viewPager.setAdapter(adapter);
+    viewPager.setOnPageChangeListener(adapter);
 
     // Set page in ViewPager
-    setTitle(currentAw.getName());
+    setTitle(currentArtwork.getName());
     for (int i = 0; i < artworks.size(); i++) {
       Artwork aw = artworks.get(i);
-      if (currentAw.equals(aw)) {
-        mViewPager.setCurrentItem(i);
+      if (currentArtwork.equals(aw)) {
+        viewPager.setCurrentItem(i);
         break;
       }
     }

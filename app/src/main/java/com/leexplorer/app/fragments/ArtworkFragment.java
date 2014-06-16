@@ -93,8 +93,9 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @InjectView(R.id.sbAudio) SeekBar sbAudio;
   @InjectView(R.id.tvDuration) TextView tvDuration;
   @InjectView(R.id.tvTotalDuration) TextView tvTotalDuration;
-  Artwork artwork;
-  ShareActionProvider miShareAction;
+  private Artwork artwork;
+  private ShareActionProvider miShareAction;
+
   private MenuItem menuPlay;
   private Target targetForShare = new Target() {
     @Override
@@ -188,7 +189,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   public static ArtworkFragment newInstance(Artwork aw) {
     Bundle args = new Bundle();
     args.putParcelable(EXTRA_ARTWORK, aw);
-
     ArtworkFragment fragment = new ArtworkFragment();
     fragment.setArguments(args);
 
@@ -216,7 +216,15 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    artwork = getArguments().getParcelable(EXTRA_ARTWORK);
+    if (savedInstanceState != null) {
+      artwork = savedInstanceState.getParcelable(EXTRA_ARTWORK);
+      audioCurrentDuration = savedInstanceState.getLong(SAVED_CURRENT_DURAITON);
+      audioTotalDuration = savedInstanceState.getLong(SAVED_TOTAL_DURAITON);
+      nowPlaying = savedInstanceState.getBoolean(SAVED_NOW_PLAYING);
+      onPause = savedInstanceState.getBoolean(SAVED_ON_PAUSE);
+    } else {
+      artwork = getArguments().getParcelable(EXTRA_ARTWORK);
+    }
     setHasOptionsMenu(true);
   }
 
@@ -241,6 +249,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     savedInstanceState.putLong(SAVED_TOTAL_DURAITON, audioTotalDuration);
     savedInstanceState.putBoolean(SAVED_NOW_PLAYING, nowPlaying);
     savedInstanceState.putBoolean(SAVED_ON_PAUSE, onPause);
+    savedInstanceState.putParcelable(EXTRA_ARTWORK, artwork);
   }
 
   @SuppressWarnings("PMD") @Override
@@ -250,14 +259,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
     ButterKnife.inject(this, rootView);
 
-    if (savedInstanceState != null) {
-      audioCurrentDuration = savedInstanceState.getLong(SAVED_CURRENT_DURAITON);
-      audioTotalDuration = savedInstanceState.getLong(SAVED_TOTAL_DURAITON);
-      nowPlaying = savedInstanceState.getBoolean(SAVED_NOW_PLAYING);
-      onPause = savedInstanceState.getBoolean(SAVED_ON_PAUSE);
-
-      showAudio();
-    }
+    showAudio();
 
     tvAuthorAndDate.setText(
         artwork.getAuthor() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
@@ -345,7 +347,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     });
   }
 
-  private void updateLiked(){
+  private void updateLiked() {
     if (artwork.isiLiked()) {
       artwork.unlike();
       ivLiked.setVisibility(View.INVISIBLE);

@@ -97,10 +97,11 @@
           android:value="com.leexplorer.app.activities.GalleryListActivity"></meta-data>
     </activity>
 
+    <meta-data android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version"/>
     <meta-data
         android:name="com.google.android.maps.v2.API_KEY"
         android:value="AIzaSyDErYllKMbc3KZHVv_xKY72zY2Iq_M46TI"/>
-
     <meta-data
         android:name="com.crashlytics.ApiKey"
         android:value="784c2938b3665197590a2e58f88565ff7f11f7d9"/>

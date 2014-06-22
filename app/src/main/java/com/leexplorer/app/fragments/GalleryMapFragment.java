@@ -40,6 +40,7 @@ import javax.inject.Inject;
 public class GalleryMapFragment extends SupportMapFragment {
 
   private static final String EXTRA_GALLERIES = "extra_galleries";
+  private static final String EXTRA_BUNDLE = "bundle";
   private static final double MIN_LAT_BOUNDS = 0.2;
   private static final int ANIMATE_LOCATION_DURATION = 600;
   private static final int ANIMATE_INFOBOX_DURATION = 300;
@@ -89,6 +90,7 @@ public class GalleryMapFragment extends SupportMapFragment {
   @Override
   public void onCreate(final Bundle state) {
     super.onCreate(state);
+
     Bitmap marker =
         BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_map_pin);
     markerHeight = marker.getHeight();
@@ -97,7 +99,14 @@ public class GalleryMapFragment extends SupportMapFragment {
     if (state == null) {
       galleries = getArguments().getParcelableArrayList(EXTRA_GALLERIES);
     } else {
-      galleries = state.getParcelableArrayList(EXTRA_GALLERIES);
+      Bundle b = state.getBundle(EXTRA_BUNDLE);
+      if (b != null) {
+        galleries = b.getParcelableArrayList(EXTRA_GALLERIES);
+      }
+    }
+
+    if (galleries == null) {
+      galleries = new ArrayList<>();
     }
 
     ((LeexplorerApplication) getActivity().getApplicationContext()).inject(this);
@@ -105,7 +114,9 @@ public class GalleryMapFragment extends SupportMapFragment {
 
   @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putParcelableArrayList(EXTRA_GALLERIES, new ArrayList<>(galleries));
+    Bundle b = new Bundle();
+    b.putParcelableArrayList(EXTRA_GALLERIES, new ArrayList<>(galleries));
+    outState.putBundle(EXTRA_BUNDLE, b);
   }
 
   @Override

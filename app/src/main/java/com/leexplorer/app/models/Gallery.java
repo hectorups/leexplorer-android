@@ -19,17 +19,6 @@ import java.util.List;
 @Table(name = "galleries")
 public class Gallery extends Model implements Parcelable {
 
-  public static final Parcelable.Creator<Gallery> CREATOR = new Parcelable.Creator<Gallery>() {
-    @Override
-    public Gallery createFromParcel(Parcel in) {
-      return new Gallery(in);
-    }
-
-    @Override
-    public Gallery[] newArray(int size) {
-      return new Gallery[size];
-    }
-  };
   @Column(name = "gallery_id", unique = true)
   private String galleryId;
   @Column(name = "name")
@@ -76,23 +65,6 @@ public class Gallery extends Model implements Parcelable {
     this.detailedPrice = detailedPrice;
     this.setFacilities(facilities);
     this.description = description;
-  }
-
-  protected Gallery(Parcel parcel) {
-    this.galleryId = parcel.readString();
-    this.name = parcel.readString();
-    this.address = parcel.readString();
-    this.type = parcel.readString();
-    this.price = parcel.readFloat();
-    this.languages = parcel.readString();
-    this.hours = parcel.readString();
-    this.detailedPrice = parcel.readString();
-    this.facilities = parcel.readString();
-    this.description = parcel.readString();
-    this.latitude = parcel.readFloat();
-    this.longitude = parcel.readFloat();
-    this.artworkImageUrls = parcel.readArrayList(null);
-    this.wasSeen = parcel.readInt() == 1;
   }
 
   public static Gallery fromApiModel(com.leexplorer.app.api.models.Gallery apiGallery) {
@@ -153,24 +125,6 @@ public class Gallery extends Model implements Parcelable {
   @Override
   public int hashCode() {
     return galleryId.hashCode();
-  }
-
-  @Override
-  public void writeToParcel(Parcel parcel, int i) {
-    parcel.writeString(galleryId);
-    parcel.writeString(name);
-    parcel.writeString(address);
-    parcel.writeString(type);
-    parcel.writeFloat(price);
-    parcel.writeString(languages);
-    parcel.writeString(hours);
-    parcel.writeString(detailedPrice);
-    parcel.writeString(facilities);
-    parcel.writeString(description);
-    parcel.writeFloat(latitude);
-    parcel.writeFloat(longitude);
-    parcel.writeList(artworkImageUrls);
-    parcel.writeInt(wasSeen ? 1 : 0);
   }
 
   public List<String> getArtworkImageUrls() {
@@ -320,5 +274,52 @@ public class Gallery extends Model implements Parcelable {
     this.setArtworkImageUrls(imageUrls);
 
     return this;
+  }
+
+  public static final Parcelable.Creator<Gallery> CREATOR = new Parcelable.Creator<Gallery>() {
+    @Override
+    public Gallery createFromParcel(Parcel in) {
+      return new Gallery(in);
+    }
+
+    @Override
+    public Gallery[] newArray(int size) {
+      return new Gallery[size];
+    }
+  };
+
+  @Override
+  public void writeToParcel(Parcel parcel, int i) {
+    parcel.writeString(galleryId);
+    parcel.writeString(name);
+    parcel.writeString(address);
+    parcel.writeString(type);
+    parcel.writeFloat(price);
+    parcel.writeString(languages);
+    parcel.writeString(hours);
+    parcel.writeString(detailedPrice);
+    parcel.writeString(facilities);
+    parcel.writeString(description);
+    parcel.writeFloat(latitude);
+    parcel.writeFloat(longitude);
+    parcel.writeList(artworkImageUrls);
+    parcel.writeInt(wasSeen ? 1 : 0);
+  }
+
+  protected Gallery(Parcel parcel) {
+    this.galleryId = parcel.readString();
+    this.name = parcel.readString();
+    this.address = parcel.readString();
+    this.type = parcel.readString();
+    this.price = parcel.readFloat();
+    this.languages = parcel.readString();
+    this.hours = parcel.readString();
+    this.detailedPrice = parcel.readString();
+    this.facilities = parcel.readString();
+    this.description = parcel.readString();
+    this.latitude = parcel.readFloat();
+    this.longitude = parcel.readFloat();
+    this.artworkImageUrls = parcel.readArrayList(null);
+    this.wasSeen = parcel.readInt() == 1;
   }
 }

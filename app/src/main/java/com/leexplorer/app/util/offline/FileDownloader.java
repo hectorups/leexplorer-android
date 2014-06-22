@@ -1,7 +1,7 @@
 package com.leexplorer.app.util.offline;
 
 import android.util.Log;
-import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.OkUrlFactory;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,14 +13,14 @@ import java.net.URL;
  */
 public class FileDownloader {
   public static final String TAG = "FileDownloader";
-  OkHttpClient client;
+  OkUrlFactory urlFactory;
 
   public interface Callbacks {
     void publishContent(int status);
   }
 
-  public FileDownloader(OkHttpClient client) {
-    this.client = client;
+  public FileDownloader(OkUrlFactory client) {
+    this.urlFactory = client;
   }
 
   public void downloadToFile(String filePath, URL url, Callbacks callbacks) throws IOException {
@@ -32,7 +32,7 @@ public class FileDownloader {
     try {
 
       fos = new FileOutputStream(filePath);
-      HttpURLConnection connection = client.open(url);
+      HttpURLConnection connection = urlFactory.open(url);
 
       int totalBytes = connection.getContentLength();
       in = connection.getInputStream();

@@ -4,6 +4,8 @@ package com.leexplorer.app;
  * Created by hectormonserrate on 10/05/14.
  */
 
+import android.net.Uri;
+import android.util.Log;
 import com.leexplorer.app.activities.ArtworkActivity;
 import com.leexplorer.app.activities.ArtworkListActivity;
 import com.leexplorer.app.activities.GalleryActivity;
@@ -23,9 +25,9 @@ import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.AppConstants;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
-import com.squareup.okhttp.ConnectionPool;
-import com.squareup.okhttp.HttpResponseCache;
+import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.OkUrlFactory;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -34,7 +36,6 @@ import dagger.Module;
 import dagger.Provides;
 import java.io.File;
 import java.io.IOException;
-import java.net.ResponseCache;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 
@@ -55,13 +56,11 @@ public class LeexplorerModule {
     this.application = application;
   }
 
-  @Provides @Singleton HttpResponseCache provideResponseCache() {
+  @Provides @Singleton Cache provideCache() {
     try {
-      HttpResponseCache httpResponseCache =
-          new HttpResponseCache(new File(application.getCacheDir(), "http"),
-              AppConstants.DISK_HTTP_CACHE_MAX_SIZE_BYTE);
-      ResponseCache.setDefault(httpResponseCache);
-      return httpResponseCache;
+      Cache responseCache =
+          new Cache(new File(application.getCacheDir(), "okhttp"), 15 * 1024 * 1024);
+      return responseCache;
     } catch (IOException e) {
       return null;
     }
@@ -75,16 +74,17 @@ public class LeexplorerModule {
     return application;
   }
 
-  @Provides @Singleton OkHttpClient providesOkHttpClient( HttpResponseCache responseCache) {
+  @Provides @Singleton OkHttpClient providesOkHttpClient(Cache cache) {
     OkHttpClient client = new OkHttpClient();
     client.setConnectTimeout(5, TimeUnit.SECONDS);
     client.setReadTimeout(30, TimeUnit.SECONDS);
-
-    client.setResponseCache(responseCache);
-    client.setConnectionPool(
-        new ConnectionPool(AppConstants.CONNECTION_POOL_JSON, AppConstants.KEEP_ALIVE_DURATION_MS));
+    client.setCache(cache);
 
     return client;
+  }
+
+  @Provides @Singleton OkUrlFactory providesOkUrlfactory(OkHttpClient client) {
+    return new OkUrlFactory(client);
   }
 
   @Provides @Singleton Client provideLeexplorerClient(OkHttpClient client) {
@@ -96,15 +96,19 @@ public class LeexplorerModule {
     return new ImageSourcePicker(application, picasso, thumbor);
   }
 
-  @Provides @Singleton FileDownloader privideFileDownloader(OkHttpClient client) {
-    return new FileDownloader(client);
+  @Provides @Singleton FileDownloader privideFileDownloader(OkUrlFactory factory) {
+    return new FileDownloader(factory);
   }
 
   @Provides @Singleton Picasso providePicasso(LeexplorerApplication application,
       OkHttpClient client) {
     Picasso.Builder builder = new Picasso.Builder(application.getApplicationContext());
     OkHttpDownloader downloader = new OkHttpDownloader(client);
-    builder.downloader(downloader);
+    builder.downloader(downloader).listener(new Picasso.Listener() {
+      @Override public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
+        Log.d("DottieModule", "url: " + uri.toString() + " exception: " + exception);
+      }
+    });
     return builder.build();
   }
 

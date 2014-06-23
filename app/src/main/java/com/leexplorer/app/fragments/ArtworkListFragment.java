@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -100,7 +101,6 @@ public class ArtworkListFragment extends BaseFragment {
   public void onAttach(Activity activity) {
     super.onAttach(activity);
 
-    super.onAttach(activity);
     if (activity instanceof Callbacks) {
       callbacks = (Callbacks) activity;
     } else {
@@ -297,6 +297,10 @@ public class ArtworkListFragment extends BaseFragment {
 
   private void scanBeacons() {
     if (getActivity() == null) {
+      return;
+    }
+
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
       return;
     }
 

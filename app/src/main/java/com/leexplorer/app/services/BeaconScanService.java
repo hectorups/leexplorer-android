@@ -12,6 +12,7 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -69,6 +70,10 @@ public class BeaconScanService extends IntentService {
   }
 
   public static void setScannerAlarm(Context context, boolean foreground) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+      return;
+    }
+
     Intent i = new Intent(context, BeaconScanService.class);
     PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
 

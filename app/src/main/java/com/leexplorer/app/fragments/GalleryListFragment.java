@@ -89,34 +89,34 @@ public class GalleryListFragment extends BaseFragment {
     if (callbacks != null) {
       callbacks.onLoading(true);
     }
-    client.getGalleriesData()
+
+    addSubscription(client.getGalleriesData()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Gallery>>() {
-                     @Override
-                     public void onCompleted() {
-                     }
+          @Override
+          public void onCompleted() {
+          }
 
-                     @Override
-                     public void onError(Throwable throwable) {
-                       throwable.printStackTrace();
-                       if (callbacks != null) {
-                         callbacks.onLoading(false);
-                       }
-                       //                                if (galleries == null || galleries.size() == 0) {
-                       //                                    loadGalleryListFromDB();
-                       //                                }
-                     }
+          @Override
+          public void onError(Throwable throwable) {
+            throwable.printStackTrace();
+            if (callbacks != null) {
+              callbacks.onLoading(false);
+            }
+            //                                if (galleries == null || galleries.size() == 0) {
+            //                                    loadGalleryListFromDB();
+            //                                }
+          }
 
-                     @Override
-                     public void onNext(ArrayList<Gallery> galleries) {
-                       updateAdapterDataset(galleries);
-                       if (callbacks != null) {
-                         callbacks.onLoading(false);
-                       }
-                     }
-                   }
-        );
+          @Override
+          public void onNext(ArrayList<Gallery> galleries) {
+            updateAdapterDataset(galleries);
+            if (callbacks != null) {
+              callbacks.onLoading(false);
+            }
+          }
+        }));
   }
 
   private void updateAdapterDataset(List<Gallery> galleries) {
@@ -145,11 +145,11 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void loadGalleryListFromDB() {
-    if (callbacks != null){
+    if (callbacks != null) {
       callbacks.onLoading(true);
     }
 
-    Observable.create(new Observable.OnSubscribeFunc<List<Gallery>>() {
+    addSubscription(Observable.create(new Observable.OnSubscribeFunc<List<Gallery>>() {
       @Override
       public Subscription onSubscribe(Observer<? super List<Gallery>> observer) {
         observer.onNext(Gallery.getAll());
@@ -160,20 +160,19 @@ public class GalleryListFragment extends BaseFragment {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<List<Gallery>>() {
-              @Override public void onCompleted() {
-                callbacks.onLoading(false);
-              }
+          @Override public void onCompleted() {
+            callbacks.onLoading(false);
+          }
 
-              @Override public void onError(Throwable throwable) {
-              }
+          @Override public void onError(Throwable throwable) {
+          }
 
-              @Override public void onNext(List<Gallery> galleries) {
-                updateAdapterDataset(galleries);
-              }
-            }
-        );
+          @Override public void onNext(List<Gallery> galleries) {
+            updateAdapterDataset(galleries);
+          }
+        }));
 
-    if (callbacks != null){
+    if (callbacks != null) {
       callbacks.onLoading(false);
     }
   }

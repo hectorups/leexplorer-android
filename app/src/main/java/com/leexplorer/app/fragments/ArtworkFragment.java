@@ -101,7 +101,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     @Override
     public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
       // Do it in the bg so the ui feels fast
-      Observable.create(new Observable.OnSubscribeFunc<Uri>() {
+      addSubscription(Observable.create(new Observable.OnSubscribeFunc<Uri>() {
         @Override
         public Subscription onSubscribe(Observer<? super Uri> bitmapObserver) {
           Uri bmpUri;
@@ -142,7 +142,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
               miShareAction.setShareIntent(shareIntent);
             }
-          });
+          }));
     }
 
     @Override

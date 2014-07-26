@@ -196,34 +196,34 @@ public class ArtworkListFragment extends BaseFragment {
     if (callbacks != null) {
       callbacks.onLoading(true);
     }
-    client.getArtworksData(gallery.getGalleryId())
+
+    addSubscription(client.getArtworksData(gallery.getGalleryId())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Artwork>>() {
-                     @Override
-                     public void onCompleted() {
-                     }
+          @Override
+          public void onCompleted() {
+          }
 
-                     @Override
-                     public void onError(Throwable throwable) {
-                       throwable.printStackTrace();
-                       if (callbacks != null) {
-                         callbacks.onLoading(false);
-                       }
-                       if (artworks == null || artworks.size() == 0) {
-                         loadArtworkListFromDB();
-                       }
-                     }
+          @Override
+          public void onError(Throwable throwable) {
+            throwable.printStackTrace();
+            if (callbacks != null) {
+              callbacks.onLoading(false);
+            }
+            if (artworks == null || artworks.size() == 0) {
+              loadArtworkListFromDB();
+            }
+          }
 
-                     @Override
-                     public void onNext(ArrayList<Artwork> aws) {
-                       updateAdapterDataset(aws);
-                       if (callbacks != null) {
-                         callbacks.onLoading(false);
-                       }
-                     }
-                   }
-        );
+          @Override
+          public void onNext(ArrayList<Artwork> aws) {
+            updateAdapterDataset(aws);
+            if (callbacks != null) {
+              callbacks.onLoading(false);
+            }
+          }
+        }));
   }
 
   private void loadArtworkListFromDB() {
@@ -231,7 +231,7 @@ public class ArtworkListFragment extends BaseFragment {
       callbacks.onLoading(true);
     }
 
-    Observable.create(new Observable.OnSubscribeFunc<ArrayList<Artwork>>() {
+    addSubscription(Observable.create(new Observable.OnSubscribeFunc<ArrayList<Artwork>>() {
       @Override
       public Subscription onSubscribe(Observer<? super ArrayList<Artwork>> observer) {
         observer.onNext(Artwork.galleryArtworks(gallery.getGalleryId()));
@@ -242,21 +242,20 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Artwork>>() {
-                     @Override
-                     public void onCompleted() {
-                       callbacks.onLoading(false);
-                     }
+          @Override
+          public void onCompleted() {
+            callbacks.onLoading(false);
+          }
 
-                     @Override
-                     public void onError(Throwable throwable) {
-                     }
+          @Override
+          public void onError(Throwable throwable) {
+          }
 
-                     @Override
-                     public void onNext(ArrayList<Artwork> aws) {
-                       updateAdapterDataset(aws);
-                     }
-                   }
-        );
+          @Override
+          public void onNext(ArrayList<Artwork> aws) {
+            updateAdapterDataset(aws);
+          }
+        }));
 
     if (callbacks != null) {
       callbacks.onLoading(false);

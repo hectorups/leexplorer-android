@@ -1,6 +1,5 @@
 package com.leexplorer.app.services;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -14,13 +13,17 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
+import com.leexplorer.app.events.AudioComplete;
+import com.leexplorer.app.events.AudioProgressEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
+import com.squareup.otto.Bus;
 import java.util.ArrayList;
+import javax.inject.Inject;
 
 public class MediaPlayerService extends Service {
 
@@ -44,10 +47,13 @@ public class MediaPlayerService extends Service {
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
   private Handler progressHandler = new Handler();
+  @Inject Bus bus;
 
   @Override
   public void onCreate() {
     super.onCreate();
+
+    ((LeexplorerApplication) getApplication()).inject(this);
 
     HandlerThread thread = new HandlerThread("MediaPlayerService:WorkerThread");
     thread.start();
@@ -121,6 +127,10 @@ public class MediaPlayerService extends Service {
   private void stop() {
     progressHandler.removeCallbacks(updateTimeTask);
 
+    if (artwork != null) {
+      bus.post(new AudioComplete(artwork));
+    }
+
     if (mediaPlayer != null) {
       mediaPlayer.release();
       mediaPlayer = null;
@@ -128,7 +138,7 @@ public class MediaPlayerService extends Service {
     }
   }
 
-  synchronized private void play(Artwork artwork) {
+  synchronized private void play(final Artwork artwork) {
 
     if (artwork.getAudioUrl() == null) {
       Log.e(LOG, "I got an artwork to play without an audio file !!!");
@@ -139,17 +149,14 @@ public class MediaPlayerService extends Service {
       mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
       mediaPlayer.start();
     } else {
-      this.artwork = artwork;
       stop();
+      this.artwork = artwork;
 
       Uri audioUri = AudioSourcePicker.getUri(artwork.getGalleryId(), artwork.getAudioUrl());
-      //Uri audioUri = Uri.parse(artwork.getAudioUrl());
       mediaPlayer = MediaPlayer.create(getApplicationContext(), audioUri);
       mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
         public void onCompletion(MediaPlayer mp) {
-          // @todo: broadcast this so interfaces updates
-          mp.stop();
-          stopForeground(true);
+          stop();
         }
       });
       mediaPlayer.start();
@@ -171,6 +178,8 @@ public class MediaPlayerService extends Service {
   synchronized private void seek_to(int position) {
     if (mediaPlayer == null) {
       return;
+    } else if (position >= mediaPlayer.getDuration()) {
+      return;
     }
 
     mediaPlayer.seekTo(position);
@@ -181,13 +190,7 @@ public class MediaPlayerService extends Service {
   }
 
   private void broadcastProgress(long totalDuration, long currentDuration) {
-    Intent in = new Intent(ACTION);
-    in.putExtra("resultCode", Activity.RESULT_OK);
-    in.putExtra(ARTWORK, artwork);
-    in.putExtra(TOTAL_DURATION, totalDuration);
-    in.putExtra(CURRENT_DURATION, currentDuration);
-
-    LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+    bus.post(new AudioProgressEvent(artwork, totalDuration, currentDuration));
   }
 
   private final class ServiceHandler extends Handler {

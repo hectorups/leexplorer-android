@@ -1,19 +1,16 @@
 package com.leexplorer.app.fragments;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +28,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.leexplorer.app.R;
 import com.leexplorer.app.api.Client;
+import com.leexplorer.app.events.AudioComplete;
+import com.leexplorer.app.events.AudioProgressEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ArtDate;
@@ -39,6 +38,7 @@ import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorInflater;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.pollexor.Thumbor;
@@ -61,7 +61,7 @@ import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
  * Created by hectormonserrate on 11/02/14.
  */
 public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarChangeListener {
-  // private static final String TAG = "com.leexplorer.artworkfragment";
+  private static final String TAG = "com.leexplorer.artworkfragment";
   private static final String EXTRA_ARTWORK = "extra_artwork";
   private static final String SAVED_CURRENT_DURAITON = "saved_current_duration";
   private static final String SAVED_TOTAL_DURAITON = "saved_total_duration";
@@ -157,34 +157,41 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private long audioCurrentDuration = 0;
   private boolean nowPlaying = false;
   private boolean onPause = false;
-  private BroadcastReceiver audioProgressReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
-      Artwork playingArtwork = intent.getParcelableExtra(MediaPlayerService.ARTWORK);
-      if (resultCode == Activity.RESULT_OK) {
-        if (artwork.equals(playingArtwork)) {
-          audioTotalDuration = intent.getLongExtra(MediaPlayerService.TOTAL_DURATION, 0);
-          audioCurrentDuration = intent.getLongExtra(MediaPlayerService.CURRENT_DURATION, 0);
 
-          if (!onPause) {
-            if (callbacks != null) {
-              callbacks.onLoading(false);
-            }
-            nowPlaying = true;
-          }
-        } else {
-          audioCurrentDuration = 0;
-          audioTotalDuration = 0;
-          nowPlaying = false;
-          onPause = false;
+  @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
+    Artwork playingArtwork = event.getArtwork();
+    if (artwork.equals(playingArtwork)) {
+      audioTotalDuration = event.getTotalDuration();
+      audioCurrentDuration = event.getCurrentDuration();
+      Log.d(TAG, "audio: " + audioCurrentDuration + " of " + audioTotalDuration);
+
+      if (!onPause) {
+        if (callbacks != null) {
+          callbacks.onLoading(false);
         }
 
-        showAudio();
-        updateSeekbar();
+        nowPlaying = true;
       }
+    } else {
+      setAudioClosed();
     }
-  };
+
+    showAudio();
+    updateSeekbar();
+  }
+
+  @Subscribe public void audioComplete(AudioComplete event) {
+    Log.d(TAG, "audio: completed");
+    setAudioClosed();
+    showAudio();
+  }
+
+  private void setAudioClosed() {
+    audioCurrentDuration = 0;
+    audioTotalDuration = 0;
+    nowPlaying = false;
+    onPause = false;
+  }
 
   public static ArtworkFragment newInstance(Artwork aw) {
     Bundle args = new Bundle();
@@ -231,14 +238,12 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @Override
   public void onResume() {
     super.onResume();
-    IntentFilter filter = new IntentFilter(MediaPlayerService.ACTION);
-    LocalBroadcastManager.getInstance(getActivity())
-        .registerReceiver(audioProgressReceiver, filter);
+    bus.register(this);
   }
 
   @Override
   public void onPause() {
-    LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(audioProgressReceiver);
+    bus.unregister(this);
     super.onPause();
   }
 
@@ -327,6 +332,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
         navigateBack();
         break;
       case R.id.menuPlay:
+        setAudioClosed();
         menuPlay.setVisible(false);
         playAudio(btnPlay);
         break;
@@ -370,7 +376,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   @OnClick(R.id.btnPlay)
   public void playAudio(View view) {
-
     Intent i = new Intent(getActivity(), MediaPlayerService.class);
     i.putExtra(MediaPlayerService.ARTWORK, artwork);
     //i.putExtra(MediaPlayerService.ARTWORKS, );
@@ -412,6 +417,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
     if (!nowPlaying && !onPause) {
       flPlayAudio.setVisibility(View.GONE);
+
       return;
     }
 

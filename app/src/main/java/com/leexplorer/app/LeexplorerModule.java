@@ -22,6 +22,7 @@ import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
+import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.AppConstants;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
@@ -45,7 +46,8 @@ import javax.inject.Singleton;
         ArtworkListFragment.class, BeaconScanService.class, ArtworkAdapter.class,
         GalleryAdapter.class, GalleryPagerAdapter.class, GalleryInfoAdapter.class,
         GalleryMapFragment.class, GalleryDownloaderService.class, ArtworkActivity.class,
-        GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class
+        GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class,
+        MediaPlayerService.class
     },
     library = true)
 public class LeexplorerModule {

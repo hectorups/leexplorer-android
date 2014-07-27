@@ -88,10 +88,6 @@ public class GalleryFragment extends BaseFragment {
       this.gallery = getArguments().getParcelable(GALLERY_KEY);
     }
 
-    if (downloading) {
-      setupDownload(downloadingPercentage);
-    }
-
     setHasOptionsMenu(true);
   }
 
@@ -162,6 +158,10 @@ public class GalleryFragment extends BaseFragment {
     txDetailedPrice.setText(gallery.getDetailedPrice());
 
     txDescription.setText(gallery.getDescription());
+
+    if (downloading) {
+      setupDownload(downloadingPercentage);
+    }
 
     setFacilities();
 

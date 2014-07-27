@@ -79,6 +79,10 @@ public class MediaPlayerService extends Service {
 
   protected void onHandleIntent(Intent intent) {
     Log.d(LOG, "Intent received");
+    if (intent == null) {
+      return;
+    }
+
     switch (intent.getIntExtra(ACTION, 0)) {
       case ACTION_PLAY:
         //artworks = intent.getParcelableArrayListExtra(ARTWORKS);

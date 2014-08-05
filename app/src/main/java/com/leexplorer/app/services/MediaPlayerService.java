@@ -14,12 +14,15 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import com.crashlytics.android.Crashlytics;
 import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
 import com.leexplorer.app.events.AudioComplete;
 import com.leexplorer.app.events.AudioProgressEvent;
+import com.leexplorer.app.exceptions.AudioException;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.util.EventReporter;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
@@ -47,7 +50,9 @@ public class MediaPlayerService extends Service {
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
   private Handler progressHandler = new Handler();
+
   @Inject Bus bus;
+  @Inject EventReporter eventReporter;
 
   @Override
   public void onCreate() {
@@ -158,12 +163,21 @@ public class MediaPlayerService extends Service {
 
       Uri audioUri = AudioSourcePicker.getUri(artwork.getGalleryId(), artwork.getAudioUrl());
       mediaPlayer = MediaPlayer.create(getApplicationContext(), audioUri);
+      if (mediaPlayer == null) {
+        // @todo show coudnt open audio notification
+        Crashlytics.logException(new AudioException(artwork.getAudioUrl()));
+        return;
+      }
+
       mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
         public void onCompletion(MediaPlayer mp) {
           stop();
         }
       });
+
       mediaPlayer.start();
+
+      eventReporter.artworkAudioPlayed(artwork);
     }
 
     updateProgress();

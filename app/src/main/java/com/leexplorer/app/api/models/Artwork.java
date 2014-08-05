@@ -17,6 +17,9 @@ public class Artwork {
   @SerializedName("gallery_id")
   public String galleryId;
 
+  @SerializedName("id")
+  public String artworkId;
+
   public String name;
 
   @SerializedName("published_at")

@@ -24,6 +24,7 @@ import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.AppConstants;
+import com.leexplorer.app.util.EventReporter;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.okhttp.Cache;
@@ -116,6 +117,10 @@ public class LeexplorerModule {
 
   @Provides @Singleton Thumbor provideThumbor() {
     return Thumbor.create(AppConstants.SERVER_THUMBOR_URL);
+  }
+
+  @Provides @Singleton EventReporter provideEventReported(LeexplorerApplication application) {
+    return new EventReporter(application);
   }
 }
 

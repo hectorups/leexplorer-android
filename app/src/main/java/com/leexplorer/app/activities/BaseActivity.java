@@ -19,6 +19,7 @@ import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
+import com.leexplorer.app.util.EventReporter;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -35,6 +36,8 @@ public class BaseActivity extends ActionBarActivity {
   // before NotificationReceiver does and cancels it.
 
   @Inject Bus bus;
+  @Inject EventReporter eventReporter;
+
   private final EventHandler eventhandler = new EventHandler();
 
   private BroadcastReceiver onShowNotification = new BroadcastReceiver() {
@@ -55,10 +58,11 @@ public class BaseActivity extends ActionBarActivity {
 
   @Override protected void onDestroy() {
     Crouton.cancelAllCroutons();
+    eventReporter.flush();
     super.onDestroy();
   }
 
-  public void onProgressLoading(boolean loading){
+  public void onProgressLoading(boolean loading) {
     onLoading(loading);
   }
 
@@ -131,9 +135,8 @@ public class BaseActivity extends ActionBarActivity {
     return false;
   }
 
-
   private class EventHandler {
-    @Subscribe public void onLoading(LoadingEvent event){
+    @Subscribe public void onLoading(LoadingEvent event) {
       onProgressLoading(event.isLoading());
     }
   }

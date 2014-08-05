@@ -52,11 +52,20 @@
         <action android:name="android.intent.action.BOOT_COMPLETED"/>
       </intent-filter>
     </receiver>
+
     <receiver
         android:name="com.leexplorer.app.receivers.NotificationReceiver"
         android:exported="false">
       <intent-filter android:priority="-999">
         <action android:name="com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION"/>
+      </intent-filter>
+    </receiver>
+
+    <receiver
+        android:name="com.mixpanel.android.mpmetrics.InstallReferrerReceiver"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="com.android.vending.INSTALL_REFERRER" />
       </intent-filter>
     </receiver>
 

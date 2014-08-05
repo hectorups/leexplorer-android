@@ -20,20 +20,10 @@ import java.util.List;
 @Table(name = "artworks")
 public class Artwork extends Model implements Parcelable {
 
-  @SuppressWarnings("unused")
-  public static final Parcelable.Creator<Artwork> CREATOR = new Parcelable.Creator<Artwork>() {
-    @Override
-    public Artwork createFromParcel(Parcel in) {
-      return new Artwork(in);
-    }
-
-    @Override
-    public Artwork[] newArray(int size) {
-      return new Artwork[size];
-    }
-  };
   @Column(name = "name")
   private String name;
+  @Column(name = "artworkId")
+  private String artworkId;
   @Column(name = "mac", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
   private String mac;
   @Column(name = "description")
@@ -72,6 +62,7 @@ public class Artwork extends Model implements Parcelable {
       aw = new Artwork();
     }
 
+    aw.artworkId = jaw.artworkId;
     aw.name = jaw.name;
     aw.mac = mac;
     aw.description = jaw.description;
@@ -237,6 +228,14 @@ public class Artwork extends Model implements Parcelable {
     this.save();
   }
 
+  public String getArtworkId() {
+    return artworkId;
+  }
+
+  public void setArtworkId(String artworkId) {
+    this.artworkId = artworkId;
+  }
+
   public String getGalleryId() {
     return galleryId;
   }
@@ -254,6 +253,19 @@ public class Artwork extends Model implements Parcelable {
     return 0;
   }
 
+  @SuppressWarnings("unused")
+  public static final Parcelable.Creator<Artwork> CREATOR = new Parcelable.Creator<Artwork>() {
+    @Override
+    public Artwork createFromParcel(Parcel in) {
+      return new Artwork(in);
+    }
+
+    @Override
+    public Artwork[] newArray(int size) {
+      return new Artwork[size];
+    }
+  };
+
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeLong(getId());
@@ -269,6 +281,7 @@ public class Artwork extends Model implements Parcelable {
     dest.writeString(audioUrl);
     dest.writeInt(distance);
     dest.writeString(galleryId);
+    dest.writeString(artworkId);
   }
 
   protected Artwork(Parcel in) {
@@ -285,6 +298,7 @@ public class Artwork extends Model implements Parcelable {
     audioUrl = in.readString();
     distance = in.readInt();
     galleryId = in.readString();
+    artworkId = in.readString();
   }
 
   public static enum Distance {

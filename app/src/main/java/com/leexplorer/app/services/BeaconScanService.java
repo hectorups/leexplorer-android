@@ -26,6 +26,7 @@ import com.leexplorer.app.activities.GalleryListActivity;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.util.EventReporter;
 import com.leexplorer.app.util.ble.Beacon;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,10 @@ public class BeaconScanService extends IntentService {
       }
     }
   };
+
   @Inject Client client;
+  @Inject EventReporter eventReporter;
+
   private BluetoothManager bluetoothManager;
   private BluetoothAdapter bluetoothAdapter;
   private HashMap<String, Beacon> beacons;
@@ -128,33 +132,38 @@ public class BeaconScanService extends IntentService {
   }
 
   private void sendNotification() {
-    Gallery g = unseenGallery();
-    if (g == null) {
+    Gallery gallery = unseenGallery();
+    if (gallery == null) {
       return;
     }
 
-    Resources r = getResources();
+    gallery.setWasSeen(true);
+    gallery.save();
+
+    eventReporter.galleryDiscovered(gallery);
+
+    Resources resources = getResources();
 
     TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
     stackBuilder.addNextIntent(new Intent(this, GalleryListActivity.class));
 
     Intent galleryIntent = new Intent(this, GalleryActivity.class);
-    galleryIntent.putExtra(GalleryActivity.GALLERY_KEY, g);
+    galleryIntent.putExtra(GalleryActivity.GALLERY_KEY, gallery);
     stackBuilder.addNextIntent(galleryIntent);
 
     Intent artworkListIntent = new Intent(this, ArtworkListActivity.class);
-    artworkListIntent.putExtra(ArtworkListActivity.EXTRA_GALLERY, g);
+    artworkListIntent.putExtra(ArtworkListActivity.EXTRA_GALLERY, gallery);
     artworkListIntent.putExtra(ArtworkListActivity.EXTRA_FROM_NOTIFICATION, true);
     stackBuilder.addNextIntent(artworkListIntent);
 
     PendingIntent pi = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
 
     Notification notification = new NotificationCompat.Builder(this).setTicker(
-        r.getString(R.string.beacon_notification_title))
+        resources.getString(R.string.beacon_notification_title))
         .setSmallIcon(R.drawable.ic_stat_artwork)
-        .setContentTitle(r.getString(R.string.beacon_notification_title))
-        .setContentText(r.getString(R.string.beacon_notification_text, g.getName()))
+        .setContentTitle(resources.getString(R.string.beacon_notification_title))
+        .setContentText(resources.getString(R.string.beacon_notification_text, gallery.getName()))
         .setContentIntent(pi)
         .setAutoCancel(true)
         .build();
@@ -168,16 +177,16 @@ public class BeaconScanService extends IntentService {
   }
 
   private Gallery unseenGallery() {
-    Gallery g = null;
+    Gallery gallery = null;
     for (Beacon beacon : beacons.values()) {
-      g = galleryFromBeacon(beacon);
+      gallery = galleryFromBeacon(beacon);
 
-      if (g != null) {
+      if (gallery != null) {
         break;
       }
     }
 
-    return g;
+    return gallery;
   }
 
   private Gallery galleryFromBeacon(Beacon beacon) {

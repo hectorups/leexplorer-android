@@ -37,12 +37,6 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
       gallery = savedInstanceState.getParcelable(EXTRA_GALLERY);
     }
 
-    if (fromNotification) {
-      gallery = Gallery.findById(gallery.getGalleryId());
-      gallery.setWasSeen(true);
-      gallery.save();
-    }
-
     setTitle(gallery.getName());
 
     if (fragment == null) {

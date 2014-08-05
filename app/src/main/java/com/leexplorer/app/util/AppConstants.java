@@ -39,4 +39,5 @@ public class AppConstants {
 
 
   public static final String MIXPANEL_TOKEN = "b66f535a8b703ce67e53b646b99de279";
+  public static final String GOOGLE_ANALYTICS_ID = "UA-53532539-1";
 }

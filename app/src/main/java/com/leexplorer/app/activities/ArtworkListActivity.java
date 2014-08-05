@@ -28,11 +28,8 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     FragmentManager fm = getSupportFragmentManager();
     fragment = (ArtworkListFragment) fm.findFragmentById(R.id.container);
 
-    boolean fromNotification = false;
-
     if (savedInstanceState == null) {
       gallery = getIntent().getParcelableExtra(EXTRA_GALLERY);
-      fromNotification = getIntent().getBooleanExtra(EXTRA_FROM_NOTIFICATION, false);
     } else {
       gallery = savedInstanceState.getParcelable(EXTRA_GALLERY);
     }

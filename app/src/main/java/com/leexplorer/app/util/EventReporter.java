@@ -3,6 +3,9 @@ package com.leexplorer.app.util;
 import android.content.Context;
 import android.util.Log;
 import com.crashlytics.android.Crashlytics;
+import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 import com.leexplorer.app.BuildConfig;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;
@@ -14,6 +17,7 @@ import org.json.JSONObject;
 
 public class EventReporter {
   MixpanelAPI mixpanel;
+  Tracker gaTracker;
 
   private static final String TAG = "eventreporter";
 
@@ -32,15 +36,23 @@ public class EventReporter {
   private static final String ATTR_GALLERY_ID = "gallery_name";
 
   public EventReporter(Context context) {
+    // Crashalytics
     Crashlytics.setInt(KEY_BUILD_NUMBER, BuildConfig.VERSION_CODE);
     Crashlytics.setBool(KEY_DEBUG, BuildConfig.DEBUG);
+
+    // Mixpanel
     mixpanel = MixpanelAPI.getInstance(context, AppConstants.MIXPANEL_TOKEN);
+
+    // GA
+    gaTracker = GoogleAnalytics.getInstance(context).newTracker(AppConstants.GOOGLE_ANALYTICS_ID);
+    gaTracker.enableAutoActivityTracking(true);
   }
 
   private void logUserEvent(final String event, final Map<String, String> attrs) {
     Log.d(TAG, "UserEvent:" + event);
     Crashlytics.log("UserEvent:" + event);
     mixpanel.track(event, mapToJson(attrs));
+    gaTracker.send(MapBuilder.createEvent("event", event, null, null).build());
   }
 
   private JSONObject mapToJson(Map<String, String> attrs) {

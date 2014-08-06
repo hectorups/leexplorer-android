@@ -42,7 +42,7 @@ import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
  * Created by deepakdhiman on 2/23/14.
  */
 public class GalleryFragment extends BaseFragment {
-  //private static final String TAG = "GalleryFragment";
+  private static final String TAG = "leexplorer.com.GalleryFragment";
   private static final String GALLERY_KEY = "gallery";
   private static final String DOWNLOADING_KEY = "downloading";
   private static final String DOWNLOADING_PERCENTAGE_KEY = "downloading_percentage";
@@ -272,5 +272,9 @@ public class GalleryFragment extends BaseFragment {
     void loadArtworks(Gallery gallery);
 
     void loadMap(String address);
+  }
+
+  @Override public String getScreenName() {
+    return TAG;
   }
 }

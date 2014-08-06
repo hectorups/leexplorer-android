@@ -25,6 +25,7 @@ import com.leexplorer.app.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryInfoAdapter;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.util.EventReporter;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.pollexor.Thumbor;
@@ -38,7 +39,7 @@ import javax.inject.Inject;
  * Created by hectormonserrate on 28/02/14.
  */
 public class GalleryMapFragment extends SupportMapFragment {
-
+  private static final String TAG = "com.leexplorer.galleryMapFragment";
   private static final String EXTRA_GALLERIES = "extra_galleries";
   private static final String EXTRA_BUNDLE = "bundle";
   private static final double MIN_LAT_BOUNDS = 0.2;
@@ -48,6 +49,7 @@ public class GalleryMapFragment extends SupportMapFragment {
   public Callbacks callbacks;
   @Inject Picasso picasso;
   @Inject Thumbor thumbor;
+  @Inject EventReporter eventReporter;
   private CameraPosition savedCameraPosition;
   private GoogleMap map;
   private boolean created;
@@ -85,6 +87,11 @@ public class GalleryMapFragment extends SupportMapFragment {
   public void onDetach() {
     super.onDetach();
     callbacks = null;
+  }
+
+  @Override public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    eventReporter.screenViewed(TAG);
   }
 
   @Override

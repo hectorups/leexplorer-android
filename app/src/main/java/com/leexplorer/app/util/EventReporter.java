@@ -5,6 +5,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.leexplorer.app.BuildConfig;
 import com.leexplorer.app.models.Artwork;
@@ -87,5 +88,10 @@ public class EventReporter {
     attrs.put(ATTR_GALLERY_ID, gallery.getGalleryId());
     attrs.put(ATTR_GALLERY_NAME, gallery.getGalleryId());
     logUserEvent(EVENT_GALLERY_DISCOVERED, attrs);
+  }
+
+  public void screenViewed(String tag) {
+    gaTracker.setScreenName(tag);
+    gaTracker.send(new HitBuilders.AppViewBuilder().build());
   }
 }

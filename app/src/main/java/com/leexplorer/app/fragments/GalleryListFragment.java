@@ -33,7 +33,7 @@ import rx.subscriptions.Subscriptions;
  * Created by deepakdhiman on 2/17/14.
  */
 public class GalleryListFragment extends BaseFragment {
-
+  private static final String TAG = "com.leexplorer.galleryListFragment";
   public Callbacks callbacks;
   @Inject Client client;
   @InjectView(R.id.lvGalleries) ListView lvGalleries;
@@ -189,5 +189,9 @@ public class GalleryListFragment extends BaseFragment {
     void loadMap(String address);
 
     boolean isTabletMode();
+  }
+
+  @Override public String getScreenName() {
+    return TAG;
   }
 }

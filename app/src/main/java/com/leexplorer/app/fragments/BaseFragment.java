@@ -3,14 +3,14 @@ package com.leexplorer.app.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import com.leexplorer.app.LeexplorerApplication;
+import com.leexplorer.app.util.EventReporter;
+import javax.inject.Inject;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
-/**
- * Created by hectormonserrate on 10/05/14.
- */
-public class BaseFragment extends Fragment {
+abstract public class BaseFragment extends Fragment {
   private final CompositeSubscription compositeSubscription = new CompositeSubscription();
+  @Inject EventReporter eventReporter;
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -21,6 +21,13 @@ public class BaseFragment extends Fragment {
     compositeSubscription.unsubscribe();
     super.onDestroy();
   }
+
+  @Override public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    eventReporter.screenViewed(getScreenName());
+  }
+
+  abstract public String getScreenName();
 
   public void addSubscription(final Subscription subscription) {
     compositeSubscription.add(subscription);

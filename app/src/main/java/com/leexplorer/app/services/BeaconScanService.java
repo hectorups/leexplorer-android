@@ -32,10 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import javax.inject.Inject;
 
-/**
- * Created by hectormonserrate on 22/02/14.
- */
-@TargetApi(18)
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BeaconScanService extends IntentService {
   public static final String ACTION = "com.leexplorer.services.beaconscanservice";
   public static final String BEACONS = "beacons";

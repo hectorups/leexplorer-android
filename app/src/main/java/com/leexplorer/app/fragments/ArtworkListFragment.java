@@ -270,6 +270,10 @@ public class ArtworkListFragment extends BaseFragment {
     }
   }
 
+  @Override public String getScreenName() {
+    return TAG;
+  }
+
   public void updateAdapterDataset(List<Artwork> aws) {
     artworks.clear();
     for (Artwork aw : aws) {

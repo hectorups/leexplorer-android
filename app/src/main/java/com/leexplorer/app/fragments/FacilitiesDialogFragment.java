@@ -1,7 +1,6 @@
 package com.leexplorer.app.fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,8 @@ import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
 /**
  * Created by deepakdhiman on 3/3/14.
  */
-public class FacilitiesDialogFragment extends DialogFragment {
+public class FacilitiesDialogFragment extends BaseDialogFragment {
+  private final static String TAG = "leexplorer.com.facilitiesDialogFragment";
 
   @InjectView(R.id.lvFacilitiesDetails) ListView lvFacilitiesDetails;
   private FacilitiesAdapter facilitiesAdapter;
@@ -53,5 +53,9 @@ public class FacilitiesDialogFragment extends DialogFragment {
     getDialog().setTitle("Facilities");
     lvFacilitiesDetails.setAdapter(facilitiesAdapter);
     return view;
+  }
+
+  @Override public String getScreenName() {
+    return TAG;
   }
 }

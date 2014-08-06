@@ -153,10 +153,15 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
     }
   };
+
   private long audioTotalDuration = 0;
   private long audioCurrentDuration = 0;
   private boolean nowPlaying = false;
   private boolean onPause = false;
+
+  @Override public String getScreenName() {
+    return TAG;
+  }
 
   @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
     Artwork playingArtwork = event.getArtwork();

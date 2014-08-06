@@ -18,6 +18,7 @@ import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.FilePathGenerator;
+import com.squareup.pollexor.Thumbor;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class GalleryDownloaderService extends IntentService {
 
   @Inject FileDownloader fileDownloader;
   @Inject Client client;
+  @Inject Thumbor thumbor;
 
   private Gallery gallery;
   private DownloadProgress downloadProgress;
@@ -97,7 +99,11 @@ public class GalleryDownloaderService extends IntentService {
 
   private void saveArtwork(Artwork artwork) throws IOException {
     if (artwork.getImageUrl() != null) {
-      saveFile(artwork, artwork.getImageUrl());
+      String url = thumbor.buildImage(artwork.getImageUrl())
+          .resize((int) getResources().getDimension(R.dimen.thumbor_large), 0)
+          .toUrl();
+
+      saveFile(artwork, url);
     }
 
     if (artwork.getAudioUrl() != null) {

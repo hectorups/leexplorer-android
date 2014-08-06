@@ -15,7 +15,7 @@
 
   <uses-feature
       android:name="android.hardware.bluetooth_le"
-      android:required="true"/>
+      android:required="false"/>
 
   <permission
       android:name="com.leexplorer.beaconscanservice.PRIVATE"
@@ -65,7 +65,7 @@
         android:name="com.mixpanel.android.mpmetrics.InstallReferrerReceiver"
         android:exported="true">
       <intent-filter>
-        <action android:name="com.android.vending.INSTALL_REFERRER" />
+        <action android:name="com.android.vending.INSTALL_REFERRER"/>
       </intent-filter>
     </receiver>
 

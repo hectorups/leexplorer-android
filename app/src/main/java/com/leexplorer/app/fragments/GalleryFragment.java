@@ -29,6 +29,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
+import com.leexplorer.app.util.TextUtil;
 import com.leexplorer.app.util.offline.FilePathGenerator;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Bus;
@@ -36,7 +37,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import javax.inject.Inject;
 
-import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
+import static com.leexplorer.app.core.AppConstants.FACILITIES_IMG_MAP;
 
 /**
  * Created by deepakdhiman on 2/23/14.
@@ -146,11 +147,12 @@ public class GalleryFragment extends BaseFragment {
         .into(ivGalleryDetail);
 
     txDetailAddress.setText(gallery.getAddress());
-    txDetailGalleryType.setText(gallery.getType());
+    txDetailGalleryType.setText(TextUtil.capitalizeFirstLetter(gallery.getType()));
 
     StringBuffer languages = new StringBuffer();
     for (String language : gallery.getLanguages()) {
-      languages.append(languages.length() == 0 ? "" : ", ").append(language);
+      languages.append(languages.length() == 0 ? "" : ", ")
+          .append(TextUtil.capitalizeFirstLetter(language));
     }
     txLanguage.setText(languages.toString());
 

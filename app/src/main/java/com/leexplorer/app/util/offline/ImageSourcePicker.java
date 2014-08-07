@@ -1,7 +1,7 @@
 package com.leexplorer.app.util.offline;
 
 import android.content.Context;
-import com.leexplorer.app.LeexplorerApplication;
+import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.models.Artwork;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;

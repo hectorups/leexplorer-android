@@ -1,4 +1,4 @@
-package com.leexplorer.app;
+package com.leexplorer.app.core;
 
 import android.os.Handler;
 import android.os.Looper;

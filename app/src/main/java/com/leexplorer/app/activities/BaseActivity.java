@@ -13,19 +13,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Window;
-import com.leexplorer.app.LeexplorerApplication;
+import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
-import com.leexplorer.app.util.EventReporter;
+import com.leexplorer.app.core.EventReporter;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import javax.inject.Inject;
 
-import static com.leexplorer.app.util.AppConstants.APP_NAME;
+import static com.leexplorer.app.core.AppConstants.APP_NAME;
 
 /**
  * Created by hectormonserrate on 20/02/14.

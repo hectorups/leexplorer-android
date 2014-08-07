@@ -6,6 +6,8 @@
 
   <dimen name="signal_corner">5dp</dimen>
 
+  <dimen name="gallery_profile_icon_size">25dp</dimen>
+
   <!-- Thumbor Buckets -->
   <dimen name="thumbor_large">1200px</dimen>
   <dimen name="thumbor_medium">600px</dimen>

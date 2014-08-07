@@ -69,4 +69,21 @@
     <item name="progress_unreached_bar_height">2dp</item>
   </style>
 
+  <style name="LE.GalleryProfileIcon">
+    <item name="android:layout_height">@dimen/gallery_profile_icon_size</item>
+    <item name="android:layout_width">@dimen/gallery_profile_icon_size</item>
+    <item name="progress_text_size">16sp</item>
+    <item name="android:layout_gravity">center_vertical</item>
+  </style>
+
+  <style name="LE.GalleryProfileIconLabel">
+    <item name="android:layout_width">wrap_content</item>
+    <item name="android:layout_height">match_parent</item>
+    <item name="android:gravity">center_vertical</item>
+    <item name="android:maxLines">2</item>
+    <item name="android:paddingLeft">5dp</item>
+    <item name="android:singleLine">false</item>
+    <item name="android:textColor">@color/le_white</item>
+  </style>
+
 </resources>

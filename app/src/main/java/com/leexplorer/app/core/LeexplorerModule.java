@@ -1,4 +1,4 @@
-package com.leexplorer.app;
+package com.leexplorer.app.core;
 
 /**
  * Created by hectormonserrate on 10/05/14.
@@ -23,8 +23,6 @@ import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
-import com.leexplorer.app.util.AppConstants;
-import com.leexplorer.app.util.EventReporter;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.okhttp.Cache;

@@ -13,7 +13,7 @@ import com.leexplorer.app.models.Facility;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.leexplorer.app.util.AppConstants.FACILITIES_IMG_MAP;
+import static com.leexplorer.app.core.AppConstants.FACILITIES_IMG_MAP;
 
 /**
  * Created by deepakdhiman on 3/3/14.

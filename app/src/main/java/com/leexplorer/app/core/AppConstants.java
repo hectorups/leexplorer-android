@@ -1,4 +1,4 @@
-package com.leexplorer.app.util;
+package com.leexplorer.app.core;
 
 import com.leexplorer.app.R;
 import java.util.HashMap;

@@ -24,7 +24,7 @@
   <uses-permission android:name="com.leexplorer.beaconscanservice.PRIVATE"/>
 
   <application
-      android:name="com.leexplorer.app.LeexplorerApplication"
+      android:name=".core.LeexplorerApplication"
       android:allowBackup="true"
       android:icon="@drawable/ic_launcher"
       android:label="@string/app_name"

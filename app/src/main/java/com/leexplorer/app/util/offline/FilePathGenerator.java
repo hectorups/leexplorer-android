@@ -1,7 +1,7 @@
 package com.leexplorer.app.util.offline;
 
 import android.os.Environment;
-import com.leexplorer.app.util.AppConstants;
+import com.leexplorer.app.core.AppConstants;
 import java.io.File;
 
 /**

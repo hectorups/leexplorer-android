@@ -1,4 +1,4 @@
-package com.leexplorer.app.util;
+package com.leexplorer.app.core;
 
 import android.content.Context;
 import android.util.Log;

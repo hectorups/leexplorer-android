@@ -2,8 +2,8 @@ package com.leexplorer.app.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import com.leexplorer.app.LeexplorerApplication;
-import com.leexplorer.app.util.EventReporter;
+import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.core.EventReporter;
 import javax.inject.Inject;
 
 abstract public class BaseDialogFragment extends DialogFragment {

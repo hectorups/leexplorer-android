@@ -10,7 +10,7 @@ import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import com.leexplorer.app.LeexplorerApplication;
+import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.GalleryActivity;
 import com.leexplorer.app.api.Client;

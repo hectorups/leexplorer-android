@@ -2,7 +2,7 @@ package com.leexplorer.app.adapters;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
-import com.leexplorer.app.LeexplorerApplication;
+import com.leexplorer.app.core.LeexplorerApplication;
 import java.util.List;
 
 /**

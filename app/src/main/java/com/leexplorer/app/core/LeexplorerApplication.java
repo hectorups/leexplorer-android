@@ -1,4 +1,4 @@
-package com.leexplorer.app;
+package com.leexplorer.app.core;
 
 import android.app.Application;
 import android.content.Context;

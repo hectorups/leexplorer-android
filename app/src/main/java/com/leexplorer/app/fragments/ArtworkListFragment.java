@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,7 +44,9 @@ import rx.schedulers.Schedulers;
 
 public class ArtworkListFragment extends BaseFragment {
 
-  private static final String ARTWORK_LIST = "arwork_list";
+  private static final String ARTWORK_LIST_KEY = "arwork_list";
+  private static final String BEACONS_KEY = "beacons";
+  private static final String GALLERY_KEY = "gallery";
   private static final String TAG = "com.leexplorer.artworklistfragement";
 
   private static final String EXTRA_GALLERY = "extra_gallery";
@@ -52,8 +55,9 @@ public class ArtworkListFragment extends BaseFragment {
   @Inject Client client;
   @Inject Bus bus;
   @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
-  private List<Artwork> artworks = new ArrayList<>();
-  private List<Beacon> beacons = new ArrayList<>();
+  private List<Artwork> artworks;
+  private List<Beacon> beacons;
+  private boolean artworksLoaded;
   private boolean newBeaconInfo;
   private boolean scaningBeacons;
   private MenuItem menuReresh;
@@ -116,7 +120,17 @@ public class ArtworkListFragment extends BaseFragment {
     setHasOptionsMenu(true);
     newBeaconInfo = false;
     scaningBeacons = false;
-    gallery = getArguments().getParcelable(EXTRA_GALLERY);
+
+    if (savedInstanceState != null) {
+      artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST_KEY);
+      beacons = savedInstanceState.getParcelableArrayList(BEACONS_KEY);
+      gallery = savedInstanceState.getParcelable(GALLERY_KEY);
+      artworksLoaded = true;
+    } else {
+      artworks = new ArrayList<>();
+      beacons = new ArrayList<>();
+      gallery = getArguments().getParcelable(EXTRA_GALLERY);
+    }
   }
 
   @Override
@@ -138,14 +152,10 @@ public class ArtworkListFragment extends BaseFragment {
 
     ButterKnife.inject(this, rootView);
 
-    if (savedInstanceState != null) {
-      artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST);
-    } else {
-      loadArtworkList();
-    }
-
     artworkAdapter = new ArtworkAdapter(this, artworks);
     sgvArtworks.setAdapter(artworkAdapter);
+
+    refreshArtworks();
 
     return rootView;
   }
@@ -153,7 +163,9 @@ public class ArtworkListFragment extends BaseFragment {
   @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
-    savedInstanceState.putParcelableArrayList(ARTWORK_LIST, new ArrayList<>(artworks));
+    savedInstanceState.putParcelableArrayList(ARTWORK_LIST_KEY, new ArrayList<>(artworks));
+    savedInstanceState.putParcelableArrayList(BEACONS_KEY, new ArrayList<Parcelable>(beacons));
+    savedInstanceState.putParcelable(GALLERY_KEY, gallery);
   }
 
   @Override
@@ -184,6 +196,8 @@ public class ArtworkListFragment extends BaseFragment {
     } else {
       loadArtworkListFromDB();
     }
+
+    artworksLoaded = true;
   }
 
   private void loadArtworkListFromApi() {
@@ -255,7 +269,7 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   private void refreshArtworks() {
-    if (artworks.size() > 0) {
+    if (artworksLoaded) {
       refreshArtworkAdapter();
     } else {
       loadArtworkList();

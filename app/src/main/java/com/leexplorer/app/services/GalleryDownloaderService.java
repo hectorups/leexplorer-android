@@ -10,6 +10,7 @@ import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.GalleryActivity;
@@ -26,9 +27,6 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 
-/**
- * Created by hectormonserrate on 13/05/14.
- */
 public class GalleryDownloaderService extends IntentService {
 
   private static final String TAG = "GalleryDownloderService";
@@ -43,6 +41,7 @@ public class GalleryDownloaderService extends IntentService {
   @Inject FileDownloader fileDownloader;
   @Inject Client client;
   @Inject Thumbor thumbor;
+  @Inject EventReporter eventReporter;
 
   private Gallery gallery;
   private DownloadProgress downloadProgress;
@@ -88,10 +87,11 @@ public class GalleryDownloaderService extends IntentService {
             saveArtwork(artworks.get(i));
           }
         } catch (IOException e) {
-          e.printStackTrace();
+          eventReporter.logException(e);
         } finally {
           stopForeground(true);
           broadcastProgress(100);
+          eventReporter.galleryDownloaded(gallery);
         }
       }
     });

@@ -28,6 +28,7 @@ public class EventReporter {
   // USER EVENTS
   private static final String EVENT_ARTWORK_AUDIO_PLAYED = "arwork_audio_played";
   private static final String EVENT_GALLERY_DISCOVERED = "gallery_discovered";
+  private static final String EVENT_GALLERY_DOWNLOADED = "gallery_downloaded";
 
   // EVENT ATTRS
   private static final String ATTR_ARTWORK_MAC = "artwork_mac";
@@ -96,6 +97,13 @@ public class EventReporter {
     attrs.put(ATTR_GALLERY_ID, gallery.getGalleryId());
     attrs.put(ATTR_GALLERY_NAME, gallery.getGalleryId());
     logUserEvent(EVENT_GALLERY_DISCOVERED, attrs);
+  }
+
+  public void galleryDownloaded(Gallery gallery) {
+    Map<String, String> attrs = new HashMap<>();
+    attrs.put(ATTR_GALLERY_ID, gallery.getGalleryId());
+    attrs.put(ATTR_GALLERY_NAME, gallery.getGalleryId());
+    logUserEvent(EVENT_GALLERY_DOWNLOADED, attrs);
   }
 
   public void screenViewed(String tag) {

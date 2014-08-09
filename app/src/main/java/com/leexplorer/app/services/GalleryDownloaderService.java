@@ -84,7 +84,7 @@ public class GalleryDownloaderService extends IntentService {
           int total = totalFiles(artworks);
           downloadProgress = new DownloadProgress(total);
 
-          for (int i = 0; i < total; i++) {
+          for (int i = 0; i < artworks.size(); i++) {
             saveArtwork(artworks.get(i));
           }
         } catch (IOException e) {

@@ -28,7 +28,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.leexplorer.app.R;
 import com.leexplorer.app.api.Client;
-import com.leexplorer.app.events.AudioComplete;
+import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService;
@@ -185,7 +185,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     updateSeekbar();
   }
 
-  @Subscribe public void audioComplete(AudioComplete event) {
+  @Subscribe public void audioComplete(AudioCompleteEvent event) {
     Log.d(TAG, "audio: completed");
     setAudioClosed();
     showAudio();

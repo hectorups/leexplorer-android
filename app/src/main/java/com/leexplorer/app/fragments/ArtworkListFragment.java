@@ -5,13 +5,9 @@ package com.leexplorer.app.fragments;
  */
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,25 +18,28 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.etsy.android.grid.StaggeredGridView;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.api.Client;
+import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.events.ArtworkClickedEvent;
+import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.util.ble.Beacon;
 import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
 
 public class ArtworkListFragment extends BaseFragment {
 
@@ -51,41 +50,37 @@ public class ArtworkListFragment extends BaseFragment {
   public Callbacks callbacks;
   protected ArtworkAdapter artworkAdapter;
   @Inject Client client;
+  @Inject Bus bus;
   @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
-  private ArrayList<Artwork> artworks = new ArrayList<>();
-  private ArrayList<Beacon> beacons = new ArrayList<>();
+  private List<Artwork> artworks = new ArrayList<>();
+  private List<Beacon> beacons = new ArrayList<>();
   private boolean newBeaconInfo;
   private boolean scaningBeacons;
   private MenuItem menuReresh;
-  private BroadcastReceiver beaconsReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      int resultCode = intent.getIntExtra("resultCode", Activity.RESULT_CANCELED);
-      ArrayList<Beacon> newBeacons = intent.getParcelableArrayListExtra(BeaconScanService.BEACONS);
-      if (resultCode == Activity.RESULT_OK) {
-        Log.d(TAG, "Beacons detected: " + newBeacons.size());
-
-        beacons = newBeacons;
-
-        // If this is true, it means we are able to satisfy the
-        // scanBeacons call
-        if (scaningBeacons) {
-          scaningBeacons = false;
-          if (callbacks != null) {
-            callbacks.onLoading(false);
-          }
-          if (menuReresh != null) {
-            menuReresh.setVisible(true);
-          }
-          refreshArtworks();
-          return;
-        }
-
-        distancesChangesCheck(beacons);
-      }
-    }
-  };
   private Gallery gallery;
+
+  @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
+    List<Beacon> newBeacons = event.getBeacons();
+    Log.d(TAG, "Beacons detected: " + newBeacons.size());
+
+    beacons = newBeacons;
+
+    // If this is true, it means we are able to satisfy the
+    // scanBeacons call
+    if (scaningBeacons) {
+      scaningBeacons = false;
+      if (callbacks != null) {
+        callbacks.onLoading(false);
+      }
+      if (menuReresh != null) {
+        menuReresh.setVisible(true);
+      }
+      refreshArtworks();
+      return;
+    }
+
+    distancesChangesCheck(beacons);
+  }
 
   public static ArtworkListFragment newInstance(Gallery gallery) {
     Bundle args = new Bundle();
@@ -127,13 +122,12 @@ public class ArtworkListFragment extends BaseFragment {
   @Override
   public void onResume() {
     super.onResume();
-    IntentFilter filter = new IntentFilter(BeaconScanService.ACTION);
-    LocalBroadcastManager.getInstance(getActivity()).registerReceiver(beaconsReceiver, filter);
+    bus.register(this);
   }
 
   @Override
   public void onPause() {
-    LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(beaconsReceiver);
+    bus.unregister(this);
     super.onPause();
   }
 
@@ -159,7 +153,7 @@ public class ArtworkListFragment extends BaseFragment {
   @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
-    savedInstanceState.putParcelableArrayList(ARTWORK_LIST, artworks);
+    savedInstanceState.putParcelableArrayList(ARTWORK_LIST, new ArrayList<>(artworks));
   }
 
   @Override
@@ -231,12 +225,10 @@ public class ArtworkListFragment extends BaseFragment {
       callbacks.onLoading(true);
     }
 
-    addSubscription(Observable.create(new Observable.OnSubscribeFunc<ArrayList<Artwork>>() {
-      @Override
-      public Subscription onSubscribe(Observer<? super ArrayList<Artwork>> observer) {
-        observer.onNext(Artwork.galleryArtworks(gallery.getGalleryId()));
-        observer.onCompleted();
-        return Subscriptions.empty();
+    addSubscription(Observable.create(new Observable.OnSubscribe<ArrayList<Artwork>>() {
+      @Override public void call(Subscriber<? super ArrayList<Artwork>> subscriber) {
+        subscriber.onNext(Artwork.galleryArtworks(gallery.getGalleryId()));
+        subscriber.onCompleted();
       }
     })
         .subscribeOn(Schedulers.io())
@@ -291,10 +283,10 @@ public class ArtworkListFragment extends BaseFragment {
     newBeaconInfo = false;
   }
 
-  /*
+  /**
    * Called by the host activity to get the fragment artworks
    */
-  public ArrayList<Artwork> getArtworks() {
+  public List<Artwork> getArtworks() {
     return artworks;
   }
 
@@ -320,7 +312,7 @@ public class ArtworkListFragment extends BaseFragment {
     getActivity().startService(i);
   }
 
-  private void distancesChangesCheck(ArrayList<Beacon> beacons) {
+  private void distancesChangesCheck(List<Beacon> beacons) {
     if (newBeaconInfo) {
       return;
     }
@@ -344,10 +336,12 @@ public class ArtworkListFragment extends BaseFragment {
     }
   }
 
+  public void onArtworkClicked(Artwork artwork) {
+    bus.post(new ArtworkClickedEvent(artwork, artworks));
+  }
+
   public interface Callbacks {
     void onLoading(boolean loading);
-
-    void onArtworkClicked(Artwork aw);
   }
 }
 

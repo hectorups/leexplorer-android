@@ -16,18 +16,19 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkListActivity;
 import com.leexplorer.app.activities.GalleryActivity;
 import com.leexplorer.app.activities.GalleryListActivity;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.api.models.Artwork;
-import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.core.EventReporter;
+import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.events.BeaconsScanResultEvent;
+import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.ble.Beacon;
+import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.inject.Inject;
@@ -60,6 +61,7 @@ public class BeaconScanService extends IntentService {
   };
 
   @Inject Client client;
+  @Inject Bus bus;
   @Inject EventReporter eventReporter;
 
   private BluetoothManager bluetoothManager;
@@ -120,12 +122,7 @@ public class BeaconScanService extends IntentService {
   }
 
   private void broadcastBeacons() {
-    Intent in = new Intent(ACTION);
-    in.putExtra("resultCode", Activity.RESULT_OK);
-
-    in.putExtra(BEACONS, new ArrayList<>(beacons.values()));
-
-    LocalBroadcastManager.getInstance(this).sendBroadcast(in);
+    bus.post(new BeaconsScanResultEvent(new ArrayList<>(beacons.values())));
   }
 
   private void sendNotification() {

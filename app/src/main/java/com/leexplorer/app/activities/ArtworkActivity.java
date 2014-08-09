@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import butterknife.ButterKnife;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkViewPagerAdapter;
-import com.leexplorer.app.events.ArtworkUpdated;
+import com.leexplorer.app.events.ArtworkUpdatedEvent;
 import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.models.Artwork;
 import com.squareup.otto.Subscribe;
@@ -84,7 +84,7 @@ public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Cal
     }
   }
 
-  @Subscribe public void onArtworkChanged(ArtworkUpdated event) {
+  @Subscribe public void onArtworkChanged(ArtworkUpdatedEvent event) {
     for (int i = 0; i < artworks.size(); i++) {
       if (artworks.get(i).equals(event.getArtwork())) {
         artworks.add(i, event.getArtwork());

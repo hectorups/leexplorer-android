@@ -6,10 +6,15 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import com.leexplorer.app.R;
+import com.leexplorer.app.events.ArtworkClickedEvent;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 
 public class ArtworkListActivity extends BaseActivity implements ArtworkListFragment.Callbacks {
 
@@ -19,6 +24,8 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
 
   private Gallery gallery;
   private ArtworkListFragment fragment;
+
+  @Inject Bus bus;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +51,16 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
   }
 
+  @Override public void onResume() {
+    super.onResume();
+    bus.register(this);
+  }
+
+  @Override public void onPause() {
+    bus.unregister(this);
+    super.onPause();
+  }
+
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelable(EXTRA_GALLERY, gallery);
@@ -64,20 +81,10 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     }
   }
 
-  /*
-   * Implement ArtworkListFragment.Callbacks
-   */
-  public void onArtworkClicked(Artwork aw) {
-    FragmentManager fm = getSupportFragmentManager();
-    ArtworkListFragment fragment = (ArtworkListFragment) fm.findFragmentById(R.id.container);
-
-    if (fragment == null) {
-      return;
-    }
-
+  @Subscribe public void onArtworkClicked(ArtworkClickedEvent event) {
     Intent i = new Intent(this, ArtworkActivity.class);
-    i.putExtra(ArtworkActivity.EXTRA_ARTWORK, aw);
-    i.putExtra(ArtworkActivity.EXTRA_ARTWORKS, fragment.getArtworks());
+    i.putExtra(ArtworkActivity.EXTRA_ARTWORK, event.getArtwork());
+    i.putExtra(ArtworkActivity.EXTRA_ARTWORKS, new ArrayList<>(event.getArtworks()));
     startActivityForResult(i, ARTWORK_DETAIL_REQUEST);
   }
 

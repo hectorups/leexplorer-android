@@ -70,6 +70,14 @@ public class EventReporter {
     return json;
   }
 
+  public void logException(String message) {
+    logException(new NonFatalException(message));
+  }
+
+  public void logException(Exception exception) {
+    Crashlytics.logException(exception);
+  }
+
   public void flush() {
     mixpanel.flush();
   }

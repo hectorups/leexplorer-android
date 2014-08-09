@@ -5,10 +5,10 @@ import com.leexplorer.app.models.Artwork;
 /**
  * Created by hectormonserrate on 26/07/14.
  */
-public class AudioComplete {
+public class AudioCompleteEvent {
   Artwork artwork;
 
-  public AudioComplete(Artwork artwork) {
+  public AudioCompleteEvent(Artwork artwork) {
     this.artwork = artwork;
   }
 

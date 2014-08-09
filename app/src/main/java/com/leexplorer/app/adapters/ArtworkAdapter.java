@@ -120,8 +120,8 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
 
     @OnClick(R.id.ivArtworkThumb)
     public void onClickArtwork(View view) {
-      Artwork aw = (Artwork) view.getTag();
-      fragment.callbacks.onArtworkClicked(aw);
+      Artwork artwork = (Artwork) view.getTag();
+      fragment.onArtworkClicked(artwork);
     }
   }
 }

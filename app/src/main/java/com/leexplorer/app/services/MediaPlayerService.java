@@ -18,7 +18,7 @@ import com.crashlytics.android.Crashlytics;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
-import com.leexplorer.app.events.AudioComplete;
+import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
 import com.leexplorer.app.exceptions.AudioException;
 import com.leexplorer.app.models.Artwork;
@@ -137,7 +137,7 @@ public class MediaPlayerService extends Service {
     progressHandler.removeCallbacks(updateTimeTask);
 
     if (artwork != null) {
-      bus.post(new AudioComplete(artwork));
+      bus.post(new AudioCompleteEvent(artwork));
     }
 
     if (mediaPlayer != null) {

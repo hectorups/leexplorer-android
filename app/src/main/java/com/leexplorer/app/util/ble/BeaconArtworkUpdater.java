@@ -1,16 +1,15 @@
 package com.leexplorer.app.util.ble;
 
 import com.leexplorer.app.models.Artwork;
-import com.leexplorer.app.util.ble.Beacon;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hectormonserrate on 23/02/14.
  */
 public class BeaconArtworkUpdater {
 
-  public static ArrayList<Artwork> updateDistances(ArrayList<Artwork> artworks,
-      ArrayList<Beacon> beacons) {
+  public static List<Artwork> updateDistances(List<Artwork> artworks,
+      List<Beacon> beacons) {
     // Reset Distance
     for (Artwork aw : artworks) {
       aw.setDistance(0);

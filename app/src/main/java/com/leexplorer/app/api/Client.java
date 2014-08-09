@@ -2,17 +2,15 @@ package com.leexplorer.app.api;
 
 import com.leexplorer.app.BuildConfig;
 import com.leexplorer.app.api.models.Artwork;
-import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.core.AppConstants;
+import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.offline.FakeData;
 import com.squareup.okhttp.OkHttpClient;
 import java.util.ArrayList;
 import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
-import rx.subscriptions.Subscriptions;
+import rx.Subscriber;
 
 /**
  * Created by hectormonserrate on 20/02/14.
@@ -36,10 +34,10 @@ public class Client {
   public Observable<ArrayList<com.leexplorer.app.models.Artwork>> getArtworksData(
       final String galleryId) {
     return Observable.create(
-        new Observable.OnSubscribeFunc<ArrayList<com.leexplorer.app.models.Artwork>>() {
+        new Observable.OnSubscribe<ArrayList<com.leexplorer.app.models.Artwork>>() {
           @Override
-          public Subscription onSubscribe(
-              Observer<? super ArrayList<com.leexplorer.app.models.Artwork>> observer) {
+          public void call(
+              Subscriber<? super ArrayList<com.leexplorer.app.models.Artwork>> subscriber) {
             try {
               ArrayList<com.leexplorer.app.models.Artwork> artworks = new ArrayList<>();
 
@@ -51,7 +49,7 @@ public class Client {
                 }
               }
 
-              observer.onNext(artworks);
+              subscriber.onNext(artworks);
 
               try {
                 // Persist Artworks...
@@ -62,12 +60,12 @@ public class Client {
                 e.printStackTrace();
               }
 
-              observer.onCompleted();
+              subscriber.onCompleted();
             } catch (Exception e) {
-              observer.onError(e);
+              subscriber.onError(e);
             }
 
-            return Subscriptions.empty();
+            return;
           }
         }
     );
@@ -75,10 +73,10 @@ public class Client {
 
   public Observable<ArrayList<Gallery>> getGalleriesData() {
     return Observable.create(
-        new Observable.OnSubscribeFunc<ArrayList<com.leexplorer.app.models.Gallery>>() {
+        new Observable.OnSubscribe<ArrayList<com.leexplorer.app.models.Gallery>>() {
           @Override
-          public Subscription onSubscribe(
-              Observer<? super ArrayList<com.leexplorer.app.models.Gallery>> observer) {
+          public void call(
+              Subscriber<? super ArrayList<com.leexplorer.app.models.Gallery>> subscriber) {
             try {
               ArrayList<Gallery> galleries = new ArrayList<>();
 
@@ -86,7 +84,7 @@ public class Client {
                 galleries.add(Gallery.fromApiModel(gallery));
               }
 
-              observer.onNext(galleries);
+              subscriber.onNext(galleries);
 
               try {
                 // Persist Galleries...
@@ -97,12 +95,12 @@ public class Client {
                 e.printStackTrace();
               }
 
-              observer.onCompleted();
+              subscriber.onCompleted();
             } catch (Exception e) {
-              observer.onError(e);
+              subscriber.onError(e);
             }
 
-            return Subscriptions.empty();
+            return;
           }
         }
     );

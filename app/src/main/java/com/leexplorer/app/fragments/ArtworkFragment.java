@@ -51,15 +51,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
+import rx.Subscriber;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
 import uk.co.chrisjenx.paralloid.Parallaxor;
 import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 
-/**
- * Created by hectormonserrate on 11/02/14.
- */
 public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarChangeListener {
   private static final String TAG = "com.leexplorer.artworkfragment";
   private static final String EXTRA_ARTWORK = "extra_artwork";
@@ -101,9 +97,9 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     @Override
     public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
       // Do it in the bg so the ui feels fast
-      addSubscription(Observable.create(new Observable.OnSubscribeFunc<Uri>() {
+      addSubscription(Observable.create(new Observable.OnSubscribe<Uri>() {
         @Override
-        public Subscription onSubscribe(Observer<? super Uri> bitmapObserver) {
+        public void call(Subscriber<? super Uri> subscriber) {
           Uri bmpUri;
           try {
             File file = new File(
@@ -114,13 +110,13 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
             out.close();
             bmpUri = Uri.fromFile(file);
             if (bmpUri != null) {
-              bitmapObserver.onNext(bmpUri);
+              subscriber.onNext(bmpUri);
             }
-            bitmapObserver.onCompleted();
+            subscriber.onCompleted();
           } catch (IOException e) {
             e.printStackTrace();
           }
-          return Subscriptions.empty();
+          return;
         }
       })
           .subscribeOn(Schedulers.newThread())

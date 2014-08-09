@@ -11,10 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.api.Client;
+import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.LocationService;
 import com.leexplorer.app.util.GalleryComparator;
@@ -24,10 +24,9 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
-import rx.Subscription;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
 
 /**
  * Created by deepakdhiman on 2/17/14.
@@ -149,12 +148,12 @@ public class GalleryListFragment extends BaseFragment {
       callbacks.onLoading(true);
     }
 
-    addSubscription(Observable.create(new Observable.OnSubscribeFunc<List<Gallery>>() {
+    addSubscription(Observable.create(new Observable.OnSubscribe<List<Gallery>>() {
       @Override
-      public Subscription onSubscribe(Observer<? super List<Gallery>> observer) {
-        observer.onNext(Gallery.getAll());
-        observer.onCompleted();
-        return Subscriptions.empty();
+      public void call(Subscriber<? super List<Gallery>> subscriber) {
+        subscriber.onNext(Gallery.getAll());
+        subscriber.onCompleted();
+        return;
       }
     })
         .subscribeOn(Schedulers.io())

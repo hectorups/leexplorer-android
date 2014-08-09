@@ -1,6 +1,6 @@
 package com.leexplorer.app.events;
 
-import com.leexplorer.app.util.ble.Beacon;
+import com.leexplorer.app.models.Beacon;
 import java.util.List;
 
 public class BeaconsScanResultEvent {

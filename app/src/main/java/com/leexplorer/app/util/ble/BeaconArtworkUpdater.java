@@ -1,6 +1,7 @@
 package com.leexplorer.app.util.ble;
 
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.models.Beacon;
 import java.util.List;
 
 /**

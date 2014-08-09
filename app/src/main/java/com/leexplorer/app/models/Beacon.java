@@ -1,4 +1,4 @@
-package com.leexplorer.app.util.ble;
+package com.leexplorer.app.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,18 +9,7 @@ import java.util.Arrays;
  * Created by hectormonserrate on 22/02/14.
  */
 public class Beacon implements Parcelable {
-  @SuppressWarnings("unused")
-  public static final Parcelable.Creator<Beacon> CREATOR = new Parcelable.Creator<Beacon>() {
-    @Override
-    public Beacon createFromParcel(Parcel in) {
-      return new Beacon(in);
-    }
 
-    @Override
-    public Beacon[] newArray(int size) {
-      return new Beacon[size];
-    }
-  };
   private String mac;
   private ArrayList<Integer> rssis;
   private String uuid;
@@ -30,14 +19,6 @@ public class Beacon implements Parcelable {
     addRssi(rssi);
     this.uuid = serviceFromScanRecord(scanRecord);
     this.mac = mac;
-  }
-
-  protected Beacon(Parcel in) {
-    uuid = in.readString();
-    mac = in.readString();
-
-    rssis = new ArrayList<>();
-    rssis.add(in.readInt());
   }
 
   public void addRssi(int rssi) {
@@ -68,11 +49,6 @@ public class Beacon implements Parcelable {
     this.uuid = uuid;
   }
 
-
-    /*
-     *  Parcelable Overrides
-     */
-
   private String serviceFromScanRecord(byte[] scanRecord) {
 
     final int serviceOffset = 9;
@@ -96,6 +72,27 @@ public class Beacon implements Parcelable {
   @Override
   public int describeContents() {
     return 0;
+  }
+
+  @SuppressWarnings("unused")
+  public static final Parcelable.Creator<Beacon> CREATOR = new Parcelable.Creator<Beacon>() {
+    @Override
+    public Beacon createFromParcel(Parcel in) {
+      return new Beacon(in);
+    }
+
+    @Override
+    public Beacon[] newArray(int size) {
+      return new Beacon[size];
+    }
+  };
+
+  protected Beacon(Parcel in) {
+    uuid = in.readString();
+    mac = in.readString();
+
+    rssis = new ArrayList<>();
+    rssis.add(in.readInt());
   }
 
   @Override

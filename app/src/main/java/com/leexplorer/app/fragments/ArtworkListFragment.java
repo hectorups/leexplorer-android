@@ -27,7 +27,7 @@ import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
-import com.leexplorer.app.util.ble.Beacon;
+import com.leexplorer.app.models.Beacon;
 import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;

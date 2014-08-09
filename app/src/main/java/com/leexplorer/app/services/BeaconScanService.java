@@ -27,7 +27,7 @@ import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.Gallery;
-import com.leexplorer.app.util.ble.Beacon;
+import com.leexplorer.app.models.Beacon;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -26,8 +26,8 @@ import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
-import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.models.Beacon;
+import com.leexplorer.app.models.Gallery;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,6 +97,12 @@ public class BeaconScanService extends IntentService {
     Log.d(TAG, "Intent received");
 
     setBluetoothAdapter();
+
+    if (!isBluetoothAdapterHealthy()) {
+      Log.e(TAG, "bluetoothadapter null ?");
+      return;
+    }
+
     bluetoothAdapter.startLeScan(leScanCallback);
 
     beacons = new HashMap<>();
@@ -117,8 +123,18 @@ public class BeaconScanService extends IntentService {
   }
 
   private void endSearch() {
-    Log.d(TAG, "search finished");
-    bluetoothAdapter.stopLeScan(leScanCallback);
+    if (isBluetoothAdapterHealthy()) {
+      try {
+        Log.d(TAG, "search finished");
+        bluetoothAdapter.stopLeScan(leScanCallback);
+      } catch (NullPointerException e) {
+        eventReporter.logException(e);
+      }
+    }
+  }
+
+  private boolean isBluetoothAdapterHealthy() {
+    return bluetoothAdapter != null && bluetoothAdapter.getState() == BluetoothAdapter.STATE_ON;
   }
 
   private void broadcastBeacons() {

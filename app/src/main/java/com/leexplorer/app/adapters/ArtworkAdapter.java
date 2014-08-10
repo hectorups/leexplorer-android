@@ -5,11 +5,14 @@ package com.leexplorer.app.adapters;
  */
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -20,6 +23,9 @@ import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
+import com.leexplorer.app.util.transformations.AspectRationDummyTransformation;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -47,20 +53,27 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
       view.setTag(holder);
     }
 
-    Artwork aw = getItem(position);
+    Artwork artwork = getItem(position);
 
-    holder.tvName.setText(aw.getName());
+    double aspectRatio = getHeightRatioFromPopularity(artwork);
+
+    holder.tvName.setText(artwork.getName());
     holder.tvName.setMaxLines(1);
     holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
 
-    holder.tvAuthorAndDate.setText(aw.getAuthor() + " - " + ArtDate.shortDate(aw.getPublishedAt()));
+    holder.tvAuthorAndDate.setText(
+        artwork.getAuthor() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
 
-    holder.ivArtworkThumb.setTag(aw);
-    holder.ivArtworkThumb.setHeightRatio(getHeightRatioFromPopularity(aw));
+    holder.ivArtworkThumb.setTag(artwork);
+    holder.ivArtworkThumb.setHeightRatio(aspectRatio);
 
-    imageSourcePicker.getRequestCreator(aw, R.dimen.thumbor_medium).into(holder.ivArtworkThumb);
+    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large)
+        .fit()
+        .centerCrop()
+        .transform(new AspectRationDummyTransformation(aspectRatio))
+        .into(holder.ivArtworkThumb);
 
-    setSignalIndicator(holder, aw);
+    setSignalIndicator(holder, artwork);
 
     return view;
   }

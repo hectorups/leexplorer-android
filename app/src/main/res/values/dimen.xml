@@ -9,10 +9,11 @@
   <dimen name="gallery_profile_icon_size">25dp</dimen>
 
   <!-- Thumbor Buckets -->
-  <dimen name="thumbor_large">1200px</dimen>
-  <dimen name="thumbor_medium">600px</dimen>
-  <dimen name="thumbor_small">300px</dimen>
-  <dimen name="thumbor_tiny">100px</dimen>
+  <dimen name="thumbor_xlarge">1200px</dimen>
+  <dimen name="thumbor_large">1000px</dimen>
+  <dimen name="thumbor_medium">500px</dimen>
+  <dimen name="thumbor_small">250px</dimen>
+  <dimen name="thumbor_tiny">80px</dimen>
   <!-- end Thumbor Buckets -->
 
 </resources>

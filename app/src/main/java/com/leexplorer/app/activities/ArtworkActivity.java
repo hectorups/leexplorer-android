@@ -21,7 +21,6 @@ public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Cal
 
   public final static float BIG_SCALE = 1.0f;
   public final static float SMALL_SCALE = 0.7f;
-  public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
 
   private ArrayList<Artwork> artworks;
   private ViewPager viewPager;

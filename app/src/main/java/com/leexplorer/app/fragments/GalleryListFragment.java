@@ -153,7 +153,6 @@ public class GalleryListFragment extends BaseFragment {
       public void call(Subscriber<? super List<Gallery>> subscriber) {
         subscriber.onNext(Gallery.getAll());
         subscriber.onCompleted();
-        return;
       }
     })
         .subscribeOn(Schedulers.io())

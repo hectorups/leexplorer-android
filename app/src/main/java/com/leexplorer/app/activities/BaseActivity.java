@@ -12,10 +12,12 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Window;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.events.LoadingEvent;
+import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
@@ -139,5 +141,16 @@ public class BaseActivity extends ActionBarActivity {
     @Subscribe public void onLoading(LoadingEvent event) {
       onProgressLoading(event.isLoading());
     }
+  }
+
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+      bus.post(new VolumeChangeEvent(false));
+    } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+      bus.post(new VolumeChangeEvent(true));
+    }
+
+    return true;
   }
 }

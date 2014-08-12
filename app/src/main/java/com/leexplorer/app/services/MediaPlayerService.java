@@ -3,8 +3,10 @@ package com.leexplorer.app.services;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
@@ -14,25 +16,27 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import com.crashlytics.android.Crashlytics;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
+import com.leexplorer.app.core.EventReporter;
+import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
-import com.leexplorer.app.exceptions.AudioException;
+import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.models.Artwork;
-import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.inject.Inject;
 
 public class MediaPlayerService extends Service {
 
-  public static final String TOTAL_DURATION = "com.leexplorer.mediaplayerservice.total_duration";
-  public static final String CURRENT_DURATION =
-      "com.leexplorer.mediaplayerservice.current_duration";
+  private static final String TAG = "com.leexplorer.app.services.MediaPlayerService";
+
+  public static final int MAX_VOLUME = 16;
+
   public static final String ARTWORK = "com.leexplorer.mediaplayerservice.artworks";
   public static final String SEEK_TO_VALUE = "com.leexplorer.mediaplayerservice.seek_to_value";
   public static final String ACTION = "com.leexplorer.mediaplayerservice.action";
@@ -46,6 +50,7 @@ public class MediaPlayerService extends Service {
   private static MediaPlayer mediaPlayer;
   private static Artwork artwork;
   private static ArrayList<Artwork> artworks;
+  private static int volume = (int) MAX_VOLUME / 2;
 
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
@@ -59,6 +64,7 @@ public class MediaPlayerService extends Service {
     super.onCreate();
 
     ((LeexplorerApplication) getApplication()).inject(this);
+    bus.register(this);
 
     HandlerThread thread = new HandlerThread("MediaPlayerService:WorkerThread");
     thread.start();
@@ -105,6 +111,11 @@ public class MediaPlayerService extends Service {
       default:
         return;
     }
+  }
+
+  @Override public void onDestroy() {
+    bus.unregister(this);
+    super.onDestroy();
   }
 
   private void prepareNotification() {
@@ -162,11 +173,19 @@ public class MediaPlayerService extends Service {
       this.artwork = artwork;
 
       Uri audioUri = AudioSourcePicker.getUri(artwork.getGalleryId(), artwork.getAudioUrl());
-      mediaPlayer = MediaPlayer.create(getApplicationContext(), audioUri);
-      if (mediaPlayer == null) {
-        // @todo show coudnt open audio notification
-        Crashlytics.logException(new AudioException(artwork.getAudioUrl()));
-        return;
+      mediaPlayer = new MediaPlayer();
+
+      try {
+        mediaPlayer.setDataSource(getApplicationContext(), audioUri);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+
+        AudioManager audioManager =
+            (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        volume = audioManager.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
+
+        mediaPlayer.prepare();
+      } catch (IOException e) {
+        eventReporter.logException(e);
       }
 
       mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -174,7 +193,6 @@ public class MediaPlayerService extends Service {
           stop();
         }
       });
-
       mediaPlayer.start();
 
       eventReporter.artworkAudioPlayed(artwork);
@@ -242,4 +260,30 @@ public class MediaPlayerService extends Service {
       }
     }
   };
+
+  private void setVolume(int newVolume) {
+    if (mediaPlayer == null) {
+      return;
+    }
+
+    AudioManager audioManager =
+        (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+
+    int max_volume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+
+    if (newVolume < 0) {
+      volume = 0;
+    } else if (newVolume > max_volume) {
+      volume = max_volume;
+    } else {
+      volume = newVolume;
+    }
+
+    Log.d(TAG, "Volume:" + volume);
+    audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, volume, AudioManager.FLAG_SHOW_UI);
+  }
+
+  @Subscribe public void onVolumeChange(VolumeChangeEvent event) {
+    setVolume(event.isUp() ? volume + 1 : volume - 1);
+  }
 }

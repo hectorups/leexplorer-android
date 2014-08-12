@@ -116,7 +116,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
           } catch (IOException e) {
             e.printStackTrace();
           }
-          return;
         }
       })
           .subscribeOn(Schedulers.newThread())

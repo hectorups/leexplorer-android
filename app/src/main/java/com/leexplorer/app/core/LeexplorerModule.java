@@ -17,6 +17,7 @@ import com.leexplorer.app.adapters.GalleryPagerAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.fragments.ArtworkListFragment;
+import com.leexplorer.app.fragments.ConfirmDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
@@ -46,7 +47,7 @@ import javax.inject.Singleton;
         GalleryAdapter.class, GalleryPagerAdapter.class, GalleryInfoAdapter.class,
         GalleryMapFragment.class, GalleryDownloaderService.class, ArtworkActivity.class,
         GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class,
-        MediaPlayerService.class
+        MediaPlayerService.class, ConfirmDialogFragment.class
     },
     library = true)
 public class LeexplorerModule {

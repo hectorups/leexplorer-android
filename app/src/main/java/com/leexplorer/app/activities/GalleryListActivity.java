@@ -1,18 +1,27 @@
 package com.leexplorer.app.activities;
 
+import android.annotation.TargetApi;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 import com.leexplorer.app.R;
+import com.leexplorer.app.events.ConfirmDialogResultEvent;
+import com.leexplorer.app.fragments.ConfirmDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.models.Gallery;
+import com.squareup.otto.Subscribe;
 
 public class GalleryListActivity extends BaseActivity
     implements GalleryListFragment.Callbacks, GalleryMapFragment.Callbacks,
@@ -23,6 +32,7 @@ public class GalleryListActivity extends BaseActivity
   private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
   private MenuItem menuList;
   private MenuItem menuMap;
+  private MenuItem bluetoothWarning;
   private boolean menuFragmentOn;
 
   @Override
@@ -60,10 +70,36 @@ public class GalleryListActivity extends BaseActivity
 
     menuList = menu.findItem(R.id.menuList);
     menuMap = menu.findItem(R.id.menuMap);
+    bluetoothWarning = menu.findItem(R.id.bluetoothWarning);
 
     updateMenuIcon();
+    checkBluetoothConfiguration();
 
     return true;
+  }
+
+  @TargetApi(18)
+  private void checkBluetoothConfiguration() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+      showBluetoothWarningIcon(false);
+      return;
+    }
+
+    BluetoothManager bluetoothManager =
+        (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+    BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+
+    if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_OFF) {
+      showBluetoothWarningIcon(true);
+    } else {
+      showBluetoothWarningIcon(false);
+    }
+  }
+
+  private void showBluetoothWarningIcon(boolean show) {
+    if (bluetoothWarning != null) {
+      bluetoothWarning.setVisible(show);
+    }
   }
 
   private void updateMenuIcon() {
@@ -76,6 +112,23 @@ public class GalleryListActivity extends BaseActivity
     }
   }
 
+  @Subscribe public void onConfirmOk(ConfirmDialogResultEvent event) {
+    if (event.getCaller().contentEquals(TAG)) {
+      Toast.makeText(this, "Confirm OK", Toast.LENGTH_SHORT).show();
+      enableBluetooth();
+    }
+  }
+
+  @TargetApi(18)
+  private void enableBluetooth() {
+    BluetoothManager bluetoothManager =
+        (BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE);
+    BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+    bluetoothAdapter.enable();
+
+    showBluetoothWarningIcon(false);
+  }
+
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
@@ -86,6 +139,12 @@ public class GalleryListActivity extends BaseActivity
     GalleryMapFragment mapFragment = (GalleryMapFragment) fm.findFragmentByTag(MAP_FRAGMENT_TAG);
 
     switch (id) {
+      case R.id.bluetoothWarning:
+        ConfirmDialogFragment.newInstance(TAG,
+            this.getResources().getString(R.string.bluetooth_warning_title),
+            this.getResources().getString(R.string.bluetooth_warning_message))
+            .show(getSupportFragmentManager(), ConfirmDialogFragment.TAG);
+        break;
       case R.id.menuMap:
         if (mapFragment == null) {
           mapFragment = GalleryMapFragment.newInstance(listFragment.getGalleries());

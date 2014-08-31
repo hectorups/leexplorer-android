@@ -82,6 +82,7 @@ public class BaseActivity extends ActionBarActivity {
   public void onResume() {
     super.onResume();
     bus.register(eventhandler);
+    bus.register(this);
 
     BeaconScanService.setScannerAlarm(this, true);
 
@@ -100,6 +101,7 @@ public class BaseActivity extends ActionBarActivity {
   public void onPause() {
     super.onPause();
     bus.unregister(eventhandler);
+    bus.unregister(this);
 
     unregisterReceiver(onShowNotification);
 

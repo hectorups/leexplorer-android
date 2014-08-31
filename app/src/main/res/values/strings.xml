@@ -35,8 +35,14 @@
   <!-- GALLERY LIST SCREEN -->
   <string name="menu_gallery_map">map</string>
   <string name="manu_gallery_list">list</string>
+  <string name="bluetooth_warning_title">Your Bluetooth is off</string>
+  <string name="bluetooth_warning_message">To have the best experience turn on you bluetooth.</string>
 
   <!-- GALLERY MAP SCREEN -->
   <string name="consolidated_marker_title">%1$d Galleries</string>
+
+  <!-- CONFIRM DIALOG -->
+  <string name="confirm_dialog_ok">Ok</string>
+  <string name="confirm_dialog_cancel">Cancel</string>
 
 </resources>

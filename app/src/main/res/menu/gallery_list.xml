@@ -2,6 +2,12 @@
     xmlns:leexplorer="http://schemas.android.com/apk/res-auto">
 
   <item
+      android:id="@+id/bluetoothWarning"
+      android:icon="@drawable/ic_action_bt_warning"
+      android:title="Bluetooth Disabled"
+      leexplorer:showAsAction="always"/>
+
+  <item
       android:id="@+id/menuMap"
       android:icon="@drawable/ic_action_map"
       android:title="Map"

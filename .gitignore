@@ -11,3 +11,4 @@ debug.properties
 local.properties
 
 java_pid15993.hprof
+app/src/main/assets/crashlytics-build.properties

@@ -31,14 +31,14 @@ android {
     targetCompatibility JavaVersion.VERSION_1_7
   }
 
-  //signingConfigs {
-  //  release {
-  //    storeFile file(RELEASE_STORE_FILE)
-  //    storePassword RELEASE_STORE_PASSWORD
-  //    keyAlias RELEASE_KEY_ALIAS
-  //    keyPassword RELEASE_KEY_PASSWORD
-  //  }
-  //}
+  signingConfigs {
+    release {
+      storeFile file(LE_STORE_FILE)
+      storePassword LE_STORE_PASSWORD
+      keyAlias LE_KEY_ALIAS
+      keyPassword LE_KEY_PASSWORD
+    }
+  }
 
   buildTypes {
     debug {
@@ -48,7 +48,7 @@ android {
     release {
       runProguard false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-      //signingConfig signingConfigs.release
+      signingConfig signingConfigs.release
     }
   }
 

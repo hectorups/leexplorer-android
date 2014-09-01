@@ -142,10 +142,12 @@ public class BaseActivity extends ActionBarActivity {
   public boolean onKeyDown(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
       bus.post(new VolumeChangeEvent(false));
+      return true;
     } else if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
       bus.post(new VolumeChangeEvent(true));
+      return true;
     }
 
-    return true;
+    return super.onKeyDown(keyCode, event);
   }
 }

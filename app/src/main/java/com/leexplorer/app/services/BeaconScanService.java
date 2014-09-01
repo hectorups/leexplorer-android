@@ -23,11 +23,13 @@ import com.leexplorer.app.activities.GalleryActivity;
 import com.leexplorer.app.activities.GalleryListActivity;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.api.models.Artwork;
+import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.Beacon;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.util.ble.BleUuid;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,9 +47,15 @@ public class BeaconScanService extends IntentService {
   // Don't drain the battery when in bg!
   private static final int SCAN_PERIOD = 4000;
   private final String TAG = "com.leexplorer.app.services.beaconscanservice";
+
   private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
     @Override
     public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+
+      if (!isLeBeacon(scanRecord)) {
+        return;
+      }
+
       Log.d(TAG,
           "Bluetooth found: " + device.getName() + " - " + device.getAddress() + " - " + rssi);
 
@@ -246,5 +254,9 @@ public class BeaconScanService extends IntentService {
     }
 
     return gallery;
+  }
+
+  private boolean isLeBeacon(final byte[] advertisedData) {
+    return AppConstants.LE_UUID.contentEquals(BleUuid.serviceFromScanRecord(advertisedData));
   }
 }

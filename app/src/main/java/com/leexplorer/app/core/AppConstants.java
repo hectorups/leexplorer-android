@@ -13,6 +13,8 @@ public class AppConstants {
 
   public static final String APP_FOLDER = "leexplorer";
 
+  public static final String LE_UUID = "3af35bf6dffb48d2b060d0f5a71096e0";
+
   public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<String, Integer>();
 
   //public static final String API_URL = "http://10.12.34.255:1321"; // Hector 1

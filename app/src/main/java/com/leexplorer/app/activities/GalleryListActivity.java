@@ -57,6 +57,16 @@ public class GalleryListActivity extends BaseActivity
     }
   }
 
+  @Override public void onResume() {
+    super.onResume();
+    bus.register(this);
+  }
+
+  @Override public void onPause() {
+    bus.unregister(this);
+    super.onPause();
+  }
+
   @Override
   public void onSaveInstanceState(Bundle savedInstanceState) {
     savedInstanceState.putBoolean(MAP_FRAGMENT_ON, menuFragmentOn);

@@ -1,6 +1,5 @@
 package com.leexplorer.app.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -30,6 +29,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
+import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ArtDate;
@@ -65,7 +65,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private static final String SAVED_ON_PAUSE = "saved_on_pause";
 
   private static final int LIKED_IMG_SIZE = 52;
-  public Callbacks callbacks;
 
   @Inject Client client;
   @Inject Picasso picasso;
@@ -166,10 +165,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       Log.d(TAG, "audio: " + audioCurrentDuration + " of " + audioTotalDuration);
 
       if (!onPause) {
-        if (callbacks != null) {
-          callbacks.onLoading(false);
-        }
-
         nowPlaying = true;
       }
     } else {
@@ -200,24 +195,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     fragment.setArguments(args);
 
     return fragment;
-  }
-
-  @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-
-    if (activity instanceof Callbacks) {
-      callbacks = (Callbacks) activity;
-    } else {
-      throw new ClassCastException(
-          activity.toString() + " must implement ArtworkFragment.Callbacks");
-    }
-  }
-
-  @Override
-  public void onDetach() {
-    super.onDetach();
-    callbacks = null;
   }
 
   @Override
@@ -383,8 +360,8 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     getActivity().startService(i);
 
     updateSeekbar();
-    if (onPause == false && callbacks != null) {
-      callbacks.onLoading(true);
+    if (onPause == false) {
+      bus.post(new LoadingEvent(true));
     }
     nowPlaying = true;
     onPause = false;
@@ -465,9 +442,5 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_SEEK_TO);
     i.putExtra(MediaPlayerService.SEEK_TO_VALUE, currentPosition);
     getActivity().startService(i);
-  }
-
-  public interface Callbacks {
-    void onLoading(boolean loading);
   }
 }

@@ -10,12 +10,11 @@ import butterknife.ButterKnife;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkViewPagerAdapter;
 import com.leexplorer.app.events.ArtworkUpdatedEvent;
-import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.models.Artwork;
 import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 
-public class ArtworkActivity extends BaseActivity implements ArtworkFragment.Callbacks {
+public class ArtworkActivity extends BaseActivity {
   public static final String EXTRA_ARTWORK = "extra_artwork";
   public static final String EXTRA_ARTWORKS = "extra_artworks";
 

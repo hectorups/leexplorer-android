@@ -10,9 +10,13 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
+import com.squareup.otto.Bus;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by deepakdhiman on 2/18/14.
@@ -20,10 +24,12 @@ import java.util.List;
 public class GalleryAdapter extends LeBaseAdapter<Gallery> {
 
   GalleryListFragment fragment;
+  @Inject Bus bus;
 
   public GalleryAdapter(GalleryListFragment fragment, List<Gallery> galleries) {
     super(fragment.getActivity(), galleries);
     this.fragment = fragment;
+    ((LeexplorerApplication) fragment.getActivity().getApplicationContext()).inject(this);
   }
 
   @Override
@@ -35,7 +41,7 @@ public class GalleryAdapter extends LeBaseAdapter<Gallery> {
       LayoutInflater inflater =
           (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       view = inflater.inflate(R.layout.gallery_item, parent, false);
-      holder = new ViewHolder(view, fragment);
+      holder = new ViewHolder(view, bus);
       view.setTag(holder);
     }
 
@@ -59,16 +65,16 @@ public class GalleryAdapter extends LeBaseAdapter<Gallery> {
     @InjectView(R.id.txGalleryType) TextView txGalleryType;
     @InjectView(R.id.txPrice) TextView txPrice;
     @InjectView(R.id.pager) ViewPager pager;
-    private GalleryListFragment fragment;
+    private Bus bus;
 
-    public ViewHolder(View view, GalleryListFragment fragment) {
+    public ViewHolder(View view, Bus bus) {
       ButterKnife.inject(this, view);
-      this.fragment = fragment;
+      this.bus = bus;
     }
 
     @OnClick(R.id.llGalleryLocation)
     public void onClickAddress(View view) {
-      fragment.callbacks.loadMap(String.valueOf(txAddress.getText()));
+      bus.post(new LoadMapEvent(String.valueOf(txAddress.getText())));
     }
   }
 }

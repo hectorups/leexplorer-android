@@ -14,24 +14,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.EventReporter;
+import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.events.LoadArtworksEvent;
+import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
-import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
-import com.leexplorer.app.core.EventReporter;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import javax.inject.Inject;
 
-import static com.leexplorer.app.core.AppConstants.APP_NAME;
-
-/**
- * Created by hectormonserrate on 20/02/14.
- */
 public class BaseActivity extends ActionBarActivity {
   public static final String TAG = "com.leexplorer.activities.baseactivity";
   // This Receiver is ON when the activity is displaying. When on it catches the notification
@@ -106,30 +102,6 @@ public class BaseActivity extends ActionBarActivity {
     BeaconScanService.setScannerAlarm(this, false);
   }
 
-  public void loadMap(String address) {
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    Uri uri = Uri.parse("geo:0,0+?q=" + address);
-    intent.setData(uri);
-    try {
-      startActivity(intent);
-    } catch (ActivityNotFoundException e) {
-      Log.d(APP_NAME, "Error opening maps" + e.getMessage());
-    }
-  }
-
-  public void loadArtworks(Gallery gallery) {
-
-    FragmentManager fm = getSupportFragmentManager();
-    GalleryFragment fragment = (GalleryFragment) fm.findFragmentById(R.id.flGalleryDetailView);
-
-    if (fragment == null) {
-      return;
-    }
-    Intent i = new Intent(this, ArtworkListActivity.class);
-    i.putExtra(ArtworkListActivity.EXTRA_GALLERY, gallery);
-    startActivity(i);
-  }
-
   public boolean isTabletMode() {
     if (findViewById(R.id.flGalleryDetailView) != null) {
       return true;
@@ -140,6 +112,29 @@ public class BaseActivity extends ActionBarActivity {
   private class EventHandler {
     @Subscribe public void onLoading(LoadingEvent event) {
       onProgressLoading(event.isLoading());
+    }
+
+    @Subscribe public void onLoadMap(LoadMapEvent event) {
+      Intent intent = new Intent(Intent.ACTION_VIEW);
+      Uri uri = Uri.parse("geo:0,0+?q=" + event.getAddress());
+      intent.setData(uri);
+      try {
+        startActivity(intent);
+      } catch (ActivityNotFoundException e) {
+        Log.d(TAG, "Error opening maps" + e.getMessage());
+      }
+    }
+
+    @Subscribe public void onLoadArtworks(LoadArtworksEvent event) {
+      FragmentManager fm = getSupportFragmentManager();
+      GalleryFragment fragment = (GalleryFragment) fm.findFragmentById(R.id.flGalleryDetailView);
+
+      if (fragment == null) {
+        return;
+      }
+      Intent i = new Intent(BaseActivity.this, ArtworkListActivity.class);
+      i.putExtra(ArtworkListActivity.EXTRA_GALLERY, event.getGallery());
+      startActivity(i);
     }
   }
 

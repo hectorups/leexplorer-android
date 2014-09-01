@@ -26,6 +26,8 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.leexplorer.app.R;
+import com.leexplorer.app.events.LoadArtworksEvent;
+import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
@@ -39,15 +41,11 @@ import javax.inject.Inject;
 
 import static com.leexplorer.app.core.AppConstants.FACILITIES_IMG_MAP;
 
-/**
- * Created by deepakdhiman on 2/23/14.
- */
 public class GalleryFragment extends BaseFragment {
   private static final String TAG = "leexplorer.com.GalleryFragment";
   private static final String GALLERY_KEY = "gallery";
   private static final String DOWNLOADING_KEY = "downloading";
   private static final String DOWNLOADING_PERCENTAGE_KEY = "downloading_percentage";
-  public Callbacks callbacks;
 
   @Inject Bus bus;
 
@@ -219,12 +217,12 @@ public class GalleryFragment extends BaseFragment {
 
   @OnClick(R.id.ivGalleryDetail)
   public void loadArtworks(View view) {
-    callbacks.loadArtworks(gallery);
+    bus.post(new LoadArtworksEvent(gallery));
   }
 
   @OnClick(R.id.llGalleryDetailLocation)
   public void onClickAddress(View view) {
-    callbacks.loadMap(String.valueOf(txDetailAddress.getText()));
+    bus.post(new LoadMapEvent(String.valueOf(txDetailAddress.getText())));
   }
 
   @OnClick(R.id.llFacilitiesImg)
@@ -233,25 +231,6 @@ public class GalleryFragment extends BaseFragment {
     FacilitiesDialogFragment dialog = FacilitiesDialogFragment.newInstance(gallery.getFacilities());
 
     dialog.show(fm, "fragment_facilities_desc");
-  }
-
-  @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-
-    super.onAttach(activity);
-    if (activity instanceof Callbacks) {
-      callbacks = (Callbacks) activity;
-    } else {
-      throw new ClassCastException(
-          activity.toString() + " must implement GalleryFragment.Callbacks");
-    }
-  }
-
-  @Override
-  public void onDetach() {
-    super.onDetach();
-    callbacks = null;
   }
 
   public void setupDownload(int download) {
@@ -267,13 +246,6 @@ public class GalleryFragment extends BaseFragment {
     downloadingPercentage = 0;
     pbDownload.setProgress(0);
     pbDownload.setVisibility(View.GONE);
-  }
-
-  public interface Callbacks {
-
-    void loadArtworks(Gallery gallery);
-
-    void loadMap(String address);
   }
 
   @Override public String getScreenName() {

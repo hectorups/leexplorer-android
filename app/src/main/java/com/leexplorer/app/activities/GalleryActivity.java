@@ -7,7 +7,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 
-public class GalleryActivity extends BaseActivity implements GalleryFragment.Callbacks {
+public class GalleryActivity extends BaseActivity {
   public static final String GALLERY_KEY = "gallery";
   private Gallery gallery;
 
@@ -43,4 +43,5 @@ public class GalleryActivity extends BaseActivity implements GalleryFragment.Cal
     finish();
     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
   }
+
 }

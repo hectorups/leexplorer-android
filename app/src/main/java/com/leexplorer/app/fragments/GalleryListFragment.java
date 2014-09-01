@@ -15,9 +15,11 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.LocationService;
 import com.leexplorer.app.util.GalleryComparator;
+import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,13 +30,11 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by deepakdhiman on 2/17/14.
- */
 public class GalleryListFragment extends BaseFragment {
   private static final String TAG = "com.leexplorer.galleryListFragment";
   public Callbacks callbacks;
   @Inject Client client;
+  @Inject Bus bus;
   @InjectView(R.id.lvGalleries) ListView lvGalleries;
   private List<Gallery> galleries;
   private GalleryAdapter galleryAdapter;
@@ -86,7 +86,7 @@ public class GalleryListFragment extends BaseFragment {
 
   private void loadGalleryListFromApi() {
     if (callbacks != null) {
-      callbacks.onLoading(true);
+      bus.post(new LoadingEvent(true));
     }
 
     addSubscription(client.getGalleriesData()
@@ -101,18 +101,15 @@ public class GalleryListFragment extends BaseFragment {
           public void onError(Throwable throwable) {
             throwable.printStackTrace();
             if (callbacks != null) {
-              callbacks.onLoading(false);
+              bus.post(new LoadingEvent(false));
             }
-            //                                if (galleries == null || galleries.size() == 0) {
-            //                                    loadGalleryListFromDB();
-            //                                }
           }
 
           @Override
           public void onNext(ArrayList<Gallery> galleries) {
             updateAdapterDataset(galleries);
             if (callbacks != null) {
-              callbacks.onLoading(false);
+              bus.post(new LoadingEvent(false));
             }
           }
         }));
@@ -145,7 +142,7 @@ public class GalleryListFragment extends BaseFragment {
 
   private void loadGalleryListFromDB() {
     if (callbacks != null) {
-      callbacks.onLoading(true);
+      bus.post(new LoadingEvent(true));
     }
 
     addSubscription(Observable.create(new Observable.OnSubscribe<List<Gallery>>() {
@@ -159,7 +156,7 @@ public class GalleryListFragment extends BaseFragment {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<List<Gallery>>() {
           @Override public void onCompleted() {
-            callbacks.onLoading(false);
+            bus.post(new LoadingEvent(false));
           }
 
           @Override public void onError(Throwable throwable) {
@@ -171,7 +168,7 @@ public class GalleryListFragment extends BaseFragment {
         }));
 
     if (callbacks != null) {
-      callbacks.onLoading(false);
+      bus.post(new LoadingEvent(false));
     }
   }
 
@@ -180,11 +177,7 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   public interface Callbacks {
-    void onLoading(boolean loading);
-
     void loadGalleryDetails(Gallery gallery);
-
-    void loadMap(String address);
 
     boolean isTabletMode();
   }

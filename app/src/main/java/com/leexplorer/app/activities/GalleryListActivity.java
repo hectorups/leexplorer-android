@@ -24,8 +24,7 @@ import com.leexplorer.app.models.Gallery;
 import com.squareup.otto.Subscribe;
 
 public class GalleryListActivity extends BaseActivity
-    implements GalleryListFragment.Callbacks, GalleryMapFragment.Callbacks,
-    GalleryFragment.Callbacks {
+    implements GalleryListFragment.Callbacks, GalleryMapFragment.Callbacks {
 
   static final String MAP_FRAGMENT_ON = "map_fragment_on";
   private static final String LIST_FRAGMENT_TAG = "list_fragment_tag";
@@ -194,9 +193,6 @@ public class GalleryListActivity extends BaseActivity
     if (fragment == null) {
       return;
     }
-    //
-    //        int screenSize = getResources().getConfiguration().screenLayout &
-    //                Configuration.SCREENLAYOUT_SIZE_MASK;
 
     if (isTabletMode()) {
       Fragment fragmentGallery = GalleryFragment.newInstance(gallery);

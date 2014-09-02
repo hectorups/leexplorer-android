@@ -37,8 +37,6 @@ import javax.inject.Inject;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BeaconScanService extends IntentService {
-  public static final String ACTION = "com.leexplorer.services.beaconscanservice";
-  public static final String BEACONS = "beacons";
   public static final String ACTION_SHOW_NOTIFICATION =
       "com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION";
   public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
@@ -46,7 +44,8 @@ public class BeaconScanService extends IntentService {
   private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000;
   // Don't drain the battery when in bg!
   private static final int SCAN_PERIOD = 4000;
-  private final String TAG = "com.leexplorer.app.services.beaconscanservice";
+  private static final String TAG = "com.leexplorer.app.services.beaconscanservice";
+  private static final String LOG_SEPARATOR = " - ";
 
   @Inject Client client;
   @Inject Bus bus;
@@ -67,13 +66,13 @@ public class BeaconScanService extends IntentService {
 
     Log.d(TAG, "Bluetooth found: "
         + device.getName()
-        + " - "
+        + LOG_SEPARATOR
         + device.getAddress()
-        + " - "
+        + LOG_SEPARATOR
         + iBeacon.getProximityUuid()
-        + " - "
+        + LOG_SEPARATOR
         + iBeacon.getTxPower()
-        + " - "
+        + LOG_SEPARATOR
         + rssi);
 
     if (beacons.get(device.getAddress()) == null) {

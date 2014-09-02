@@ -42,7 +42,7 @@ public class FilteredIBeacon implements Parcelable {
       distanceBuffer.remove(0);
     }
 
-    distanceBuffer.add((tempDistance));
+    distanceBuffer.add(tempDistance);
     if (iBeacon.getProximity() == IBeacon.PROXIMITY_IMMEDIATE) {
       expectedDistance = 0.8625;
       lastError = 1;

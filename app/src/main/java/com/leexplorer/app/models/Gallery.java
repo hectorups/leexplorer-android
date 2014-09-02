@@ -46,6 +46,7 @@ public class Gallery extends Model implements Parcelable {
   @Column(name = "was_seen")
   private boolean wasSeen;
   private double distanceFromCurrentLocation;
+
   private List<String> artworkImageUrls;
 
   public Gallery() {

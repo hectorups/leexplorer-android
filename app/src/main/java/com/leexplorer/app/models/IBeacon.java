@@ -48,7 +48,8 @@ public class IBeacon {
    */
   protected Integer proximity;
   /**
-   * A double that is an estimate of how far the iBeacon is away in meters.  This name is confusing,
+   * A double that is an estimate of how far the iBeacon is away in meters.  This name is
+   * confusing,
    * but is copied from
    * the iOS7 SDK terminology.   Note that this number fluctuates quite a bit with RSSI, so despite
    * the name, it is not
@@ -140,7 +141,8 @@ public class IBeacon {
   }
 
   /**
-   * Two detected iBeacons are considered equal if they share the same three identifiers, regardless
+   * Two detected iBeacons are considered equal if they share the same three identifiers,
+   * regardless
    * of their distance or RSSI.
    */
   @Override
@@ -149,9 +151,9 @@ public class IBeacon {
       return false;
     }
     IBeacon thatIBeacon = (IBeacon) that;
-    return (thatIBeacon.getMajor() == this.getMajor()
+    return thatIBeacon.getMajor() == this.getMajor()
         && thatIBeacon.getMinor() == this.getMinor()
-        && thatIBeacon.getProximityUuid() == thatIBeacon.getProximityUuid());
+        && thatIBeacon.getProximityUuid() == thatIBeacon.getProximityUuid();
   }
 
   /**
@@ -163,17 +165,22 @@ public class IBeacon {
    */
   public static IBeacon fromScanData(byte[] scanData, int rssi) {
 
+    IBeacon iBeacon = new IBeacon();
+
     if (((int) scanData[5] & 0xff) == 0x4c &&
         ((int) scanData[6] & 0xff) == 0x00 &&
         ((int) scanData[7] & 0xff) == 0x02 &&
         ((int) scanData[8] & 0xff) == 0x15) {
       // yes!  This is an iBeacon
+      iBeacon.major = scanData[25] & 0xff * 0x100 + scanData[26] & 0xff;
+      iBeacon.minor = scanData[27] & 0xff * 0x100 + scanData[28] & 0xff;
+      iBeacon.txPower = (int) scanData[29]; // this one is signed
+      iBeacon.rssi = rssi;
     } else if (((int) scanData[5] & 0xff) == 0x2d &&
         ((int) scanData[6] & 0xff) == 0x24 &&
         ((int) scanData[7] & 0xff) == 0xbf &&
         ((int) scanData[8] & 0xff) == 0x16) {
       // this is an Estimote beacon
-      IBeacon iBeacon = new IBeacon();
       iBeacon.major = 0;
       iBeacon.minor = 0;
       iBeacon.proximityUuid = "00000000-0000-0000-0000-000000000000";
@@ -186,36 +193,20 @@ public class IBeacon {
       return null;
     }
 
-    IBeacon iBeacon = new IBeacon();
-
-    iBeacon.major = (scanData[25] & 0xff) * 0x100 + (scanData[26] & 0xff);
-    iBeacon.minor = (scanData[27] & 0xff) * 0x100 + (scanData[28] & 0xff);
-    iBeacon.txPower = (int) scanData[29]; // this one is signed
-    iBeacon.rssi = rssi;
-
-    // AirLocate:
-    // 02 01 1a 1a ff 4c 00 02 15  # Apple's fixed iBeacon advertising prefix
-    // e2 c5 6d b5 df fb 48 d2 b0 60 d0 f5 a7 10 96 e0 # iBeacon profile uuid
-    // 00 00 # major
-    // 00 00 # minor
-    // c5 # The 2's complement of the calibrated Tx Power
-    // Estimote:
-    // 02 01 1a 11 07 2d 24 bf 16
-    // 394b31ba3f486415ab376e5c0f09457374696d6f7465426561636f6e00000000000000000000000000000000000000000000000000
-
     byte[] proximityUuidBytes = new byte[16];
     System.arraycopy(scanData, 9, proximityUuidBytes, 0, 16);
     String hexString = bytesToHex(proximityUuidBytes);
     StringBuilder sb = new StringBuilder();
-    sb.append(hexString.substring(0, 8));
-    sb.append("-");
-    sb.append(hexString.substring(8, 12));
-    sb.append("-");
-    sb.append(hexString.substring(12, 16));
-    sb.append("-");
-    sb.append(hexString.substring(16, 20));
-    sb.append("-");
-    sb.append(hexString.substring(20, 32));
+    sb.append(hexString.substring(0, 8))
+        .append('-')
+        .append(hexString.substring(8, 12))
+        .append('-')
+        .append(hexString.substring(12, 16))
+        .append('-')
+        .append(hexString.substring(16, 20))
+        .append('-')
+        .append(hexString.substring(20, 32));
+
     iBeacon.proximityUuid = sb.toString();
 
     return iBeacon;

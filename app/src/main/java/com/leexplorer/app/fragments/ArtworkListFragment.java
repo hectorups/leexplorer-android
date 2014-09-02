@@ -26,9 +26,9 @@ import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.ArtworkClickedEvent;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.BeaconScanService;
-import com.leexplorer.app.models.Beacon;
 import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -56,7 +56,7 @@ public class ArtworkListFragment extends BaseFragment {
   @Inject Bus bus;
   @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
   private List<Artwork> artworks;
-  private List<Beacon> beacons;
+  private List<FilteredIBeacon> beacons;
   private boolean artworksLoaded;
   private boolean newBeaconInfo;
   private boolean scaningBeacons;
@@ -64,7 +64,7 @@ public class ArtworkListFragment extends BaseFragment {
   private Gallery gallery;
 
   @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
-    List<Beacon> newBeacons = event.getBeacons();
+    List<FilteredIBeacon> newBeacons = event.getBeacons();
     Log.d(TAG, "Beacons detected: " + newBeacons.size());
 
     beacons = newBeacons;
@@ -326,7 +326,7 @@ public class ArtworkListFragment extends BaseFragment {
     getActivity().startService(i);
   }
 
-  private void distancesChangesCheck(List<Beacon> beacons) {
+  private void distancesChangesCheck(List<FilteredIBeacon> beacons) {
     if (newBeaconInfo) {
       return;
     }

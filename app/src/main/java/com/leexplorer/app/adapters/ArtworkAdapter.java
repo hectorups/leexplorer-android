@@ -5,14 +5,11 @@ package com.leexplorer.app.adapters;
  */
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,8 +21,6 @@ import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.leexplorer.app.util.transformations.AspectRationDummyTransformation;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -79,7 +74,7 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
   }
 
   private void setSignalIndicator(ViewHolder holder, Artwork aw) {
-    if (aw.getDistance() == Artwork.Distance.OUT_OF_RANGE) {
+    if (aw.getNormalizedDistance() == Artwork.Distance.OUT_OF_RANGE) {
       holder.flSignalIndicator.setVisibility(View.INVISIBLE);
       return;
     }
@@ -88,11 +83,11 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     int siganl_text = R.string.signal_immediate;
     int bg_drawable = R.drawable.immediate_rounded_rectanble;
 
-    if (aw.getDistance() == Artwork.Distance.CLOSE) {
+    if (aw.getNormalizedDistance() == Artwork.Distance.CLOSE) {
       color = R.color.le_blue;
       siganl_text = R.string.signal_close;
       bg_drawable = R.drawable.close_rounded_rectangle;
-    } else if (aw.getDistance() == Artwork.Distance.FAR) {
+    } else if (aw.getNormalizedDistance() == Artwork.Distance.FAR) {
       color = R.color.le_yellow;
       siganl_text = R.string.signal_far;
       bg_drawable = R.drawable.far_rounded_rectangle;

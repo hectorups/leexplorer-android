@@ -53,7 +53,7 @@ public class GalleryDownloaderService extends IntentService {
   }
 
   public GalleryDownloaderService() {
-    super("gallery-downloader-service");
+    super("gallery-downloader-serviceFromScanRecord");
   }
 
   @Override public void onCreate() {

@@ -4,18 +4,15 @@ import com.leexplorer.app.R;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by deepakdhiman on 2/25/14.
- */
 public class AppConstants {
 
   public static final String APP_NAME = "LEEXPLORER";
 
   public static final String APP_FOLDER = "leexplorer";
 
-  public static final String LE_UUID = "3af35bf6dffb48d2b060d0f5a71096e0";
+  public static final String LE_UUID = "3af35bf6-dffb-48d2-b060-d0f5a71096e0";
 
-  public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<String, Integer>();
+  public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<>();
 
   //public static final String API_URL = "http://10.12.34.255:1321"; // Hector 1
   //    public static final String API_URL = "http://10.0.0.2:1321"; // Hector 2

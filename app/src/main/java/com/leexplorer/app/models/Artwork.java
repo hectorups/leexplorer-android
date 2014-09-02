@@ -14,9 +14,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by hectormonserrate on 12/02/14.
- */
 @Table(name = "artworks")
 public class Artwork extends Model implements Parcelable {
 
@@ -45,35 +42,35 @@ public class Artwork extends Model implements Parcelable {
   private String audioUrl;
   @Column(name = "gallery_id")
   private String galleryId;
-  private int distance;
+  private Double distance;
 
   public Artwork() {
     super();
   }
 
-  public static Artwork fromJsonModel(com.leexplorer.app.api.models.Artwork jaw) {
-    Artwork aw;
+  public static Artwork fromJsonModel(com.leexplorer.app.api.models.Artwork apiArtwork) {
+    Artwork artwork;
 
-    String mac = jaw.mac;
+    String mac = apiArtwork.mac;
 
-    aw = findByMac(mac);
+    artwork = findByMac(mac);
 
-    if (aw == null) {
-      aw = new Artwork();
+    if (artwork == null) {
+      artwork = new Artwork();
     }
 
-    aw.artworkId = jaw.artworkId;
-    aw.name = jaw.name;
-    aw.mac = mac;
-    aw.description = jaw.description;
-    aw.imageUrl = jaw.imageUrl;
-    aw.author = jaw.author;
-    aw.likesCount = jaw.likesCount;
-    aw.publishedAt = setDateFromString(jaw.publishedAt);
-    aw.audioUrl = jaw.audioUrl;
-    aw.galleryId = jaw.galleryId;
+    artwork.artworkId = apiArtwork.artworkId;
+    artwork.name = apiArtwork.name;
+    artwork.mac = mac;
+    artwork.description = apiArtwork.description;
+    artwork.imageUrl = apiArtwork.imageUrl;
+    artwork.author = apiArtwork.author;
+    artwork.likesCount = apiArtwork.likesCount;
+    artwork.publishedAt = setDateFromString(apiArtwork.publishedAt);
+    artwork.audioUrl = apiArtwork.audioUrl;
+    artwork.galleryId = apiArtwork.galleryId;
 
-    return aw;
+    return artwork;
   }
 
   private static Date setDateFromString(String date) {
@@ -174,21 +171,29 @@ public class Artwork extends Model implements Parcelable {
     this.likesCount = likesCount;
   }
 
-  public Distance getDistance() {
-    if (distance == 0) {
+  public Distance getNormalizedDistance() {
+
+    if (distance == null) {
       return Distance.OUT_OF_RANGE;
     }
 
-    if (distance > -65) {
-      return Distance.IMMEDIATE;
-    } else if (distance > -80) {
-      return Distance.CLOSE;
-    } else {
-      return Distance.FAR;
+    switch (IBeacon.calculateProximity(distance)) {
+      case IBeacon.PROXIMITY_UNKNOWN:
+        return Distance.OUT_OF_RANGE;
+      case IBeacon.PROXIMITY_IMMEDIATE:
+        return Distance.IMMEDIATE;
+      case IBeacon.PROXIMITY_NEAR:
+        return Distance.CLOSE;
+      default:
+        return Distance.FAR;
     }
   }
 
-  public void setDistance(int distance) {
+  public Double getDistance() {
+    return distance;
+  }
+
+  public void setDistance(Double distance) {
     this.distance = distance;
   }
 
@@ -279,7 +284,7 @@ public class Artwork extends Model implements Parcelable {
     dest.writeInt(iLiked ? 1 : 0);
     dest.writeInt(known ? 1 : 0);
     dest.writeString(audioUrl);
-    dest.writeInt(distance);
+    dest.writeDouble(distance);
     dest.writeString(galleryId);
     dest.writeString(artworkId);
   }
@@ -296,7 +301,7 @@ public class Artwork extends Model implements Parcelable {
     iLiked = in.readInt() == 1 ? true : false;
     known = in.readInt() == 1 ? true : false;
     audioUrl = in.readString();
-    distance = in.readInt();
+    distance = in.readDouble();
     galleryId = in.readString();
     artworkId = in.readString();
   }
@@ -311,9 +316,16 @@ public class Artwork extends Model implements Parcelable {
   public static class ArtworkComparable implements Comparator<Artwork>, Serializable {
     @Override
     public int compare(Artwork aw1, Artwork aw2) {
-      int distance1 = Math.abs(aw1.distance == 0 ? -999 : aw1.distance);
-      int distance2 = Math.abs(aw2.distance == 0 ? -999 : aw2.distance);
-      return distance1 - distance2;
+      double distance1 = aw1.distance == null ? 99999 : aw1.distance;
+      double distance2 = aw2.distance == null ? 99999 : aw2.distance;
+
+      if (distance1 == distance2) {
+        return 0;
+      } else if (distance1 > distance2) {
+        return 1;
+      } else {
+        return -1;
+      }
     }
   }
 }

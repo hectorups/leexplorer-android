@@ -27,9 +27,9 @@ import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
-import com.leexplorer.app.models.Beacon;
+import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
-import com.leexplorer.app.util.ble.BleUuid;
+import com.leexplorer.app.models.IBeacon;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,36 +48,45 @@ public class BeaconScanService extends IntentService {
   private static final int SCAN_PERIOD = 4000;
   private final String TAG = "com.leexplorer.app.services.beaconscanservice";
 
-  private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
-    @Override
-    public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-
-      if (!isLeBeacon(scanRecord)) {
-        return;
-      }
-
-      Log.d(TAG,
-          "Bluetooth found: " + device.getName() + " - " + device.getAddress() + " - " + rssi);
-
-      if (beacons.get(device.getAddress()) == null) {
-        Beacon beacon = new Beacon(device.getAddress(), scanRecord, rssi);
-        beacons.put(device.getAddress(), beacon);
-      } else {
-        beacons.get(device.getAddress()).addRssi(rssi);
-      }
-    }
-  };
-
   @Inject Client client;
   @Inject Bus bus;
   @Inject EventReporter eventReporter;
 
   private BluetoothManager bluetoothManager;
   private BluetoothAdapter bluetoothAdapter;
-  private HashMap<String, Beacon> beacons;
+  private HashMap<String, FilteredIBeacon> beacons;
+
+  private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
+    @Override
+    public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+    IBeacon iBeacon = IBeacon.fromScanData(scanRecord, rssi);
+
+    if (!isLeBeacon(iBeacon)) {
+      return;
+    }
+
+    Log.d(TAG, "Bluetooth found: "
+        + device.getName()
+        + " - "
+        + device.getAddress()
+        + " - "
+        + iBeacon.getProximityUuid()
+        + " - "
+        + iBeacon.getTxPower()
+        + " - "
+        + rssi);
+
+    if (beacons.get(device.getAddress()) == null) {
+      FilteredIBeacon beacon = new FilteredIBeacon(device.getAddress(), iBeacon);
+      beacons.put(device.getAddress(), beacon);
+    } else {
+      beacons.get(device.getAddress()).addAdvertisement(iBeacon);
+    }
+    }
+  };
 
   public BeaconScanService() {
-    super("beaconscan-service");
+    super("beaconscan-serviceFromScanRecord");
   }
 
   public static void setScannerAlarm(Context context, boolean foreground) {
@@ -133,8 +142,12 @@ public class BeaconScanService extends IntentService {
   private void endSearch() {
     if (isBluetoothAdapterHealthy()) {
       try {
-        Log.d(TAG, "search finished");
         bluetoothAdapter.stopLeScan(leScanCallback);
+        Log.d(TAG, "search finished");
+
+        for (FilteredIBeacon beacon : beacons.values()) {
+          Log.d(TAG, beacon.getMac() + " distance: " + beacon.getDistance());
+        }
       } catch (NullPointerException e) {
         eventReporter.logException(e);
       }
@@ -196,7 +209,7 @@ public class BeaconScanService extends IntentService {
 
   private Gallery unseenGallery() {
     Gallery gallery = null;
-    for (Beacon beacon : beacons.values()) {
+    for (FilteredIBeacon beacon : beacons.values()) {
       gallery = galleryFromBeacon(beacon);
 
       if (gallery != null) {
@@ -207,7 +220,7 @@ public class BeaconScanService extends IntentService {
     return gallery;
   }
 
-  private Gallery galleryFromBeacon(Beacon beacon) {
+  private Gallery galleryFromBeacon(FilteredIBeacon beacon) {
     String galleryId = null;
     com.leexplorer.app.models.Artwork artwork =
         com.leexplorer.app.models.Artwork.findByMac(beacon.getMac());
@@ -256,7 +269,7 @@ public class BeaconScanService extends IntentService {
     return gallery;
   }
 
-  private boolean isLeBeacon(final byte[] advertisedData) {
-    return AppConstants.LE_UUID.contentEquals(BleUuid.serviceFromScanRecord(advertisedData));
+  private boolean isLeBeacon(IBeacon iBeacon) {
+    return AppConstants.LE_UUID.contentEquals(iBeacon.getProximityUuid());
   }
 }

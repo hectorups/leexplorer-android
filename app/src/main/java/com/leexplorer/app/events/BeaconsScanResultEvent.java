@@ -1,16 +1,16 @@
 package com.leexplorer.app.events;
 
-import com.leexplorer.app.models.Beacon;
+import com.leexplorer.app.models.FilteredIBeacon;
 import java.util.List;
 
 public class BeaconsScanResultEvent {
-  List<Beacon> beacons;
+  List<FilteredIBeacon> beacons;
 
-  public BeaconsScanResultEvent(List<Beacon> beacons) {
+  public BeaconsScanResultEvent(List<FilteredIBeacon> beacons) {
     this.beacons = beacons;
   }
 
-  public List<Beacon> getBeacons() {
+  public List<FilteredIBeacon> getBeacons() {
     return beacons;
   }
 

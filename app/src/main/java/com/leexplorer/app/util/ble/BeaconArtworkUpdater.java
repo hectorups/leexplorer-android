@@ -10,7 +10,7 @@ public class BeaconArtworkUpdater {
       List<FilteredIBeacon> beacons) {
     // Reset Distance
     for (Artwork artwork : artworks) {
-      artwork.setDistance(null);
+      artwork.resetDistance();
     }
 
     // Assign Distances according to beacons

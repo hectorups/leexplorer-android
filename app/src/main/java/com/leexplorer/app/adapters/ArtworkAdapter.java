@@ -1,8 +1,5 @@
 package com.leexplorer.app.adapters;
 
-/**
- * Created by hectormonserrate on 13/02/14.
- */
 
 import android.content.Context;
 import android.text.TextUtils;

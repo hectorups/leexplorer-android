@@ -17,6 +17,8 @@ import java.util.List;
 @Table(name = "artworks")
 public class Artwork extends Model implements Parcelable {
 
+  private static final double OUT_OF_RANGE_VALUE = 9999.0;
+
   @Column(name = "name")
   private String name;
   @Column(name = "artworkId")
@@ -42,7 +44,8 @@ public class Artwork extends Model implements Parcelable {
   private String audioUrl;
   @Column(name = "gallery_id")
   private String galleryId;
-  private Double distance;
+
+  private double distance;
 
   public Artwork() {
     super();
@@ -59,6 +62,7 @@ public class Artwork extends Model implements Parcelable {
       artwork = new Artwork();
     }
 
+    artwork.distance = OUT_OF_RANGE_VALUE;
     artwork.artworkId = apiArtwork.artworkId;
     artwork.name = apiArtwork.name;
     artwork.mac = mac;
@@ -173,7 +177,7 @@ public class Artwork extends Model implements Parcelable {
 
   public Distance getNormalizedDistance() {
 
-    if (distance == null) {
+    if (distance == OUT_OF_RANGE_VALUE) {
       return Distance.OUT_OF_RANGE;
     }
 
@@ -189,11 +193,11 @@ public class Artwork extends Model implements Parcelable {
     }
   }
 
-  public Double getDistance() {
+  public double getDistance() {
     return distance;
   }
 
-  public void setDistance(Double distance) {
+  public void setDistance(double distance) {
     this.distance = distance;
   }
 
@@ -231,6 +235,10 @@ public class Artwork extends Model implements Parcelable {
     this.iLiked = false;
     this.likesCount -= 1;
     this.save();
+  }
+
+  public void resetDistance() {
+    distance = OUT_OF_RANGE_VALUE;
   }
 
   public String getArtworkId() {
@@ -298,8 +306,8 @@ public class Artwork extends Model implements Parcelable {
     author = in.readString();
     likesCount = in.readInt();
     publishedAt = new Date(in.readLong());
-    iLiked = in.readInt() == 1 ? true : false;
-    known = in.readInt() == 1 ? true : false;
+    iLiked = in.readInt() == 1;
+    known = in.readInt() == 1;
     audioUrl = in.readString();
     distance = in.readDouble();
     galleryId = in.readString();
@@ -316,8 +324,8 @@ public class Artwork extends Model implements Parcelable {
   public static class ArtworkComparable implements Comparator<Artwork>, Serializable {
     @Override
     public int compare(Artwork aw1, Artwork aw2) {
-      double distance1 = aw1.distance == null ? 99999 : aw1.distance;
-      double distance2 = aw2.distance == null ? 99999 : aw2.distance;
+      double distance1 = aw1.getDistance();
+      double distance2 = aw2.getDistance();
 
       if (distance1 == distance2) {
         return 0;

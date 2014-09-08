@@ -24,6 +24,9 @@ public class AppConstants {
   public static final String THUMBOR_KEY = "SBxmeZb96YXq7qf";
 
   public static final String BUILD_KILLED_MESSAGE = "Client update required, min build:";
+  public static final String CLIENT_BUILD_HEADER_KEY = "X-LeExplorer-Client";
+  public static final String CLIENT_NAME = "LeExplorer-Android";
+
 
   static {
     FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);

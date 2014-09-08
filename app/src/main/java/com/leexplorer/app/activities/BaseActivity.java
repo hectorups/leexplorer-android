@@ -17,12 +17,15 @@ import android.view.Window;
 import com.leexplorer.app.R;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.events.BuildKilledEvent;
 import com.leexplorer.app.events.LoadArtworksEvent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
+import com.leexplorer.app.events.NetworkErrorEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.services.BeaconScanService;
+import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -135,6 +138,21 @@ public class BaseActivity extends ActionBarActivity {
       Intent i = new Intent(BaseActivity.this, ArtworkListActivity.class);
       i.putExtra(ArtworkListActivity.EXTRA_GALLERY, event.getGallery());
       startActivity(i);
+    }
+
+    @Subscribe public void onBuildKilled(BuildKilledEvent event) {
+      new CroutonCustomView(BaseActivity.this, R.string.error_app_too_old).show();
+    }
+
+    @Subscribe public void onNetworkError(NetworkErrorEvent event) {
+      int messageId;
+      if (((LeexplorerApplication) getApplication()).isOnline()) {
+        messageId = R.string.error_problem_with_connection;
+      } else {
+        messageId = R.string.error_no_connection;
+      }
+      CroutonCustomView.cancelAllCroutons();
+      new CroutonCustomView(BaseActivity.this, messageId, 4000).show();
     }
   }
 

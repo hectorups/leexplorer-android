@@ -5,6 +5,9 @@
   <string name="action_settings">Settings</string>
   <string name="title_activity_artwork">Exhibit</string>
   <string name="unknown_date">unknown</string>
+  <string name="error_app_too_old">Leexplorer needs to be updated</string>
+  <string name="error_problem_with_connection">We couldn\'t connect at this time, try again later</string>
+  <string name="error_no_connection">No connection</string>
 
   <!-- ARWORK SCREEN -->
   <string name="artwork_description_header">Description</string>

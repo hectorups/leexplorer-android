@@ -2,9 +2,6 @@ package com.leexplorer.app.api.models;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by hectormonserrate on 20/02/14.
- */
 public class Artwork {
 
   public String mac;

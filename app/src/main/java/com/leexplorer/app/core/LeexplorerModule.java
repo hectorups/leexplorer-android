@@ -1,8 +1,5 @@
 package com.leexplorer.app.core;
 
-/**
- * Created by hectormonserrate on 10/05/14.
- */
 
 import android.net.Uri;
 import android.util.Log;
@@ -15,6 +12,8 @@ import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.adapters.GalleryInfoAdapter;
 import com.leexplorer.app.adapters.GalleryPagerAdapter;
 import com.leexplorer.app.api.Client;
+import com.leexplorer.app.api.LeexplorerErrorHandler;
+import com.leexplorer.app.api.LeexplorerRequestInterceptor;
 import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.fragments.ConfirmDialogFragment;
@@ -39,6 +38,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
+import retrofit.ErrorHandler;
+import retrofit.RequestInterceptor;
 
 @Module(
     injects = {
@@ -47,7 +48,7 @@ import javax.inject.Singleton;
         GalleryAdapter.class, GalleryPagerAdapter.class, GalleryInfoAdapter.class,
         GalleryMapFragment.class, GalleryDownloaderService.class, ArtworkActivity.class,
         GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class,
-        MediaPlayerService.class, ConfirmDialogFragment.class
+        MediaPlayerService.class, ConfirmDialogFragment.class, Client.class
     },
     library = true)
 public class LeexplorerModule {
@@ -72,6 +73,10 @@ public class LeexplorerModule {
     return new AndroidBus();
   }
 
+  @Provides @Singleton RequestInterceptor providesRequestInterceptor() {
+    return new LeexplorerRequestInterceptor();
+  }
+
   @Provides @Singleton LeexplorerApplication providesLeexplorerApplicationContext() {
     return application;
   }
@@ -89,8 +94,13 @@ public class LeexplorerModule {
     return new OkUrlFactory(client);
   }
 
-  @Provides @Singleton Client provideLeexplorerClient(OkHttpClient client) {
-    return new Client(client);
+  @Provides @Singleton ErrorHandler provideDottieErrorHandler(Bus bus,
+      EventReporter eventReporter) {
+    return new LeexplorerErrorHandler(bus, eventReporter);
+  }
+
+  @Provides @Singleton Client provideLeexplorerClient(LeexplorerApplication application) {
+    return new Client(application);
   }
 
   @Provides @Singleton ImageSourcePicker provideImageSourcePicker(Picasso picasso,
@@ -115,7 +125,7 @@ public class LeexplorerModule {
   }
 
   @Provides @Singleton Thumbor provideThumbor() {
-    return Thumbor.create(AppConstants.SERVER_THUMBOR_URL);
+    return Thumbor.create(AppConstants.SERVER_THUMBOR_URL, AppConstants.THUMBOR_KEY);
   }
 
   @Provides @Singleton EventReporter provideEventReported(LeexplorerApplication application) {

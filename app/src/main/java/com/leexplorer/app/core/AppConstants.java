@@ -21,6 +21,9 @@ public class AppConstants {
   // Digital Ocean
   public static final String API_URL = "http://107.170.66.79:1337";
   public static final String SERVER_THUMBOR_URL = "http://107.170.66.79:8888";
+  public static final String THUMBOR_KEY = "SBxmeZb96YXq7qf";
+
+  public static final String BUILD_KILLED_MESSAGE = "Client update required, min build:";
 
   static {
     FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);

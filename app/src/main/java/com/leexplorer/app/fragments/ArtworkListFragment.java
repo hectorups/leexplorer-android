@@ -191,7 +191,7 @@ public class ArtworkListFragment extends BaseFragment {
     scanBeacons();
 
     // Get data from Api or DB
-    if (LeexplorerApplication.isOnline(getActivity())) {
+    if (((LeexplorerApplication) getActivity().getApplicationContext()).isOnline()) {
       loadArtworkListFromApi();
     } else {
       loadArtworkListFromDB();

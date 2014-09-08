@@ -9,9 +9,6 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 
-/**
- * Created by hectormonserrate on 20/02/14.
- */
 public interface LeexplorerService {
   @GET("/artwork/{id}") Artwork getArtwork(@Path("id") String mac);
 

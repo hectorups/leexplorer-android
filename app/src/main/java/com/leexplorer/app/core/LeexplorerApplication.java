@@ -11,16 +11,13 @@ import dagger.ObjectGraph;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by hectormonserrate on 13/02/14.
- */
 public class LeexplorerApplication extends Application {
 
   private ObjectGraph graph;
 
-  public static boolean isOnline(Context context) {
+  public boolean isOnline() {
     ConnectivityManager cm =
-        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo netInfo = cm.getActiveNetworkInfo();
     if (netInfo != null && netInfo.isConnectedOrConnecting()) {
       return true;

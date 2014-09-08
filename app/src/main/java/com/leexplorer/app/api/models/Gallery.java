@@ -3,9 +3,6 @@ package com.leexplorer.app.api.models;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-/**
- * Created by hectormonserrate on 25/02/14.
- */
 public class Gallery {
 
   public String id;

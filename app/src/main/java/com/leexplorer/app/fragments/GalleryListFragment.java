@@ -77,7 +77,7 @@ public class GalleryListFragment extends BaseFragment {
 
   private void loadArtworkList() {
     //Get data from Api or DB
-    if (LeexplorerApplication.isOnline(getActivity())) {
+    if (((LeexplorerApplication) getActivity().getApplicationContext()).isOnline()) {
       loadGalleryListFromApi();
     } else {
       loadGalleryListFromDB();

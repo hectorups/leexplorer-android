@@ -99,7 +99,7 @@ public class GalleryListFragment extends BaseFragment {
 
           @Override
           public void onError(Throwable throwable) {
-            throwable.printStackTrace();
+            eventReporter.logException(throwable);
             if (callbacks != null) {
               bus.post(new LoadingEvent(false));
             }

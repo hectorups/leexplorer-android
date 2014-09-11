@@ -31,5 +31,5 @@ public class Gallery {
 
   public List<String> facilities;
 
-  public List<String> artworks;
+  public List<String> images;
 }

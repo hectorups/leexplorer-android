@@ -3,6 +3,7 @@ package com.leexplorer.app.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.leexplorer.app.util.ble.BleUtils;
+import com.leexplorer.app.util.ble.Majorminor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,14 +14,15 @@ public class FilteredIBeacon implements Parcelable {
   private double lastError;
   private double kalmanEstimation;
 
-  private String mac;
+  private int major;
+  private int minor;
   private ArrayList<Double> distanceBuffer;
   private List<Double> medianBuffer;
   private String uuid;
   private int txPower;
   private Double distance;
 
-  public FilteredIBeacon(String mac, IBeacon iBeacon) {
+  public FilteredIBeacon(IBeacon iBeacon) {
     distanceBuffer = new ArrayList<>();
     medianBuffer = new ArrayList<>();
     lastError = 1;
@@ -28,8 +30,8 @@ public class FilteredIBeacon implements Parcelable {
 
     this.uuid = iBeacon.getProximityUuid();
     this.txPower = iBeacon.getTxPower();
-    this.mac = mac;
-
+    this.major = iBeacon.major;
+    this.minor = iBeacon.minor;
     addAdvertisement(iBeacon);
   }
 
@@ -94,8 +96,16 @@ public class FilteredIBeacon implements Parcelable {
     }
   }
 
-  public String getMac() {
-    return mac;
+  public String getMajorminor() {
+    return String.valueOf(Majorminor.longFromMajorminor(major, minor));
+  }
+
+  public int getMajor() {
+    return major;
+  }
+
+  public int getMinor() {
+    return minor;
   }
 
   @Override
@@ -104,21 +114,23 @@ public class FilteredIBeacon implements Parcelable {
   }
 
   @SuppressWarnings("unused")
-  public static final Parcelable.Creator<FilteredIBeacon> CREATOR = new Parcelable.Creator<FilteredIBeacon>() {
-    @Override
-    public FilteredIBeacon createFromParcel(Parcel in) {
-      return new FilteredIBeacon(in);
-    }
+  public static final Parcelable.Creator<FilteredIBeacon> CREATOR =
+      new Parcelable.Creator<FilteredIBeacon>() {
+        @Override
+        public FilteredIBeacon createFromParcel(Parcel in) {
+          return new FilteredIBeacon(in);
+        }
 
-    @Override
-    public FilteredIBeacon[] newArray(int size) {
-      return new FilteredIBeacon[size];
-    }
-  };
+        @Override
+        public FilteredIBeacon[] newArray(int size) {
+          return new FilteredIBeacon[size];
+        }
+      };
 
   protected FilteredIBeacon(Parcel in) {
     uuid = in.readString();
-    mac = in.readString();
+    major = in.readInt();
+    minor = in.readInt();
     distance = in.readDouble();
     txPower = in.readInt();
   }
@@ -126,7 +138,8 @@ public class FilteredIBeacon implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeString(uuid);
-    dest.writeString(mac);
+    dest.writeInt(major);
+    dest.writeInt(minor);
     dest.writeDouble(distance);
     dest.writeInt(txPower);
   }

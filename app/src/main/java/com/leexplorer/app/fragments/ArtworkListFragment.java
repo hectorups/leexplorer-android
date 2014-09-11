@@ -215,7 +215,7 @@ public class ArtworkListFragment extends BaseFragment {
 
           @Override
           public void onError(Throwable throwable) {
-            throwable.printStackTrace();
+            eventReporter.logException(throwable);
             if (callbacks != null) {
               callbacks.onLoading(false);
             }
@@ -298,7 +298,7 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   /**
-   * Called by the host activity to get the fragment artworks
+   * Called by the host activity to get the fragment images
    */
   public List<Artwork> getArtworks() {
     return artworks;
@@ -335,11 +335,11 @@ public class ArtworkListFragment extends BaseFragment {
     ArrayList<String> currentOrderedMacs = new ArrayList<>();
     ArrayList<String> newOrderedMacs = new ArrayList<>();
     for (Artwork aw : artworks) {
-      currentOrderedMacs.add(aw.getMac());
+      currentOrderedMacs.add(aw.getMajorminor());
     }
     Collections.sort(artworks, new Artwork.ArtworkComparable());
     for (Artwork aw : artworks) {
-      newOrderedMacs.add(aw.getMac());
+      newOrderedMacs.add(aw.getMajorminor());
     }
 
     for (int i = 0; i < currentOrderedMacs.size(); i++) {

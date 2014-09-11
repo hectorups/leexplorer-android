@@ -88,7 +88,7 @@ public class Gallery extends Model implements Parcelable {
     g.setLanguages(new ArrayList<>(apiGallery.languages));
     g.setLatitude(apiGallery.latitude);
     g.setLongitude(apiGallery.longitude);
-    g.artworkImageUrls = new ArrayList<>(apiGallery.artworks);
+    g.artworkImageUrls = new ArrayList<>(apiGallery.images);
     return g;
   }
 

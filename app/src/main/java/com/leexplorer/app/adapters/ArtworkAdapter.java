@@ -1,6 +1,5 @@
 package com.leexplorer.app.adapters;
 
-
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;

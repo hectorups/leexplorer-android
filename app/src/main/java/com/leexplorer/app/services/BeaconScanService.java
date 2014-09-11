@@ -39,6 +39,7 @@ import javax.inject.Inject;
 public class BeaconScanService extends IntentService {
   public static final String ACTION_SHOW_NOTIFICATION =
       "com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION";
+  public static final String SERVICE_NAME = "beaconscan-serviceFromScanRecord";
   public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
   private static final int INTERVAL_FOREGROUND = 2 * 60 * 1000;
   private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000;
@@ -58,34 +59,41 @@ public class BeaconScanService extends IntentService {
   private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
     @Override
     public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-    IBeacon iBeacon = IBeacon.fromScanData(scanRecord, rssi);
+      IBeacon iBeacon = IBeacon.fromScanData(scanRecord, rssi);
 
-    if (!isLeBeacon(iBeacon)) {
-      return;
-    }
+      if (!isLeBeacon(iBeacon)) {
+        return;
+      }
 
-    Log.d(TAG, "Bluetooth found: "
-        + device.getName()
-        + LOG_SEPARATOR
-        + device.getAddress()
-        + LOG_SEPARATOR
-        + iBeacon.getProximityUuid()
-        + LOG_SEPARATOR
-        + iBeacon.getTxPower()
-        + LOG_SEPARATOR
-        + rssi);
+      if (iBeacon.getMajor() == 0 && iBeacon.getMinor() == 0) {
+        Log.d(TAG, "Found one of our beacons but it has not majorminor configured");
+        return;
+      }
 
-    if (beacons.get(device.getAddress()) == null) {
-      FilteredIBeacon beacon = new FilteredIBeacon(device.getAddress(), iBeacon);
-      beacons.put(device.getAddress(), beacon);
-    } else {
-      beacons.get(device.getAddress()).addAdvertisement(iBeacon);
-    }
+      Log.d(TAG, "Bluetooth found: "
+          + device.getName()
+          + LOG_SEPARATOR
+          + iBeacon.getProximityUuid()
+          + LOG_SEPARATOR
+          + iBeacon.getMajor()
+          + ':'
+          + iBeacon.getMinor()
+          + LOG_SEPARATOR
+          + iBeacon.getTxPower()
+          + LOG_SEPARATOR
+          + rssi);
+
+      if (beacons.get(device.getAddress()) == null) {
+        FilteredIBeacon beacon = new FilteredIBeacon(iBeacon);
+        beacons.put(device.getAddress(), beacon);
+      } else {
+        beacons.get(device.getAddress()).addAdvertisement(iBeacon);
+      }
     }
   };
 
   public BeaconScanService() {
-    super("beaconscan-serviceFromScanRecord");
+    super(SERVICE_NAME);
   }
 
   public static void setScannerAlarm(Context context, boolean foreground) {
@@ -145,7 +153,7 @@ public class BeaconScanService extends IntentService {
         Log.d(TAG, "search finished");
 
         for (FilteredIBeacon beacon : beacons.values()) {
-          Log.d(TAG, beacon.getMac() + " distance: " + beacon.getDistance());
+          Log.d(TAG, beacon.getMajorminor() + " distance: " + beacon.getDistance());
         }
       } catch (NullPointerException e) {
         eventReporter.logException(e);
@@ -222,13 +230,13 @@ public class BeaconScanService extends IntentService {
   private Gallery galleryFromBeacon(FilteredIBeacon beacon) {
     String galleryId = null;
     com.leexplorer.app.models.Artwork artwork =
-        com.leexplorer.app.models.Artwork.findByMac(beacon.getMac());
+        com.leexplorer.app.models.Artwork.findByMajorminor(beacon.getMajorminor());
 
     if (artwork == null) {
       Artwork apiAw = null;
 
       try {
-        apiAw = client.getService().getArtwork(beacon.getMac());
+        apiAw = client.getService().getArtwork(beacon.getMajor() + ":" + beacon.getMinor());
       } catch (Exception e) {
         e.printStackTrace();
       }

@@ -16,7 +16,7 @@ public class BeaconArtworkUpdater {
     // Assign Distances according to beacons
     for (FilteredIBeacon beacon : beacons) {
       for (Artwork artwork : artworks) {
-        if (artwork.getMac().equals(beacon.getMac())) {
+        if (artwork.getMajorminor().equals(beacon.getMajorminor())) {
           artwork.setDistance(beacon.getDistance());
           break;
         }

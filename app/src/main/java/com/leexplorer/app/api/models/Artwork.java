@@ -4,7 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Artwork {
 
-  public String mac;
+  public Integer major;
+
+  public Integer minor;
 
   public String description;
 

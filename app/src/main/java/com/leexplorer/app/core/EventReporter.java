@@ -75,7 +75,7 @@ public class EventReporter {
     logException(new NonFatalException(message));
   }
 
-  public void logException(Exception exception) {
+  public void logException(Throwable exception) {
     Crashlytics.logException(exception);
   }
 
@@ -86,8 +86,8 @@ public class EventReporter {
   public void artworkAudioPlayed(Artwork artwork) {
     Map<String, String> attrs = new HashMap<>();
     attrs.put(ATTR_ARTWORK_ID, artwork.getArtworkId());
-    attrs.put(ATTR_ARTWORK_MAC, artwork.getMac());
-    attrs.put(ATTR_ARTWORK_NAME, artwork.getMac());
+    attrs.put(ATTR_ARTWORK_MAC, artwork.getMajorminor());
+    attrs.put(ATTR_ARTWORK_NAME, artwork.getMajorminor());
     attrs.put(ATTR_GALLERY_ID, artwork.getGalleryId());
     logUserEvent(EVENT_ARTWORK_AUDIO_PLAYED, attrs);
   }

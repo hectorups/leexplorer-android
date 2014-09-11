@@ -6,6 +6,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.leexplorer.app.util.ble.Majorminor;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,7 +15,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-@Table(name = "artworks")
+@Table(name = "images")
 public class Artwork extends Model implements Parcelable {
 
   private static final double OUT_OF_RANGE_VALUE = 9999.0;
@@ -23,8 +24,8 @@ public class Artwork extends Model implements Parcelable {
   private String name;
   @Column(name = "artworkId")
   private String artworkId;
-  @Column(name = "mac", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-  private String mac;
+  @Column(name = "majorminor", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+  private String majorminor;
   @Column(name = "description")
   private String description;
   @Column(name = "published_at")
@@ -54,9 +55,9 @@ public class Artwork extends Model implements Parcelable {
   public static Artwork fromJsonModel(com.leexplorer.app.api.models.Artwork apiArtwork) {
     Artwork artwork;
 
-    String mac = apiArtwork.mac;
-
-    artwork = findByMac(mac);
+    String majorminor =
+        String.valueOf(Majorminor.longFromMajorminor(apiArtwork.major, apiArtwork.minor));
+    artwork = findByMajorminor(majorminor);
 
     if (artwork == null) {
       artwork = new Artwork();
@@ -65,12 +66,13 @@ public class Artwork extends Model implements Parcelable {
     artwork.distance = OUT_OF_RANGE_VALUE;
     artwork.artworkId = apiArtwork.artworkId;
     artwork.name = apiArtwork.name;
-    artwork.mac = mac;
+    artwork.majorminor = majorminor;
     artwork.description = apiArtwork.description;
     artwork.imageUrl = apiArtwork.imageUrl;
     artwork.author = apiArtwork.author;
     artwork.likesCount = apiArtwork.likesCount;
-    artwork.publishedAt = setDateFromString(apiArtwork.publishedAt);
+    artwork.publishedAt =
+        apiArtwork.publishedAt != null ? setDateFromString(apiArtwork.publishedAt) : null;
     artwork.audioUrl = apiArtwork.audioUrl;
     artwork.galleryId = apiArtwork.galleryId;
 
@@ -95,8 +97,8 @@ public class Artwork extends Model implements Parcelable {
     return new ArrayList<>(aws);
   }
 
-  public static Artwork findByMac(String mac) {
-    return new Select().from(Artwork.class).where("mac = ?", mac).executeSingle();
+  public static Artwork findByMajorminor(String majorminor) {
+    return new Select().from(Artwork.class).where("majorminor = ?", majorminor).executeSingle();
   }
 
   public String getAudioUrl() {
@@ -115,12 +117,12 @@ public class Artwork extends Model implements Parcelable {
     this.name = name;
   }
 
-  public String getMac() {
-    return mac;
+  public String getMajorminor() {
+    return majorminor;
   }
 
-  public void setMac(String mac) {
-    this.mac = mac;
+  public void setMajorminor(String majorminor) {
+    this.majorminor = majorminor;
   }
 
   public String getDescription() {
@@ -132,6 +134,9 @@ public class Artwork extends Model implements Parcelable {
   }
 
   public Date getPublishedAt() {
+    if (publishedAt == null) {
+      return null;
+    }
     return (Date) publishedAt.clone();
   }
 
@@ -213,7 +218,7 @@ public class Artwork extends Model implements Parcelable {
 
     Artwork artwork = (Artwork) o;
 
-    if (!mac.contentEquals(artwork.mac)) {
+    if (!majorminor.contentEquals(artwork.majorminor)) {
       return false;
     }
 
@@ -222,7 +227,7 @@ public class Artwork extends Model implements Parcelable {
 
   @Override
   public int hashCode() {
-    return mac.hashCode();
+    return majorminor.hashCode();
   }
 
   public void like() {
@@ -283,12 +288,12 @@ public class Artwork extends Model implements Parcelable {
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeLong(getId());
     dest.writeString(name);
-    dest.writeString(mac);
+    dest.writeString(majorminor);
     dest.writeString(description);
     dest.writeString(imageUrl);
     dest.writeString(author);
     dest.writeInt(likesCount);
-    dest.writeLong(publishedAt.getTime());
+    dest.writeLong(publishedAt != null ? publishedAt.getTime() : 0);
     dest.writeInt(iLiked ? 1 : 0);
     dest.writeInt(known ? 1 : 0);
     dest.writeString(audioUrl);
@@ -300,12 +305,13 @@ public class Artwork extends Model implements Parcelable {
   protected Artwork(Parcel in) {
     setId(in.readLong());
     name = in.readString();
-    mac = in.readString();
+    majorminor = in.readString();
     description = in.readString();
     imageUrl = in.readString();
     author = in.readString();
     likesCount = in.readInt();
-    publishedAt = new Date(in.readLong());
+    long publishedAtRead = in.readLong();
+    publishedAt = publishedAtRead == 0 ? null : new Date(in.readLong());
     iLiked = in.readInt() == 1;
     known = in.readInt() == 1;
     audioUrl = in.readString();

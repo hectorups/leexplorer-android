@@ -37,7 +37,7 @@ public class MediaPlayerService extends Service {
 
   public static final int MAX_VOLUME = 16;
 
-  public static final String ARTWORK = "com.leexplorer.mediaplayerservice.artworks";
+  public static final String ARTWORK = "com.leexplorer.mediaplayerservice.images";
   public static final String SEEK_TO_VALUE = "com.leexplorer.mediaplayerservice.seek_to_value";
   public static final String ACTION = "com.leexplorer.mediaplayerservice.action";
   public static final int ACTION_PLAY = 1;
@@ -96,7 +96,7 @@ public class MediaPlayerService extends Service {
 
     switch (intent.getIntExtra(ACTION, 0)) {
       case ACTION_PLAY:
-        //artworks = intent.getParcelableArrayListExtra(ARTWORKS);
+        //images = intent.getParcelableArrayListExtra(ARTWORKS);
         play((Artwork) intent.getParcelableExtra(ARTWORK));
         break;
       case ACTION_STOP:

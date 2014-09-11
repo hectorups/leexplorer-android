@@ -55,7 +55,7 @@ public class FakeData {
         "One of the most-recognized figures in 20th century art, Pablo Picasso (1881-1973) was a Spanish painter, sculptor, printmaker, ceramicist and stage designer. His early success, through the Blue Period (1901-1904) and Rose Period (1904-1906) led to the establishment of Cubism (1909-1912) – one of his major contributions to the art world. Picasso's personal life was as controversial as his work – he was known for his love affairs, often with studio models that became his muses. In addition to his many affairs, he had two wives and four children."));
   }
 
-  // Gets all fake artworks
+  // Gets all fake images
   public static ArrayList<Artwork> getArtworks() {
     Gson gson = new Gson();
     ArrayList<Artwork> artworks = new ArrayList<>();

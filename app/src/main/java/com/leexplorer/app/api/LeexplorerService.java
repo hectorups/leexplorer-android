@@ -10,7 +10,7 @@ import retrofit.http.POST;
 import retrofit.http.Path;
 
 public interface LeexplorerService {
-  @GET("/artwork/{id}") Artwork getArtwork(@Path("id") String mac);
+  @GET("/artwork/{id}") Artwork getArtwork(@Path("id") String majorminor);
 
   @GET("/gallery/{id}/artworks") List<Artwork> getArtworks(@Path("id") String galleryId);
 

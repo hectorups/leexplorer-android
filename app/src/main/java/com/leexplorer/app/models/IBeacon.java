@@ -188,8 +188,6 @@ public class IBeacon {
       return iBeacon;
     } else {
       // This is not an iBeacon
-      Log.d(TAG,
-          "This is not an iBeacon advertisment.  The bytes I see are: " + bytesToHex(scanData));
       return null;
     }
 

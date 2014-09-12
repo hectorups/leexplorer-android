@@ -172,8 +172,8 @@ public class IBeacon {
         ((int) scanData[7] & 0xff) == 0x02 &&
         ((int) scanData[8] & 0xff) == 0x15) {
       // yes!  This is an iBeacon
-      iBeacon.major = scanData[25] & 0xff * 0x100 + scanData[26] & 0xff;
-      iBeacon.minor = scanData[27] & 0xff * 0x100 + scanData[28] & 0xff;
+      iBeacon.major = processMajorminorBytes(scanData[25], scanData[26]);
+      iBeacon.minor = processMajorminorBytes(scanData[27], scanData[28]);
       iBeacon.txPower = (int) scanData[29]; // this one is signed
       iBeacon.rssi = rssi;
     } else if (((int) scanData[5] & 0xff) == 0x2d &&
@@ -267,5 +267,9 @@ public class IBeacon {
       hexChars[j * 2 + 1] = hexArray[v & 0x0F];
     }
     return new String(hexChars);
+  }
+
+  private static int processMajorminorBytes(byte byte1, byte byte2){
+    return (byte1 & 0xff) * 0x100 + (byte2 & 0xff);
   }
 }

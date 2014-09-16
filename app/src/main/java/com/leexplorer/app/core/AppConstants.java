@@ -19,8 +19,8 @@ public class AppConstants {
   //    public static final String SERVER_THUMBOR_URL = "10.0.0.2:8821";
 
   // Digital Ocean
-  public static final String API_URL = "http://107.170.66.79:1337";
-  public static final String SERVER_THUMBOR_URL = "http://107.170.66.79:8888";
+  public static final String API_URL = "http://api.leexplorer.com:1337";
+  public static final String SERVER_THUMBOR_URL = "http://images.leexplorer.com:8888";
   public static final String THUMBOR_KEY = "SBxmeZb96YXq7qf";
 
   public static final String BUILD_KILLED_MESSAGE = "Client update required, min build:";

@@ -16,7 +16,7 @@ public class Majorminor {
   public static long longFromArrayOfBytes(byte[] array) {
     long value = 0;
     for (int i = 0; i < array.length; i++) {
-      value = (value << 8) + (array[i] & 0xff);
+      value = (value << 8) + array[i] & 0xff;
     }
 
     return value;

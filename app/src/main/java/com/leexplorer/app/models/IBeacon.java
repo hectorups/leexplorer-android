@@ -270,6 +270,6 @@ public class IBeacon {
   }
 
   private static int processMajorminorBytes(byte byte1, byte byte2){
-    return (byte1 & 0xff) * 0x100 + (byte2 & 0xff);
+    return (byte1 & 0xff) * 0x100 + byte2 & 0xff;
   }
 }

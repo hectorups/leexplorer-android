@@ -11,7 +11,7 @@ public class AppConstants {
 
   public static final String APP_FOLDER = "leexplorer";
 
-  public static final String LE_UUID = "3af35bf6-dffb-48d2-b060-d0f5a71096e0";
+  public static final String LE_UUID = "9133edc4-a87c-5529-befa-4f75f31a45d4";
 
   public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<>();
 

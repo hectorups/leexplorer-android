@@ -1,5 +1,6 @@
 package com.leexplorer.app.core;
 
+import com.leexplorer.app.BuildConfig;
 import com.leexplorer.app.R;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +28,6 @@ public class AppConstants {
   public static final String CLIENT_BUILD_HEADER_KEY = "X-LeExplorer-Client";
   public static final String CLIENT_NAME = "LeExplorer-Android";
 
-
   static {
     FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);
     FACILITIES_IMG_MAP.put("wifi", R.drawable.ic_facilities_wifi);
@@ -45,4 +45,8 @@ public class AppConstants {
 
   public static final String MIXPANEL_TOKEN = "b66f535a8b703ce67e53b646b99de279";
   public static final String GOOGLE_ANALYTICS_ID = "UA-53532539-1";
+
+  public static boolean isDebug(){
+    return BuildConfig.DEBUG;
+  }
 }

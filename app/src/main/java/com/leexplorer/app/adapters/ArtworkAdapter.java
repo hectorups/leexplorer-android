@@ -12,6 +12,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.ArtDate;
@@ -69,27 +70,34 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     return view;
   }
 
-  private void setSignalIndicator(ViewHolder holder, Artwork aw) {
-    if (aw.getNormalizedDistance() == Artwork.Distance.OUT_OF_RANGE) {
+  private void setSignalIndicator(ViewHolder holder, Artwork artwork) {
+    if (artwork.getNormalizedDistance() == Artwork.Distance.OUT_OF_RANGE) {
       holder.flSignalIndicator.setVisibility(View.INVISIBLE);
       return;
     }
 
     int color = R.color.le_green;
-    int siganl_text = R.string.signal_immediate;
+    int signal = R.string.signal_immediate;
+    String signalText;
     int bg_drawable = R.drawable.immediate_rounded_rectanble;
 
-    if (aw.getNormalizedDistance() == Artwork.Distance.CLOSE) {
+    if (artwork.getNormalizedDistance() == Artwork.Distance.CLOSE) {
       color = R.color.le_blue;
-      siganl_text = R.string.signal_close;
+      signal = R.string.signal_close;
       bg_drawable = R.drawable.close_rounded_rectangle;
-    } else if (aw.getNormalizedDistance() == Artwork.Distance.FAR) {
+    } else if (artwork.getNormalizedDistance() == Artwork.Distance.FAR) {
       color = R.color.le_yellow;
-      siganl_text = R.string.signal_far;
+      signal = R.string.signal_far;
       bg_drawable = R.drawable.far_rounded_rectangle;
     }
 
-    holder.tvSignalIcon.setText(fragment.getResources().getString(siganl_text));
+    if (AppConstants.isDebug()) {
+      signalText = String.format("%.2f m", artwork.getDistance());
+    } else {
+      signalText = fragment.getString(signal);
+    }
+
+    holder.tvSignalIcon.setText(signalText);
     holder.tvSignalIcon.setTextColor(fragment.getResources().getColor(color));
     holder.tvSignalIcon.setBackgroundResource(bg_drawable);
     holder.flSignalIndicator.setVisibility(View.VISIBLE);
@@ -97,11 +105,11 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
 
   // @todo: this is for testing, needs to be implemted depending on
   // the overal gallery score
-  private double getHeightRatioFromPopularity(Artwork aw) {
+  private double getHeightRatioFromPopularity(Artwork artwork) {
     double factor = 0;
-    if (aw.getLikesCount() > 100) {
+    if (artwork.getLikesCount() > 100) {
       factor = 1;
-    } else if (aw.getLikesCount() > 50) {
+    } else if (artwork.getLikesCount() > 50) {
       factor = 0.5;
     }
 

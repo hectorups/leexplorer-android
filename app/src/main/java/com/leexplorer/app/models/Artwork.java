@@ -311,7 +311,7 @@ public class Artwork extends Model implements Parcelable {
     author = in.readString();
     likesCount = in.readInt();
     long publishedAtRead = in.readLong();
-    publishedAt = publishedAtRead == 0 ? null : new Date(in.readLong());
+    publishedAt = publishedAtRead == 0 ? null : new Date(publishedAtRead);
     iLiked = in.readInt() == 1;
     known = in.readInt() == 1;
     audioUrl = in.readString();

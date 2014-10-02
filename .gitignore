@@ -12,3 +12,4 @@ local.properties
 
 java_pid15993.hprof
 app/src/main/assets/crashlytics-build.properties
+app/src/main/res/values/com_crashlytics_export_strings.xml

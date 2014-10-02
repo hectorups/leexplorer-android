@@ -82,8 +82,8 @@ public class KalmanFir implements BleFir {
     }
   }
 
-  private int getTxPower(IBeacon iBeacon){
-    if( this.txPower == null ) {
+  private int getTxPower(IBeacon iBeacon) {
+    if (this.txPower == null) {
       this.txPower = iBeacon.getTxPower();
     }
 

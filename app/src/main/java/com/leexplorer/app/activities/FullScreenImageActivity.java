@@ -18,6 +18,8 @@ import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import javax.inject.Inject;
+import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class FullScreenImageActivity extends BaseActivity {
   public static final String EXTRA_ARTWORK = "artwork";
@@ -27,11 +29,13 @@ public class FullScreenImageActivity extends BaseActivity {
   @Inject ImageSourcePicker imageSourcePicker;
   private Artwork artwork;
   private ImageView ivImage;
+  private PhotoViewAttacher attacher;
 
   private Target target = new Target() {
     @Override
     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
       ivImage.setImageBitmap(bitmap);
+      attacher = new PhotoViewAttacher(ivImage);
       showProgress(false);
       rootView.setBackgroundColor(
           FullScreenImageActivity.this.getResources().getColor(R.color.le_black));
@@ -65,7 +69,7 @@ public class FullScreenImageActivity extends BaseActivity {
     setContentView(R.layout.activity_fullscreen_image);
     ButterKnife.inject(this);
 
-    ivImage = new ImageView(this);
+    ivImage = new PhotoView(this);
     ivImage.setAdjustViewBounds(true);
     rootView.addView(ivImage);
 

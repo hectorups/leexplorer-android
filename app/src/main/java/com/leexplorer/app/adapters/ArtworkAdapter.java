@@ -52,9 +52,12 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     holder.tvName.setText(artwork.getName());
     holder.tvName.setMaxLines(1);
     holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
+    holder.tvAuthor.setText(artwork.getAuthor());
 
-    holder.tvAuthorAndDate.setText(
-        artwork.getAuthor() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
+    String dateText = ArtDate.shortDate(artwork.getPublishedAt());
+    if (!TextUtils.isEmpty(dateText)) {
+      holder.tvDate.setText(" - " + dateText);
+    }
 
     holder.ivArtworkThumb.setTag(artwork);
     holder.ivArtworkThumb.setHeightRatio(aspectRatio);
@@ -118,7 +121,8 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
 
   static class ViewHolder {
     @InjectView(R.id.tvName) TextView tvName;
-    @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
+    @InjectView(R.id.tvAuthor) TextView tvAuthor;
+    @InjectView(R.id.tvDate) TextView tvDate;
     @InjectView(R.id.ivArtworkThumb) DynamicHeightImageView ivArtworkThumb;
     @InjectView(R.id.flSignalIndicator) FrameLayout flSignalIndicator;
     @InjectView(R.id.tvSignalIcon) TextView tvSignalIcon;

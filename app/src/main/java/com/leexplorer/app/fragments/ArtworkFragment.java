@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -227,8 +228,12 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
     showAudio();
 
-    tvAuthorAndDate.setText(
-        artwork.getAuthor() + " - " + ArtDate.shortDate(artwork.getPublishedAt()));
+    tvAuthorAndDate.setText(artwork.getAuthor());
+    String dateText = ArtDate.shortDate(artwork.getPublishedAt());
+    if (!TextUtils.isEmpty(dateText)) {
+      tvAuthorAndDate.setText(tvAuthorAndDate.getText() + " - " + dateText);
+    }
+
     tvDescription.setText(artwork.getDescription());
 
     if (svDescription instanceof Parallaxor) {

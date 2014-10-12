@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.activeandroid.ActiveAndroid;
 import com.crashlytics.android.Crashlytics;
-import com.leexplorer.app.util.ArtDate;
 import dagger.ObjectGraph;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +32,6 @@ public class LeexplorerApplication extends Application {
     Crashlytics.start(this);
 
     ActiveAndroid.initialize(this);
-    ArtDate.initialize(this);
   }
 
   @Override

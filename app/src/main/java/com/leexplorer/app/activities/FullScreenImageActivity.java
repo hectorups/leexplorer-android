@@ -23,19 +23,17 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class FullScreenImageActivity extends BaseActivity {
   public static final String EXTRA_ARTWORK = "artwork";
-  private static final String TAG = "fullscreenimageactivity";
   @InjectView(R.id.loading_status) View progress;
   @InjectView(R.id.rootView) FrameLayout rootView;
   @Inject ImageSourcePicker imageSourcePicker;
   private Artwork artwork;
   private ImageView ivImage;
-  private PhotoViewAttacher attacher;
 
   private Target target = new Target() {
     @Override
     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
       ivImage.setImageBitmap(bitmap);
-      attacher = new PhotoViewAttacher(ivImage);
+      new PhotoViewAttacher(ivImage);
       showProgress(false);
       rootView.setBackgroundColor(
           FullScreenImageActivity.this.getResources().getColor(R.color.le_black));

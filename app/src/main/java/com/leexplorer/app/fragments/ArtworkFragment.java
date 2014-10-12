@@ -28,6 +28,7 @@ import butterknife.OnClick;
 import com.leexplorer.app.R;
 import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
+import com.leexplorer.app.events.AudioStartedEvent;
 import com.leexplorer.app.events.FullScreenImageEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Artwork;
@@ -145,13 +146,21 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
     Artwork playingArtwork = event.getArtwork();
     if (artwork.equals(playingArtwork)) {
+      if (audioCurrentDuration == 0) {
+        bus.post(new LoadingEvent(false));
+      } else if (!onPause && !nowPlaying) {
+        if (audioCurrentDuration == event.getCurrentDuration()) {
+          onPause = true;
+          nowPlaying = false;
+        } else {
+          onPause = false;
+          nowPlaying = true;
+        }
+      }
+
       audioTotalDuration = event.getTotalDuration();
       audioCurrentDuration = event.getCurrentDuration();
       Log.d(TAG, "audio: " + audioCurrentDuration + " of " + audioTotalDuration);
-
-      if (!onPause) {
-        nowPlaying = true;
-      }
     } else {
       setAudioClosed();
     }
@@ -164,6 +173,12 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     Log.d(TAG, "audio: completed");
     setAudioClosed();
     showAudio();
+  }
+
+  @Subscribe public void audioFailed(AudioStartedEvent event) {
+    if (event.getArtwork().equals(artwork)) {
+      bus.post(new LoadingEvent(false));
+    }
   }
 
   private void setAudioClosed() {
@@ -302,12 +317,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   @OnClick(R.id.btnPlay)
   public void playAudio(View view) {
-    Intent i = new Intent(getActivity(), MediaPlayerService.class);
-    i.putExtra(MediaPlayerService.ARTWORK, artwork);
-    //i.putExtra(MediaPlayerService.ARTWORKS, );
-    i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PLAY);
-    getActivity().startService(i);
-
     updateSeekbar();
     if (onPause == false) {
       bus.post(new LoadingEvent(true));
@@ -315,6 +324,11 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     nowPlaying = true;
     onPause = false;
     showAudio();
+
+    Intent i = new Intent(getActivity(), MediaPlayerService.class);
+    i.putExtra(MediaPlayerService.ARTWORK, artwork);
+    i.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PLAY);
+    getActivity().startService(i);
   }
 
   private void updateSeekbar() {

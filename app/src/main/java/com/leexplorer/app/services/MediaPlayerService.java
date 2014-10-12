@@ -22,6 +22,7 @@ import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
+import com.leexplorer.app.events.AudioStartedEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
@@ -96,7 +97,6 @@ public class MediaPlayerService extends Service {
 
     switch (intent.getIntExtra(ACTION, 0)) {
       case ACTION_PLAY:
-        //images = intent.getParcelableArrayListExtra(ARTWORKS);
         play((Artwork) intent.getParcelableExtra(ARTWORK));
         break;
       case ACTION_STOP:
@@ -186,6 +186,8 @@ public class MediaPlayerService extends Service {
         mediaPlayer.prepare();
       } catch (IOException e) {
         eventReporter.logException(e);
+        bus.post(new AudioStartedEvent(artwork, false));
+        return;
       }
 
       mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

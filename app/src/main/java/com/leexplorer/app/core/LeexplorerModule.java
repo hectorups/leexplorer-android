@@ -1,10 +1,10 @@
 package com.leexplorer.app.core;
 
-
 import android.net.Uri;
 import android.util.Log;
 import com.leexplorer.app.activities.ArtworkActivity;
 import com.leexplorer.app.activities.ArtworkListActivity;
+import com.leexplorer.app.activities.FullScreenImageActivity;
 import com.leexplorer.app.activities.GalleryActivity;
 import com.leexplorer.app.activities.GalleryListActivity;
 import com.leexplorer.app.adapters.ArtworkAdapter;
@@ -48,7 +48,8 @@ import retrofit.RequestInterceptor;
         GalleryAdapter.class, GalleryPagerAdapter.class, GalleryInfoAdapter.class,
         GalleryMapFragment.class, GalleryDownloaderService.class, ArtworkActivity.class,
         GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class,
-        MediaPlayerService.class, ConfirmDialogFragment.class, Client.class
+        MediaPlayerService.class, ConfirmDialogFragment.class, Client.class,
+        FullScreenImageActivity.class
     },
     library = true)
 public class LeexplorerModule {

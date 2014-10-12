@@ -9,9 +9,6 @@ import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.models.Artwork;
 import java.util.List;
 
-/**
- * Created by hectormonserrate on 15/06/14.
- */
 public class ArtworkViewPagerAdapter extends FragmentStatePagerAdapter implements
     ViewPager.OnPageChangeListener {
 

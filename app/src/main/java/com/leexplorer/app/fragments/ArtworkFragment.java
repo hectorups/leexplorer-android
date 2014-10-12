@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -26,29 +25,23 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.leexplorer.app.R;
-import com.leexplorer.app.api.Client;
 import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
+import com.leexplorer.app.events.FullScreenImageEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.AudioTime;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
-import com.nineoldandroids.animation.Animator;
-import com.nineoldandroids.animation.AnimatorInflater;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.squareup.pollexor.Thumbor;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.inject.Inject;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -64,24 +57,15 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private static final String SAVED_NOW_PLAYING = "saved_now_playing";
   private static final String SAVED_ON_PAUSE = "saved_on_pause";
 
-  private static final int LIKED_IMG_SIZE = 52;
-
-  @Inject Client client;
   @Inject Picasso picasso;
-  @Inject Thumbor thumbor;
   @Inject ImageSourcePicker imageSourcePicker;
   @Inject Bus bus;
 
   @InjectView(R.id.tvAuthorAndDate) TextView tvAuthorAndDate;
   @InjectView(R.id.tvDescription) TextView tvDescription;
   @InjectView(R.id.ivArtwork) ImageView ivArtwork;
-  @InjectView(R.id.ivLiked) ImageView ivLiked;
-  @InjectView(R.id.ivLike) ImageView ivLike;
   @InjectView(R.id.svDescription) FrameLayout svDescription;
   @InjectView(R.id.flHeaderOverlay) FrameLayout flHeaderOverlay;
-  @InjectView(R.id.flLike) FrameLayout flLike;
-  @InjectView(R.id.tvLikesCount) TextView tvLikesCount;
-  @InjectView(R.id.ivLikesCount) ImageView ivLikesCount;
   @InjectView(R.id.flPlayAudio) FrameLayout flPlayAudio;
   @InjectView(R.id.btnPlay) ImageButton btnPlay;
   @InjectView(R.id.btnPause) ImageButton btnPause;
@@ -251,25 +235,11 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       ((Parallaxor) svDescription).parallaxViewBy(ivArtwork, new InvertTransformer(), 0.35f);
     }
 
-    flHeaderOverlay.setOnTouchListener(new View.OnTouchListener() {
-      @Override
-      public boolean onTouch(View view, MotionEvent motionEvent) {
-        int offset[] = new int[2];
-        flLike.getLocationOnScreen(offset);
-
-        if (Math.abs(motionEvent.getRawX() - (offset[0] + LIKED_IMG_SIZE / 2)) < LIKED_IMG_SIZE * 2
-            && Math.abs(motionEvent.getRawY() - (offset[1] + LIKED_IMG_SIZE / 2))
-            < LIKED_IMG_SIZE * 2) {
-          onClickLike();
-        }
-        return false;
+    flHeaderOverlay.setOnClickListener(new View.OnClickListener() {
+      @Override public void onClick(View view) {
+        bus.post(new FullScreenImageEvent(artwork));
       }
     });
-
-    if (artwork.isiLiked()) {
-      ivLiked.setVisibility(View.VISIBLE);
-    }
-    tvLikesCount.setText(String.valueOf(artwork.getLikesCount()));
 
     imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large).into(ivArtwork);
 
@@ -317,32 +287,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
         return super.onOptionsItemSelected(item);
     }
     return true;
-  }
-
-  public void onClickLike() {
-    client.getService().likeArtwork(artwork.isiLiked() ? 0 : 1, new Callback<Void>() {
-      public void failure(RetrofitError re) {
-      }
-
-      public void success(Void v, Response r) {
-        updateLiked();
-      }
-    });
-  }
-
-  private void updateLiked() {
-    if (artwork.isiLiked()) {
-      artwork.unlike();
-      ivLiked.setVisibility(View.INVISIBLE);
-    } else {
-      artwork.like();
-      ivLiked.setVisibility(View.VISIBLE);
-      Animator anim = AnimatorInflater.loadAnimator(getActivity(), R.anim.enlarge);
-      anim.setTarget(ivLiked);
-      anim.start();
-    }
-
-    tvLikesCount.setText(String.valueOf(artwork.getLikesCount()));
   }
 
   private void navigateBack() {

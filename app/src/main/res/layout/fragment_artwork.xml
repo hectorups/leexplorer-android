@@ -13,43 +13,6 @@
         android:layout_marginTop="-100dp"
         android:scaleType="centerCrop"/>
 
-    <!-- Like -->
-    <FrameLayout
-        android:id="@+id/flLike"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="left|top"
-        android:layout_marginTop="5dp">
-
-      <ImageView
-          android:layout_width="38dp"
-          android:layout_height="38dp"
-          android:layout_gravity="center"
-          android:src="@drawable/signal_bg"/>
-
-      <FrameLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:layout_gravity="center">
-
-        <ImageView
-            android:id="@+id/ivLike"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_heart"/>
-
-        <ImageView
-            android:id="@+id/ivLiked"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_full_heart"
-            android:visibility="invisible"/>
-      </FrameLayout>
-
-    </FrameLayout>
-
     <!-- Contents -->
     <uk.co.chrisjenx.paralloid.views.ParallaxScrollView
         android:id="@+id/svDescription"

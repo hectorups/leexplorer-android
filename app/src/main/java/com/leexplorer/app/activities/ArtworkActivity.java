@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.MenuItem;
 import butterknife.ButterKnife;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkViewPagerAdapter;
 import com.leexplorer.app.events.ArtworkUpdatedEvent;
+import com.leexplorer.app.events.FullScreenImageEvent;
 import com.leexplorer.app.models.Artwork;
 import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
@@ -18,9 +20,6 @@ public class ArtworkActivity extends BaseActivity {
   public static final String EXTRA_ARTWORK = "extra_artwork";
   public static final String EXTRA_ARTWORKS = "extra_artworks";
 
-  public final static float BIG_SCALE = 1.0f;
-  public final static float SMALL_SCALE = 0.7f;
-
   private ArrayList<Artwork> artworks;
   private ViewPager viewPager;
 
@@ -28,6 +27,16 @@ public class ArtworkActivity extends BaseActivity {
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(EXTRA_ARTWORKS, artworks);
     outState.putParcelable(EXTRA_ARTWORK, artworks.get(viewPager.getCurrentItem()));
+  }
+
+  @Override public void onResume() {
+    super.onResume();
+    bus.register(this);
+  }
+
+  @Override public void onPause() {
+    bus.unregister(this);
+    super.onPause();
   }
 
   @Override
@@ -96,5 +105,10 @@ public class ArtworkActivity extends BaseActivity {
     data.putExtra(EXTRA_ARTWORKS, artworks);
     setResult(Activity.RESULT_OK, data);
     finish();
+  }
+
+  @Subscribe public void onFullScreenImage(FullScreenImageEvent event) {
+    Log.d(TAG, "onfullscreenimage");
+    FullScreenImageActivity.launchActivity(event.getArtwork(), this);
   }
 }

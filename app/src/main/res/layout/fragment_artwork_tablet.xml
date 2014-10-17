@@ -1,0 +1,56 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    tools:context="com.leexplorer.app.activities.ArtworkActivity$PlaceholderFragment">
+
+  <!-- Profile Image -->
+  <FrameLayout
+      android:layout_weight="1"
+      android:layout_width="0dp"
+      android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/ivArtwork"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+    <include
+        android:layout_gravity="top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/artwork_label"/>
+
+  </FrameLayout>
+
+  <!-- Contents -->
+  <FrameLayout android:layout_width="0dp"
+      android:layout_weight="2"
+      android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/svDescription"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+      <include layout="@layout/artwork_content"/>
+
+    </ScrollView>
+
+    <FrameLayout
+        android:id="@+id/flPlayAudio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:visibility="invisible">
+
+      <include layout="@layout/audio_player"/>
+
+    </FrameLayout>
+  </FrameLayout>
+
+</LinearLayout>

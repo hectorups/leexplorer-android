@@ -25,6 +25,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.Optional;
 import com.leexplorer.app.R;
 import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
@@ -67,7 +68,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @InjectView(R.id.tvDescription) TextView tvDescription;
   @InjectView(R.id.ivArtwork) ImageView ivArtwork;
   @InjectView(R.id.svDescription) FrameLayout svDescription;
-  @InjectView(R.id.flHeaderOverlay) FrameLayout flHeaderOverlay;
+  @Optional @InjectView(R.id.flHeaderOverlay) FrameLayout flHeaderOverlay;
   @InjectView(R.id.flPlayAudio) FrameLayout flPlayAudio;
   @InjectView(R.id.btnPlay) ImageButton btnPlay;
   @InjectView(R.id.btnPause) ImageButton btnPause;
@@ -139,55 +140,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private boolean nowPlaying = false;
   private boolean onPause = false;
 
-  @Override public String getScreenName() {
-    return TAG;
-  }
-
-  @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
-    Artwork playingArtwork = event.getArtwork();
-    if (artwork.equals(playingArtwork)) {
-      if (audioCurrentDuration == 0) {
-        bus.post(new LoadingEvent(false));
-      } else if (!onPause && !nowPlaying) {
-        if (audioCurrentDuration == event.getCurrentDuration()) {
-          onPause = true;
-          nowPlaying = false;
-        } else {
-          onPause = false;
-          nowPlaying = true;
-        }
-      }
-
-      audioTotalDuration = event.getTotalDuration();
-      audioCurrentDuration = event.getCurrentDuration();
-      Log.d(TAG, "audio: " + audioCurrentDuration + " of " + audioTotalDuration);
-    } else {
-      setAudioClosed();
-    }
-
-    showAudio();
-    updateSeekbar();
-  }
-
-  @Subscribe public void audioComplete(AudioCompleteEvent event) {
-    Log.d(TAG, "audio: completed");
-    setAudioClosed();
-    showAudio();
-  }
-
-  @Subscribe public void audioFailed(AudioStartedEvent event) {
-    if (event.getArtwork().equals(artwork)) {
-      bus.post(new LoadingEvent(false));
-    }
-  }
-
-  private void setAudioClosed() {
-    audioCurrentDuration = 0;
-    audioTotalDuration = 0;
-    nowPlaying = false;
-    onPause = false;
-  }
-
   public static ArtworkFragment newInstance(Artwork aw) {
     Bundle args = new Bundle();
     args.putParcelable(EXTRA_ARTWORK, aw);
@@ -237,7 +189,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @SuppressWarnings("PMD") @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_artwork, container, false);
+    View rootView = inflater.inflate(R.layout.fragment_artwork_responsive, container, false);
 
     ButterKnife.inject(this, rootView);
 
@@ -255,11 +207,19 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       ((Parallaxor) svDescription).parallaxViewBy(ivArtwork, new InvertTransformer(), 0.35f);
     }
 
-    flHeaderOverlay.setOnClickListener(new View.OnClickListener() {
-      @Override public void onClick(View view) {
-        bus.post(new FullScreenImageEvent(artwork));
-      }
-    });
+    if (flHeaderOverlay != null) {
+      flHeaderOverlay.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          bus.post(new FullScreenImageEvent(artwork));
+        }
+      });
+    } else {
+      ivArtwork.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          bus.post(new FullScreenImageEvent(artwork));
+        }
+      });
+    }
 
     imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large).into(ivArtwork);
 
@@ -313,6 +273,55 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     if (NavUtils.getParentActivityName(getActivity()) != null) {
       NavUtils.navigateUpFromSameTask(getActivity());
     }
+  }
+
+  @Override public String getScreenName() {
+    return TAG;
+  }
+
+  @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
+    Artwork playingArtwork = event.getArtwork();
+    if (artwork.equals(playingArtwork)) {
+      if (audioCurrentDuration == 0) {
+        bus.post(new LoadingEvent(false));
+      } else if (!onPause && !nowPlaying) {
+        if (audioCurrentDuration == event.getCurrentDuration()) {
+          onPause = true;
+          nowPlaying = false;
+        } else {
+          onPause = false;
+          nowPlaying = true;
+        }
+      }
+
+      audioTotalDuration = event.getTotalDuration();
+      audioCurrentDuration = event.getCurrentDuration();
+      Log.d(TAG, "audio: " + audioCurrentDuration + " of " + audioTotalDuration);
+    } else {
+      setAudioClosed();
+    }
+
+    showAudio();
+    updateSeekbar();
+  }
+
+  @Subscribe public void audioComplete(AudioCompleteEvent event) {
+    Log.d(TAG, "audio: completed");
+    setAudioClosed();
+    showAudio();
+  }
+
+  @Subscribe public void audioFailed(AudioStartedEvent event) {
+    if (event.getArtwork().equals(artwork)) {
+      bus.post(new LoadingEvent(false));
+    }
+  }
+
+  private void setAudioClosed() {
+    audioCurrentDuration = 0;
+    audioTotalDuration = 0;
+    nowPlaying = false;
+    onPause = false;
   }
 
   @OnClick(R.id.btnPlay)

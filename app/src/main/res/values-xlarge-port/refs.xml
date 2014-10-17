@@ -1,5 +1,4 @@
 <resources>
-
   <item name="fragment_artwork_list_responsive" type="layout">
     @layout/fragment_artwork_list_tablet
   </item>
@@ -7,6 +6,6 @@
     @layout/activity_gallery_list_tablet
   </item>
   <item name="fragment_artwork_responsive" type="layout">
-    @layout/fragment_artwork_tablet
+    @layout/fragment_artwork
   </item>
 </resources>

@@ -106,10 +106,7 @@ public class BaseActivity extends ActionBarActivity {
   }
 
   public boolean isTabletMode() {
-    if (findViewById(R.id.flGalleryDetailView) != null) {
-      return true;
-    }
-    return false;
+    return getResources().getBoolean(R.bool.isTablet);
   }
 
   private class EventHandler {

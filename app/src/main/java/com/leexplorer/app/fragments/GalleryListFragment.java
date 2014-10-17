@@ -133,10 +133,11 @@ public class GalleryListFragment extends BaseFragment {
       }
       this.galleries.add(gallery);
     }
-    Collections.sort(this.galleries, new GalleryComparator());
+    Collections.sort(galleries, new GalleryComparator());
     galleryAdapter.notifyDataSetChanged();
-    if (callbacks.isTabletMode()) {
-      callbacks.loadGalleryDetails(this.galleries.get(0));
+
+    if(callbacks != null) {
+      callbacks.galleriesLoaded(galleries);
     }
   }
 
@@ -178,8 +179,7 @@ public class GalleryListFragment extends BaseFragment {
 
   public interface Callbacks {
     void loadGalleryDetails(Gallery gallery);
-
-    boolean isTabletMode();
+    void galleriesLoaded(List<Gallery> galleries);
   }
 
   @Override public String getScreenName() {

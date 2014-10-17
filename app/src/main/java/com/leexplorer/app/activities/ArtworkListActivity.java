@@ -70,10 +70,18 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        Intent i = new Intent(this, GalleryActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
-        startActivity(i);
+
+        if( isTabletMode() ) {
+          Intent i = new Intent(this, GalleryListActivity.class);
+          i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+          i.putExtra(GalleryListActivity.EXTRA_INITIAL_GALLERY, gallery);
+          startActivity(i);
+        } else {
+          Intent i = new Intent(this, GalleryActivity.class);
+          i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+          i.putExtra(GalleryActivity.GALLERY_KEY, gallery);
+          startActivity(i);
+        }
 
         return true;
       default:

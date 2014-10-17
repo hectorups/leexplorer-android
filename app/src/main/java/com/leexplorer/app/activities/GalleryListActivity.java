@@ -22,17 +22,20 @@ import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.models.Gallery;
 import com.squareup.otto.Subscribe;
+import java.util.List;
 
 public class GalleryListActivity extends BaseActivity
     implements GalleryListFragment.Callbacks, GalleryMapFragment.Callbacks {
 
-  static final String MAP_FRAGMENT_ON = "map_fragment_on";
+  public static final String MAP_FRAGMENT_ON = "map_fragment_on";
+  public static final String EXTRA_INITIAL_GALLERY = "initial_gallery";
   private static final String LIST_FRAGMENT_TAG = "list_fragment_tag";
   private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
   private MenuItem menuList;
   private MenuItem menuMap;
   private MenuItem bluetoothWarning;
   private boolean menuFragmentOn;
+  private Gallery gallery;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +43,10 @@ public class GalleryListActivity extends BaseActivity
 
     if (savedInstanceState != null) {
       menuFragmentOn = savedInstanceState.getBoolean(MAP_FRAGMENT_ON, false);
+      gallery = savedInstanceState.getParcelable(EXTRA_INITIAL_GALLERY);
     } else {
       menuFragmentOn = false;
+      gallery = getIntent().getParcelableExtra(EXTRA_INITIAL_GALLERY);
     }
 
     setContentView(R.layout.fragment_gallery_list_responsive);
@@ -49,10 +54,16 @@ public class GalleryListActivity extends BaseActivity
       setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
-    if (savedInstanceState == null) {
-      FragmentManager fm = getSupportFragmentManager();
-      Fragment fragment = new GalleryListFragment();
+    FragmentManager fm = getSupportFragmentManager();
+    Fragment fragment = fm.findFragmentByTag(LIST_FRAGMENT_TAG);
+
+    if (fragment == null) {
+      fragment = new GalleryListFragment();
       fm.beginTransaction().add(R.id.flGalleryListView, fragment, LIST_FRAGMENT_TAG).commit();
+    }
+
+    if (isTabletMode() && gallery != null) {
+      loadGalleryDetails(gallery);
     }
   }
 
@@ -189,10 +200,6 @@ public class GalleryListActivity extends BaseActivity
   @Override
   public void loadGalleryDetails(Gallery gallery) {
     FragmentManager fm = getSupportFragmentManager();
-    Fragment fragment = fm.findFragmentById(R.id.flGalleryListView);
-    if (fragment == null) {
-      return;
-    }
 
     if (isTabletMode()) {
       Fragment fragmentGallery = GalleryFragment.newInstance(gallery);
@@ -211,5 +218,12 @@ public class GalleryListActivity extends BaseActivity
   @Override
   public void onGalleryMapClicked(Gallery gallery) {
     loadGalleryDetails(gallery);
+  }
+
+  @Override public void galleriesLoaded(List<Gallery> galleries) {
+    if (isTabletMode() && gallery == null && galleries.size() > 0) {
+      gallery = galleries.get(0);
+      loadGalleryDetails(gallery);
+    }
   }
 }

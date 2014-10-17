@@ -202,7 +202,12 @@ public class GalleryListActivity extends BaseActivity
     FragmentManager fm = getSupportFragmentManager();
 
     if (isTabletMode()) {
-      Fragment fragmentGallery = GalleryFragment.newInstance(gallery);
+      Fragment fragmentGallery = fm.findFragmentById(R.id.flGalleryDetailView);
+      if (fragmentGallery != null && gallery.equals(
+          ((GalleryFragment) fragmentGallery).getGallery())) {
+        return;
+      }
+      fragmentGallery = GalleryFragment.newInstance(gallery);
       fm.beginTransaction()
           .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
           .replace(R.id.flGalleryDetailView, fragmentGallery)

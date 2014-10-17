@@ -251,4 +251,8 @@ public class GalleryFragment extends BaseFragment {
   @Override public String getScreenName() {
     return TAG;
   }
+
+  public Gallery getGallery() {
+    return gallery;
+  }
 }

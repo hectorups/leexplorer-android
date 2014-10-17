@@ -17,6 +17,7 @@ import com.leexplorer.app.api.LeexplorerRequestInterceptor;
 import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.fragments.ConfirmDialogFragment;
+import com.leexplorer.app.fragments.FacilitiesDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
@@ -49,7 +50,7 @@ import retrofit.RequestInterceptor;
         GalleryMapFragment.class, GalleryDownloaderService.class, ArtworkActivity.class,
         GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class,
         MediaPlayerService.class, ConfirmDialogFragment.class, Client.class,
-        FullScreenImageActivity.class
+        FullScreenImageActivity.class, FacilitiesDialogFragment.class
     },
     library = true)
 public class LeexplorerModule {

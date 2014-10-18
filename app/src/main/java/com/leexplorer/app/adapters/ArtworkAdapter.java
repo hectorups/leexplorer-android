@@ -65,6 +65,7 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large)
         .fit()
         .centerCrop()
+        .placeholder(R.drawable.image_place_holder)
         .transform(new AspectRationDummyTransformation(aspectRatio))
         .into(holder.ivArtworkThumb);
 

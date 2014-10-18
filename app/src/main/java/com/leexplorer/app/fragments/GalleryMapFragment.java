@@ -176,7 +176,7 @@ public class GalleryMapFragment extends SupportMapFragment {
           String url =
               thumbor.buildImage(g.getArtworkImageUrls().get(0)).resize(thumborBucket, 0).toUrl();
           picasso.load(url)
-              .placeholder(R.drawable.ic_museum_black)
+              .placeholder(R.drawable.image_place_holder)
               .into(new InfoWindowImage(marker));
         } else {
           animateToOpenInfoWindow(marker);

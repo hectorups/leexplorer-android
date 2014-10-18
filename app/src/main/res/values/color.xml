@@ -7,6 +7,7 @@
   <color name="le_mid_grey">#FFABABAB</color>
   <color name="le_mid_grey_transparent">#80ABABAB</color>
   <color name="le_dark_grey_transparent">#BBABABAB</color>
+  <color name="le_light_grey_bg">#F1F4F2</color>
   <color name="le_white_trans">#88FFFFFF</color>
   <color name="le_off_white">#FFF7F7F7</color>
 

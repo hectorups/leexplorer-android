@@ -221,7 +221,9 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       });
     }
 
-    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large).into(ivArtwork);
+    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large)
+        .placeholder(R.drawable.image_place_holder)
+        .into(ivArtwork);
 
     sbAudio.setOnSeekBarChangeListener(this);
 

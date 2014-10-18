@@ -35,6 +35,7 @@ import com.leexplorer.app.util.TextUtil;
 import com.leexplorer.app.util.offline.FilePathGenerator;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Bus;
+import com.squareup.picasso.Callback;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 import javax.inject.Inject;
@@ -53,6 +54,7 @@ public class GalleryFragment extends BaseFragment {
   @InjectView(R.id.txDetailAddress) TextView txDetailAddress;
   @InjectView(R.id.txDetailGalleryType) TextView txDetailGalleryType;
   @InjectView(R.id.txLanguage) TextView txLanguage;
+  @InjectView(R.id.llOverlayInfo) LinearLayout llOverlayInfo;
 
   @InjectView(R.id.txHours) TextView txHours;
   @InjectView(R.id.txDetailedPrice) TextView txDetailedPrice;
@@ -142,7 +144,16 @@ public class GalleryFragment extends BaseFragment {
         gallery.getArtworkImageUrls().get(0), R.dimen.thumbor_medium)
         .fit()
         .centerCrop()
-        .into(ivGalleryDetail);
+        .placeholder(R.drawable.image_place_holder)
+        .into(ivGalleryDetail, new Callback() {
+          @Override public void onSuccess() {
+            llOverlayInfo.setVisibility(View.VISIBLE);
+          }
+
+          @Override public void onError() {
+            llOverlayInfo.setVisibility(View.VISIBLE);
+          }
+        });
 
     txDetailAddress.setText(gallery.getAddress());
     txDetailGalleryType.setText(TextUtil.capitalizeFirstLetter(gallery.getType()));

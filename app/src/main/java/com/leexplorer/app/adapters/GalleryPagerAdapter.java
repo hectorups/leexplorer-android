@@ -42,7 +42,7 @@ public class GalleryPagerAdapter extends CircularPagerAdapter<String> {
     ImageView ivGalleryImage = (ImageView) layout.findViewById(R.id.ivGallery);
 
     imageSourcePicker.getRequestCreator(gallery.getGalleryId(), getItems().get(position),
-        R.dimen.thumbor_small).placeholder(R.drawable.ic_museum_black).into(ivGalleryImage);
+        R.dimen.thumbor_small).placeholder(R.drawable.image_place_holder).into(ivGalleryImage);
 
     ivGalleryImage.setOnClickListener(new View.OnClickListener() {
       @Override

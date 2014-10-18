@@ -16,9 +16,7 @@
         android:layout_marginLeft="20dp"
         android:layout_weight="1"
         android:text="asdfasdf"
-        android:textColor="@color/le_white"
-        android:textSize="24sp"
-        android:textStyle="bold"/>
+        style="@style/LE.ArtworkLabel"/>
 
   </LinearLayout>
 

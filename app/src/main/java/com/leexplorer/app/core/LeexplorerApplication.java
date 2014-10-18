@@ -30,7 +30,7 @@ public class LeexplorerApplication extends Application {
   public void onCreate() {
     super.onCreate();
 
-    CalligraphyConfig.initDefault("fonts/Museo700-Regular.otf", R.attr.fontPath);
+    CalligraphyConfig.initDefault("fonts/Museo500-Regular.otf", R.attr.fontPath);
 
     graph = ObjectGraph.create(getModules().toArray());
     Crashlytics.start(this);

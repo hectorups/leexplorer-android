@@ -67,6 +67,7 @@
             android:maxLines="2"
             android:singleLine="false"
             android:text="250 Octavia St\nSan Francisco CA 90023"
+            style="@style/LE.ListText"
             android:textColor="@color/le_white"/>
       </LinearLayout>
 
@@ -104,7 +105,7 @@
               android:layout_alignParentTop="true"
               android:minWidth="50dp"
               android:text="Painting, Art"
-              android:textColor="@color/le_white"/>
+              style="@style/LE.ListText"/>
 
           <ImageView
               android:id="@+id/ivPrice"
@@ -122,7 +123,7 @@
               android:layout_alignParentBottom="true"
               android:layout_alignStart="@+id/txGalleryType"
               android:text="$20"
-              android:textColor="@color/le_white"/>
+              style="@style/LE.ListText"/>
         </RelativeLayout>
       </LinearLayout>
     </LinearLayout>

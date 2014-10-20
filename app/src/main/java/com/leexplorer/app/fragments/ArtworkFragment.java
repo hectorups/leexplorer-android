@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -75,8 +76,11 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @InjectView(R.id.sbAudio) SeekBar sbAudio;
   @InjectView(R.id.tvDuration) TextView tvDuration;
   @InjectView(R.id.tvTotalDuration) TextView tvTotalDuration;
+  @InjectView(R.id.llArtwoContent) LinearLayout llArtworkContent;
+
   private Artwork artwork;
   private ShareActionProvider miShareAction;
+  private int originalContentPadding;
 
   private MenuItem menuPlay;
   private Target targetForShare = new Target() {
@@ -227,6 +231,8 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
     sbAudio.setOnSeekBarChangeListener(this);
 
+    originalContentPadding = llArtworkContent.getPaddingBottom();
+
     return rootView;
   }
 
@@ -367,9 +373,19 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     }
 
     if (!nowPlaying && !onPause) {
+      if (llArtworkContent.getPaddingBottom() > originalContentPadding) {
+        llArtworkContent.setPadding(llArtworkContent.getPaddingLeft(),
+            llArtworkContent.getPaddingTop(), llArtworkContent.getPaddingRight(),
+            originalContentPadding);
+      }
       flPlayAudio.setVisibility(View.GONE);
-
       return;
+    }
+
+    if (llArtworkContent.getPaddingBottom() == originalContentPadding) {
+      llArtworkContent.setPadding(llArtworkContent.getPaddingLeft(),
+          llArtworkContent.getPaddingTop(), llArtworkContent.getPaddingRight(),
+          originalContentPadding + flPlayAudio.getHeight());
     }
 
     flPlayAudio.setVisibility(View.VISIBLE);

@@ -71,6 +71,8 @@ public class FullScreenImageActivity extends BaseActivity {
     ivImage.setAdjustViewBounds(true);
     rootView.addView(ivImage);
 
+    enableFullScreen(true);
+
     showProgress(true);
     imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_xlarge).into(target);
   }
@@ -92,6 +94,28 @@ public class FullScreenImageActivity extends BaseActivity {
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelable(EXTRA_ARTWORK, artwork);
+  }
+
+  @TargetApi(11)
+  private void enableFullScreen(boolean enabled) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+      return;
+    }
+    int newVisibility =  View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+
+    if(enabled) {
+      newVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN
+          | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+          | View.SYSTEM_UI_FLAG_IMMERSIVE;
+    }
+
+    getDecorView().setSystemUiVisibility(newVisibility);
+  }
+
+  private View getDecorView() {
+    return getWindow().getDecorView();
   }
 
   private void showProgress(boolean showProgress) {

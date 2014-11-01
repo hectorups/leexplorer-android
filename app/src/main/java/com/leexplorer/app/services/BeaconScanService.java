@@ -30,18 +30,26 @@ import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.models.IBeacon;
+import com.leexplorer.app.util.ble.Majorminor;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import javax.inject.Inject;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BeaconScanService extends IntentService {
+  public enum Mode {
+    AUTOPLAY, FOREGROUND, BACKGROUND
+  }
+
   public static final String ACTION_SHOW_NOTIFICATION =
       "com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION";
   public static final String SERVICE_NAME = "beaconscan-serviceFromScanRecord";
   public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
-  private static final int INTERVAL_FOREGROUND = 2 * 60 * 1000;
+  private static final int INTERVAL_AUTOPLAY = 10 * 1000;
+  private static final int INTERVAL_FOREGROUND = 8 * 1000;
   private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000;
   // Don't drain the battery when in bg!
   private static final int SCAN_PERIOD = 4000;
@@ -52,9 +60,11 @@ public class BeaconScanService extends IntentService {
   @Inject Bus bus;
   @Inject EventReporter eventReporter;
 
+  @Inject HashMap<String, FilteredIBeacon> beacons;
   private BluetoothManager bluetoothManager;
   private BluetoothAdapter bluetoothAdapter;
-  private HashMap<String, FilteredIBeacon> beacons;
+  private static Mode currentMode;
+
 
   private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
     @Override
@@ -83,11 +93,13 @@ public class BeaconScanService extends IntentService {
           + LOG_SEPARATOR
           + rssi);
 
-      if (beacons.get(device.getAddress()) == null) {
+      String majorminor =
+          String.valueOf(Majorminor.longFromMajorminor(iBeacon.getMajor(), iBeacon.getMinor()));
+      if (beacons.get(majorminor) == null) {
         FilteredIBeacon beacon = new FilteredIBeacon(iBeacon);
-        beacons.put(device.getAddress(), beacon);
+        beacons.put(majorminor, beacon);
       } else {
-        beacons.get(device.getAddress()).addAdvertisement(iBeacon);
+        beacons.get(majorminor).addAdvertisement(iBeacon);
       }
     }
   };
@@ -96,10 +108,12 @@ public class BeaconScanService extends IntentService {
     super(SERVICE_NAME);
   }
 
-  public static void setScannerAlarm(Context context, boolean foreground) {
+  public static void setScannerAlarm(Context context, Mode mode) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
       return;
     }
+
+    currentMode = mode;
 
     Intent i = new Intent(context, BeaconScanService.class);
     PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
@@ -107,7 +121,15 @@ public class BeaconScanService extends IntentService {
     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     alarmManager.cancel(pi);
 
-    int interval = foreground ? INTERVAL_FOREGROUND : INTERVAL_BACKGROUND;
+    int interval;
+    switch (currentMode) {
+      case BACKGROUND:
+        interval = INTERVAL_BACKGROUND;
+      case AUTOPLAY:
+        interval = INTERVAL_AUTOPLAY;
+      default:
+        interval = INTERVAL_FOREGROUND;
+    }
     alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), interval, pi);
   }
 
@@ -123,19 +145,23 @@ public class BeaconScanService extends IntentService {
     setBluetoothAdapter();
 
     if (!isBluetoothAdapterHealthy()) {
-      Log.e(TAG, "bluetoothadapter null ?");
+      eventReporter.logException("Bluetoothadapter null or it is off");
       return;
     }
 
+    Log.d(TAG, "begin beacons size: " + beacons.size());
+
+    clearOldBeacons();
+
     bluetoothAdapter.startLeScan(leScanCallback);
-
-    beacons = new HashMap<>();
-
     SystemClock.sleep(SCAN_PERIOD);
-
     endSearch();
     broadcastBeacons();
-    sendNotification();
+
+    if(currentMode == Mode.BACKGROUND) {
+      sendNotification();
+    }
+
   }
 
   private void setBluetoothAdapter() {
@@ -151,10 +177,6 @@ public class BeaconScanService extends IntentService {
       try {
         bluetoothAdapter.stopLeScan(leScanCallback);
         Log.d(TAG, "search finished");
-
-        for (FilteredIBeacon beacon : beacons.values()) {
-          Log.d(TAG, beacon.getMajorminor() + " distance: " + beacon.getDistance());
-        }
       } catch (NullPointerException e) {
         eventReporter.logException(e);
       }
@@ -278,5 +300,15 @@ public class BeaconScanService extends IntentService {
 
   private boolean isLeBeacon(IBeacon iBeacon) {
     return AppConstants.LE_UUID.contentEquals(iBeacon.getProximityUuid());
+  }
+
+  private void clearOldBeacons() {
+    for (Iterator<Map.Entry<String, FilteredIBeacon>> it = beacons.entrySet().iterator();
+        it.hasNext(); ) {
+      Map.Entry<String, FilteredIBeacon> entry = it.next();
+      if (entry.getValue().getDistance() == null) {
+        it.remove();
+      }
+    }
   }
 }

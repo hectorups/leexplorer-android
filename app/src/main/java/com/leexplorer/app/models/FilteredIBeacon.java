@@ -3,8 +3,8 @@ package com.leexplorer.app.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.leexplorer.app.util.ble.Majorminor;
-import com.leexplorer.app.util.ble.firs.AverageFir;
 import com.leexplorer.app.util.ble.firs.BleFir;
+import com.leexplorer.app.util.ble.firs.StandardFir;
 
 public class FilteredIBeacon implements Parcelable {
 
@@ -20,7 +20,7 @@ public class FilteredIBeacon implements Parcelable {
     this.txPower = iBeacon.getTxPower();
     this.major = iBeacon.major;
     this.minor = iBeacon.minor;
-    bleFir = new AverageFir();
+    bleFir = new StandardFir();
     addAdvertisement(iBeacon);
   }
 

@@ -21,6 +21,7 @@ import com.leexplorer.app.fragments.FacilitiesDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
+import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
@@ -37,6 +38,7 @@ import dagger.Module;
 import dagger.Provides;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 import retrofit.ErrorHandler;
@@ -132,6 +134,10 @@ public class LeexplorerModule {
 
   @Provides @Singleton EventReporter provideEventReported(LeexplorerApplication application) {
     return new EventReporter(application);
+  }
+
+  @Provides @Singleton HashMap<String, FilteredIBeacon> provideBeaconsFound() {
+    return new HashMap<>();
   }
 }
 

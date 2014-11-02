@@ -40,6 +40,10 @@
     <service
         android:name="com.leexplorer.app.services.MediaPlayerService"
         android:exported="false"/>
+
+    <service android:name="com.leexplorer.app.services.AutoPlayService"
+      android:exported="false"/>
+
     <service
         android:name="com.leexplorer.app.services.BeaconScanService"
         android:exported="false"/>

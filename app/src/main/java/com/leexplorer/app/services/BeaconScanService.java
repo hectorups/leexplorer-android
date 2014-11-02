@@ -65,7 +65,6 @@ public class BeaconScanService extends IntentService {
   private BluetoothAdapter bluetoothAdapter;
   private static Mode currentMode;
 
-
   private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
     @Override
     public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -138,6 +137,8 @@ public class BeaconScanService extends IntentService {
     ((LeexplorerApplication) getApplicationContext()).inject(this);
   }
 
+
+
   @Override
   protected void onHandleIntent(Intent intent) {
     Log.d(TAG, "Intent received");
@@ -150,6 +151,7 @@ public class BeaconScanService extends IntentService {
     }
 
     Log.d(TAG, "begin beacons size: " + beacons.size());
+    Log.d(TAG, "-> " + beacons.keySet());
 
     clearOldBeacons();
 
@@ -158,10 +160,9 @@ public class BeaconScanService extends IntentService {
     endSearch();
     broadcastBeacons();
 
-    if(currentMode == Mode.BACKGROUND) {
+    if (currentMode == Mode.BACKGROUND) {
       sendNotification();
     }
-
   }
 
   private void setBluetoothAdapter() {
@@ -188,7 +189,11 @@ public class BeaconScanService extends IntentService {
   }
 
   private void broadcastBeacons() {
-    bus.post(new BeaconsScanResultEvent(new ArrayList<>(beacons.values())));
+    ArrayList<FilteredIBeacon> beaconWithLatestDistance =  new ArrayList<>(beacons.values());
+    for(FilteredIBeacon beacon : beaconWithLatestDistance) {
+      beacon.calculateDistance();
+    }
+    bus.post(new BeaconsScanResultEvent(beaconWithLatestDistance));
   }
 
   private void sendNotification() {

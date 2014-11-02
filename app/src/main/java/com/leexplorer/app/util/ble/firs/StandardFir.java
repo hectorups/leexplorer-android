@@ -3,11 +3,11 @@ package com.leexplorer.app.util.ble.firs;
 import android.util.Log;
 import com.leexplorer.app.models.IBeacon;
 import com.leexplorer.app.util.ble.BleUtils;
-import java.text.DecimalFormat;
 import java.util.Date;
 
 public class StandardFir implements BleFir {
   private static final int EXPIRING_TIME = 2 * 60 * 1000;
+  private static final int GONE_TIME = 10 * 1000;
   private static final double coefficients[] = new double[] {
       0.02, 0.04, 0.06, 0.08, 0.10, 0.12, 0.16 , 0.12, 0.10, 0.08, 0.06, 0.04, 0.02
   };
@@ -34,15 +34,16 @@ public class StandardFir implements BleFir {
 
     currentDistance = getOutputSample(tempDistance);
 
-    if( iBeacon.getMinor() == 26 ) {
-      DecimalFormat df = new DecimalFormat("#.00");
-      Log.d("FIR", "curdist: "
-          + df.format(currentDistance)
-          + ", TempDist: "
-          + df.format(tempDistance)
-          + ", RSSI: "
-          + iBeacon.getRssi());
-    }
+    // Debug
+    //if( iBeacon.getMinor() == 26 ) {
+    //  DecimalFormat df = new DecimalFormat("#.00");
+    //  Log.d("FIR", "curdist: "
+    //      + df.format(currentDistance)
+    //      + ", TempDist: "
+    //      + df.format(tempDistance)
+    //      + ", RSSI: "
+    //      + iBeacon.getRssi());
+    //}
   }
 
   public double getOutputSample(double inputSample) {
@@ -50,7 +51,9 @@ public class StandardFir implements BleFir {
     double result = 0.0;
     int index = count;
     for (int i = 0; i < length; i++) {
-      result += coefficients[i] * delayLine[index--];
+      double coefficient = coefficients[i];
+      double value = delayLine[index--];
+      result += coefficient * (value != 0 ? value : inputSample);
       if (index < 0) {
         index = length - 1;
       }
@@ -64,6 +67,9 @@ public class StandardFir implements BleFir {
 
   @Override public Double getDistance() {
     resetIfOld();
+    if(isGone()) {
+      return null;
+    }
     return currentDistance == 0. ? null : currentDistance;
   }
 
@@ -80,6 +86,12 @@ public class StandardFir implements BleFir {
     if (lastUpdatedAt.before(expiringDate)) {
       reset();
     }
+  }
+
+  private boolean isGone() {
+    Date expiringDate = new Date(System.currentTimeMillis() - GONE_TIME);
+    Log.d("beaconscanservice", "isGone? " + expiringDate.toString() + " > " + ( lastUpdatedAt != null ? lastUpdatedAt.toString() : "null") );
+    return lastUpdatedAt.before(expiringDate);
   }
 
   private void reset() {

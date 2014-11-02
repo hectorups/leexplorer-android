@@ -1,9 +1,5 @@
 package com.leexplorer.app.fragments;
 
-/**
- * Created by hectormonserrate on 10/02/14.
- */
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -28,6 +24,7 @@ import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
 import com.squareup.otto.Bus;
@@ -61,6 +58,7 @@ public class ArtworkListFragment extends BaseFragment {
   private boolean newBeaconInfo;
   private boolean scaningBeacons;
   private MenuItem menuReresh;
+  private MenuItem menuAutoplay;
   private Gallery gallery;
 
   @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
@@ -82,8 +80,6 @@ public class ArtworkListFragment extends BaseFragment {
       refreshArtworks();
       return;
     }
-
-    distancesChangesCheck(beacons);
   }
 
   public static ArtworkListFragment newInstance(Gallery gallery) {
@@ -110,8 +106,8 @@ public class ArtworkListFragment extends BaseFragment {
 
   @Override
   public void onDetach() {
-    super.onDetach();
     callbacks = null;
+    super.onDetach();
   }
 
   @Override
@@ -137,6 +133,7 @@ public class ArtworkListFragment extends BaseFragment {
   public void onResume() {
     super.onResume();
     bus.register(this);
+
   }
 
   @Override
@@ -173,6 +170,7 @@ public class ArtworkListFragment extends BaseFragment {
     super.onCreateOptionsMenu(menu, inflater);
     inflater.inflate(R.menu.artwork_list, menu);
     menuReresh = menu.findItem(R.id.menuRefresh);
+    menuAutoplay = menu.findItem(R.id.menuAutoplay);
   }
 
   @Override
@@ -181,15 +179,16 @@ public class ArtworkListFragment extends BaseFragment {
       case R.id.menuRefresh:
         scanBeacons();
         return true;
+      case R.id.menuAutoplay:
+        startAutoplay();
+        menuAutoplay.setVisible(false);
+        return true;
       default:
         return super.onOptionsItemSelected(item);
     }
   }
 
   private void loadArtworkList() {
-    // First explicitly call scan beacons to get info asap
-    scanBeacons();
-
     // Get data from Api or DB
     if (((LeexplorerApplication) getActivity().getApplicationContext()).isOnline()) {
       loadArtworkListFromApi();
@@ -286,6 +285,7 @@ public class ArtworkListFragment extends BaseFragment {
       artworks.add(aw);
     }
     refreshArtworkAdapter();
+    scanBeacons();
   }
 
   private void refreshArtworkAdapter() {
@@ -357,6 +357,16 @@ public class ArtworkListFragment extends BaseFragment {
   public interface Callbacks {
     void onLoading(boolean loading);
   }
+
+  public void startAutoplay() {
+    Log.d(TAG, "start autoplay");
+    Intent i = new Intent(getActivity(), AutoPlayService.class);
+    i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_START);
+    i.putExtra(AutoPlayService.EXTRA_GALLERY, gallery);
+    i.putExtra(AutoPlayService.EXTRA_ARTWORKS, (ArrayList<Artwork>) artworks);
+    getActivity().startService(i);
+  }
+
 }
 
 

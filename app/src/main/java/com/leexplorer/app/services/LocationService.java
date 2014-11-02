@@ -9,9 +9,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 
-/**
- * Created by deepakdhiman on 2/27/14.
- */
 public class LocationService extends Service implements LocationListener {
 
   private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 50; //50 meters

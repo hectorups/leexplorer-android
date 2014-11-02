@@ -26,6 +26,10 @@ public class FilteredIBeacon implements Parcelable {
 
   public void addAdvertisement(IBeacon iBeacon) {
     bleFir.addAdvertisement(iBeacon);
+    calculateDistance();
+  }
+
+  public void calculateDistance() {
     distance = bleFir.getDistance();
   }
 
@@ -68,16 +72,19 @@ public class FilteredIBeacon implements Parcelable {
     uuid = in.readString();
     major = in.readInt();
     minor = in.readInt();
-    distance = in.readDouble();
+    double dist = in.readDouble();
+    distance = dist == 0 ? null : dist;
     txPower = in.readInt();
   }
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
+    double dist = distance == null ? 0 : distance;
+
     dest.writeString(uuid);
     dest.writeInt(major);
     dest.writeInt(minor);
-    dest.writeDouble(distance);
+    dest.writeDouble(dist);
     dest.writeInt(txPower);
   }
 }

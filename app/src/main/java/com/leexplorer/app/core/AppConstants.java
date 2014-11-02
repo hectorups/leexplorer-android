@@ -22,6 +22,8 @@ public class AppConstants {
   public static final String CLIENT_BUILD_HEADER_KEY = "X-LeExplorer-Client";
   public static final String CLIENT_NAME = "LeExplorer-Android";
 
+  public static final int MIN_METRES_FOR_AUTOPLAY = 7;
+
   static {
     FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);
     FACILITIES_IMG_MAP.put("wifi", R.drawable.ic_facilities_wifi);

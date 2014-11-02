@@ -17,7 +17,8 @@ public class BeaconArtworkUpdater {
     for (FilteredIBeacon beacon : beacons) {
       for (Artwork artwork : artworks) {
         if (artwork.getMajorminor().equals(beacon.getMajorminor())) {
-          artwork.setDistance(beacon.getDistance());
+          Double dist = beacon.getDistance();
+          artwork.setDistance(dist);
           break;
         }
       }

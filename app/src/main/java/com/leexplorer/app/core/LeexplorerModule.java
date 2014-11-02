@@ -22,6 +22,7 @@ import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
 import com.leexplorer.app.models.FilteredIBeacon;
+import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
@@ -52,7 +53,7 @@ import retrofit.RequestInterceptor;
         GalleryMapFragment.class, GalleryDownloaderService.class, ArtworkActivity.class,
         GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class,
         MediaPlayerService.class, ConfirmDialogFragment.class, Client.class,
-        FullScreenImageActivity.class, FacilitiesDialogFragment.class
+        FullScreenImageActivity.class, FacilitiesDialogFragment.class, AutoPlayService.class
     },
     library = true)
 public class LeexplorerModule {

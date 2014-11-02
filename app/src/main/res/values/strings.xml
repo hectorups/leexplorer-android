@@ -15,17 +15,25 @@
   <string name="signal_immediate">immediate</string>
   <string name="signal_far">far</string>
 
+  <!-- ARTWORK LIST SCREEN -->
+  <string name="refresh">refresh</string>
+  <string name="autoplay">autoplay</string>
+
   <!-- AUDIO SERVICE -->
   <string name="audio_notification_title">LeExplorer</string>
   <string name="audio_notification_text">Playing %1$s</string>
 
   <!-- GALLERY DOWNLOAD SERVICE -->
-  <string name="download_notification_title">LeExplorer</string>
+  <string name="download_notification_title">LeExplorer downloading gallery</string>
   <string name="download_notification_text">Downloading %1$s</string>
 
   <!-- BEACON SCAN SERVICE -->
-  <string name="beacon_notification_title">LeExplorer</string>
+  <string name="beacon_notification_title">LeExplorer galleries nearby</string>
   <string name="beacon_notification_text">You are within range of %1$s</string>
+
+  <!-- AUTOPLAY SERVICE -->
+  <string name="autoplay_notification_title">LeExplorer Autoplay started for %1$s</string>
+  <string name="autoplay_notification_text">Artwork\'s audio will autoplay as you come close to it.</string>
 
   <!-- GALLERY SCREEN -->
   <string name="title_activity_galery_list">GaleryListActivity</string>

@@ -2,9 +2,17 @@
     xmlns:leexplorer="http://schemas.android.com/apk/res-auto">
 
   <item
+      android:title="@string/refresh"
       android:id="@+id/menuRefresh"
       android:icon="@drawable/ic_action_refresh"
       leexplorer:showAsAction="always"
-
       />
+
+  <item
+      android:title="@string/autoplay"
+      android:id="@+id/menuAutoplay"
+      android:icon="@drawable/ic_action_autoplay"
+      leexplorer:showAsAction="always"
+      />
+
 </menu>

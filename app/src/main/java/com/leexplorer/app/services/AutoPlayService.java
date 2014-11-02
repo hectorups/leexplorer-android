@@ -177,9 +177,13 @@ public class AutoPlayService extends BaseService {
   }
 
   @Subscribe public void audioComplete(AudioCompleteEvent event) {
-    Log.d(TAG, "Audio completed");
+    Log.d(TAG, "Audio completed " + event.getArtwork().getName());
     if (autoPlay != null) {
-      autoPlay.resetPlayingArtwork();
+
+      if (autoPlay.getCurrentlyPlaying().equals(event.getArtwork())) {
+        autoPlay.resetPlayingArtwork();
+      }
+
       if (autoPlay.isFinished()) {
         clear();
       }

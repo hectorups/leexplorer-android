@@ -55,7 +55,6 @@ public class ArtworkListFragment extends BaseFragment {
   private List<Artwork> artworks;
   private List<FilteredIBeacon> beacons;
   private boolean artworksLoaded;
-  private boolean newBeaconInfo;
   private boolean scaningBeacons;
   private MenuItem menuReresh;
   private MenuItem menuAutoplay;
@@ -114,7 +113,6 @@ public class ArtworkListFragment extends BaseFragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
-    newBeaconInfo = false;
     scaningBeacons = false;
 
     if (savedInstanceState != null) {
@@ -294,7 +292,6 @@ public class ArtworkListFragment extends BaseFragment {
     Collections.sort(artworks, new Artwork.ArtworkComparable());
 
     artworkAdapter.notifyDataSetChanged();
-    newBeaconInfo = false;
   }
 
   /**
@@ -324,30 +321,6 @@ public class ArtworkListFragment extends BaseFragment {
 
     Intent i = new Intent(getActivity(), BeaconScanService.class);
     getActivity().startService(i);
-  }
-
-  private void distancesChangesCheck(List<FilteredIBeacon> beacons) {
-    if (newBeaconInfo) {
-      return;
-    }
-
-    BeaconArtworkUpdater.updateDistances(artworks, beacons);
-    ArrayList<String> currentOrderedMacs = new ArrayList<>();
-    ArrayList<String> newOrderedMacs = new ArrayList<>();
-    for (Artwork aw : artworks) {
-      currentOrderedMacs.add(aw.getMajorminor());
-    }
-    Collections.sort(artworks, new Artwork.ArtworkComparable());
-    for (Artwork aw : artworks) {
-      newOrderedMacs.add(aw.getMajorminor());
-    }
-
-    for (int i = 0; i < currentOrderedMacs.size(); i++) {
-      if (!currentOrderedMacs.get(i).equals(newOrderedMacs.get(i))) {
-        newBeaconInfo = true;
-        break;
-      }
-    }
   }
 
   public void onArtworkClicked(Artwork artwork) {

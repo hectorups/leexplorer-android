@@ -5,7 +5,8 @@
   <string name="title_activity_artwork">Exhibit</string>
   <string name="unknown_date">unknown</string>
   <string name="error_app_too_old">Leexplorer needs to be updated</string>
-  <string name="error_problem_with_connection">We couldn\'t connect at this time, try again later</string>
+  <string name="error_problem_with_connection">We couldn\'t connect at this time, try again later
+  </string>
   <string name="error_no_connection">No connection</string>
 
   <!-- ARWORK SCREEN -->
@@ -14,6 +15,7 @@
   <string name="signal_close">close</string>
   <string name="signal_immediate">immediate</string>
   <string name="signal_far">far</string>
+  <string name="play_artwork">play</string>
 
   <!-- ARTWORK LIST SCREEN -->
   <string name="refresh">refresh</string>
@@ -32,8 +34,11 @@
   <string name="beacon_notification_text">You are within range of %1$s</string>
 
   <!-- AUTOPLAY SERVICE -->
-  <string name="autoplay_notification_title">LeExplorer Autoplay started for %1$s</string>
-  <string name="autoplay_notification_text">Artwork\'s audio will autoplay as you come close to it.</string>
+  <string name="autoplay_notification_title">LeExplorer Autoplay</string>
+  <string name="autoplay_notification_text">%1$s artwork\'s audio will autoplay as you come close to
+    them.
+  </string>
+  <string name="autoplay_notification_stop">Cancel Autoplay</string>
 
   <!-- GALLERY SCREEN -->
   <string name="title_activity_galery_list">GaleryListActivity</string>
@@ -46,7 +51,8 @@
   <string name="menu_gallery_map">map</string>
   <string name="manu_gallery_list">list</string>
   <string name="bluetooth_warning_title">Your Bluetooth is off</string>
-  <string name="bluetooth_warning_message">To have the best experience turn on you bluetooth.</string>
+  <string name="bluetooth_warning_message">To have the best experience turn on you bluetooth.
+  </string>
 
   <!-- GALLERY MAP SCREEN -->
   <string name="consolidated_marker_title">%1$d Galleries</string>

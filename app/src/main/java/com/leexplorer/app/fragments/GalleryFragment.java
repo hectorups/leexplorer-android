@@ -141,7 +141,7 @@ public class GalleryFragment extends BaseFragment {
     ButterKnife.inject(this, view);
 
     imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
-        gallery.getArtworkImageUrls().get(0), R.dimen.thumbor_medium)
+        gallery.getMainImage(), R.dimen.thumbor_medium)
         .fit()
         .centerCrop()
         .placeholder(R.drawable.image_place_holder)

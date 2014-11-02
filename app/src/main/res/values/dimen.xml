@@ -15,4 +15,5 @@
   <dimen name="thumbor_tiny">80px</dimen>
   <!-- end Thumbor Buckets -->
 
+  <dimen name="notification_size">64dp</dimen>
 </resources>

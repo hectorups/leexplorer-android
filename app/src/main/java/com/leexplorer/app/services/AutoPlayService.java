@@ -4,6 +4,8 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -23,9 +25,13 @@ import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.AutoPlay;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import java.util.Collections;
 import java.util.List;
+import javax.inject.Inject;
 
 public class AutoPlayService extends BaseService {
   public static final String TAG = "com.leexplorer.services.AutoPlayService";
@@ -36,8 +42,8 @@ public class AutoPlayService extends BaseService {
   public static final String EXTRA_GALLERY = "gallery";
   public static final String EXTRA_ARTWORKS = "artworks";
 
+  @Inject ImageSourcePicker imageSourcePicker;
   private AutoPlay autoPlay;
-
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
 
@@ -114,6 +120,47 @@ public class AutoPlayService extends BaseService {
   }
 
   private void prepareNotification() {
+    final int imageWidth =
+        getResources().getDimensionPixelSize(R.dimen.notification_size);
+    final int imageHeight =
+        getResources().getDimensionPixelSize(R.dimen.notification_size);
+
+    Handler mainHandler = new Handler(getMainLooper());
+    Runnable getImageRunnable = new Runnable() {
+      @Override public void run() {
+        imageSourcePicker.getRequestCreator(autoPlay.getGallery().getGalleryId(),
+            autoPlay.getGallery().getMainImage(), R.dimen.thumbor_tiny)
+            .resize(imageWidth, imageHeight)
+            .centerCrop()
+            .into(new Target() {
+              @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                showNotification(bitmap);
+              }
+
+              @Override public void onBitmapFailed(Drawable errorDrawable) {
+                if (errorDrawable != null) {
+                  eventReporter.logException(errorDrawable.toString());
+                } else {
+                  eventReporter.logException("Unknown errorDrawable");
+                }
+
+                showNotification(null);
+              }
+
+              @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+              }
+            });
+      }
+    };
+
+    mainHandler.post(getImageRunnable);
+  }
+
+  private void showNotification(Bitmap bitmap) {
+    if (autoPlay == null) {
+      return;
+    }
+
     Resources resources = getResources();
     Intent intent = new Intent(this, ArtworkListActivity.class);
     intent.putExtra(ArtworkListActivity.EXTRA_GALLERY, autoPlay.getGallery());
@@ -122,14 +169,28 @@ public class AutoPlayService extends BaseService {
     PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent,
         PendingIntent.FLAG_UPDATE_CURRENT);
 
-    Notification notification =
+    String text =
+        resources.getString(R.string.autoplay_notification_text, autoPlay.getGallery().getName());
+
+    NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
+    bigStyle.bigText(text);
+
+    NotificationCompat.Builder builder =
         new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(
             R.drawable.ic_stat_artwork)
             .setContentTitle(resources.getString(R.string.autoplay_notification_title,
                 autoPlay.getGallery().getName()))
-            .setContentText(resources.getString(R.string.autoplay_notification_text))
-            .setContentIntent(pi)
-            .build();
+            .setContentText(text)
+            .addAction(R.drawable.ic_stop_autoplay,
+                resources.getString(R.string.autoplay_notification_stop), pi)
+            .setStyle(bigStyle)
+            .setContentIntent(pi);
+
+    if (bitmap != null) {
+      builder.setLargeIcon(bitmap);
+    }
+
+    Notification notification = builder.build();
 
     notification.flags |= Notification.FLAG_ONGOING_EVENT;
     startForeground(NOTIFICATION_ID, notification);

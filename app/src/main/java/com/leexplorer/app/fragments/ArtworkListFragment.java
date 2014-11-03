@@ -21,6 +21,8 @@ import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.ArtworkClickedEvent;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
+import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
+import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
@@ -44,7 +46,6 @@ public class ArtworkListFragment extends BaseFragment {
   private static final String ARTWORK_LIST_KEY = "arwork_list";
   private static final String BEACONS_KEY = "beacons";
   private static final String GALLERY_KEY = "gallery";
-  private static final String STOP_AUTOPLAY_KEY = "stop_autoplay";
   private static final String TAG = "com.leexplorer.artworklistfragement";
 
   private static final String EXTRA_GALLERY = "extra_gallery";
@@ -82,10 +83,9 @@ public class ArtworkListFragment extends BaseFragment {
     }
   }
 
-  public static ArtworkListFragment newInstance(Gallery gallery, boolean stopAutoplay) {
+  public static ArtworkListFragment newInstance(Gallery gallery) {
     Bundle args = new Bundle();
     args.putParcelable(EXTRA_GALLERY, gallery);
-    args.putBoolean(STOP_AUTOPLAY_KEY, stopAutoplay);
 
     ArtworkListFragment fragment = new ArtworkListFragment();
     fragment.setArguments(args);
@@ -125,9 +125,6 @@ public class ArtworkListFragment extends BaseFragment {
       artworks = new ArrayList<>();
       beacons = new ArrayList<>();
       gallery = getArguments().getParcelable(EXTRA_GALLERY);
-      if (getArguments().getBoolean(STOP_AUTOPLAY_KEY, false)) {
-        stopAutoplay();
-      }
     }
   }
 
@@ -172,6 +169,7 @@ public class ArtworkListFragment extends BaseFragment {
     inflater.inflate(R.menu.artwork_list, menu);
     menuReresh = menu.findItem(R.id.menuRefresh);
     menuAutoplay = menu.findItem(R.id.menuAutoplay);
+    checkAutoplayStatus();
   }
 
   @Override
@@ -343,12 +341,26 @@ public class ArtworkListFragment extends BaseFragment {
     getActivity().startService(i);
   }
 
-  public void stopAutoplay() {
-    Log.d(TAG, "stop autoplay");
+  public void checkAutoplayStatus() {
+    Log.d(TAG, "check autoplay status");
     Intent i = new Intent(getActivity(), AutoPlayService.class);
-    i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_STOP);
+    i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_CHECK_STATUS);
     i.putExtra(AutoPlayService.EXTRA_GALLERY, gallery);
     getActivity().startService(i);
+  }
+
+  @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
+    if (event.getStatus() != AutoPlayService.Status.OFF && gallery.equals(event.getGallery())) {
+      menuAutoplay.setVisible(false);
+    } else {
+      menuAutoplay.setVisible(true);
+    }
+  }
+
+  @Subscribe public void onAutoplayAudioFinished(AutoPlayAudioFinishedEvent event) {
+    if (gallery.equals(event.getGallery())) {
+      menuAutoplay.setVisible(true);
+    }
   }
 }
 

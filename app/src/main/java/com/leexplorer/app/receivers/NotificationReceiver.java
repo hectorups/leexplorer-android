@@ -8,9 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-/**
- * Created by hectormonserrate on 23/02/14.
- */
 public class NotificationReceiver extends BroadcastReceiver {
   private static final String TAG = "NotificationReceiver";
 

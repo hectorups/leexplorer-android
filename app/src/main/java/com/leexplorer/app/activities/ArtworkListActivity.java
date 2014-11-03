@@ -39,7 +39,6 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
 
     if (savedInstanceState == null) {
       gallery = getIntent().getParcelableExtra(EXTRA_GALLERY);
-      stopAutoplay = getIntent().getBooleanExtra(EXTRA_STOP_AUTOPLAY, false);
     } else {
       gallery = savedInstanceState.getParcelable(EXTRA_GALLERY);
     }
@@ -47,7 +46,7 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     setTitle(gallery.getName());
 
     if (fragment == null) {
-      fragment = ArtworkListFragment.newInstance(gallery, stopAutoplay);
+      fragment = ArtworkListFragment.newInstance(gallery);
       fm.beginTransaction().add(R.id.container, fragment).commit();
     }
 

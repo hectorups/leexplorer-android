@@ -12,7 +12,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkListActivity;
@@ -21,7 +20,9 @@ import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
 import com.leexplorer.app.events.AudioStartedEvent;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
-import com.leexplorer.app.events.autoplay.AutoPlayAudioStarted;
+import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
+import com.leexplorer.app.events.autoplay.AutoPlayAudioStartedEvent;
+import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.AutoPlay;
 import com.leexplorer.app.models.FilteredIBeacon;
@@ -37,11 +38,18 @@ import javax.inject.Inject;
 public class AutoPlayService extends BaseService {
   public static final String TAG = "com.leexplorer.services.AutoPlayService";
   private static final int NOTIFICATION_ID = 12;
-  public static final String EXTRA_ACTION = "com.leexplorer.autoplayservice.action";
+  public static final String EXTRA_ACTION = "com.leexplorer.services.autoplayservice.action";
+  public static final String CANCEL_BROADCAST =
+      "com.leexplorer.services.AutoPlayService.CANCEL_AUTOPLAY";
   public static final int ACTION_START = 1;
   public static final int ACTION_STOP = 2;
+  public static final int ACTION_CHECK_STATUS = 3;
   public static final String EXTRA_GALLERY = "gallery";
   public static final String EXTRA_ARTWORKS = "artworks";
+
+  public enum Status {
+    RUNNING, PLAYING, OFF
+  }
 
   @Inject ImageSourcePicker imageSourcePicker;
   private AutoPlay autoPlay;
@@ -103,6 +111,20 @@ public class AutoPlayService extends BaseService {
           stop();
         }
         break;
+      case ACTION_CHECK_STATUS:
+        Status status;
+        Gallery currentGallery = null;
+        if (autoPlay == null) {
+          status = Status.OFF;
+        } else if (autoPlay.getCurrentlyPlaying() != null) {
+          status = Status.PLAYING;
+          currentGallery = autoPlay.getGallery();
+        } else {
+          status = Status.RUNNING;
+          currentGallery = autoPlay.getGallery();
+        }
+
+        bus.post(new AutoPlayStatusEvent(currentGallery, status));
       default:
         return;
     }
@@ -120,6 +142,9 @@ public class AutoPlayService extends BaseService {
   }
 
   private void clear() {
+    if (autoPlay != null) {
+      bus.post(new AutoPlayAudioFinishedEvent(autoPlay.getGallery()));
+    }
     autoPlay = null;
     stopForeground(true);
   }
@@ -168,13 +193,11 @@ public class AutoPlayService extends BaseService {
   }
 
   private PendingIntent cancelPendingIntent() {
-    Intent resultIntent = new Intent(this, ArtworkListActivity.class);
-    resultIntent.putExtra(ArtworkListActivity.EXTRA_GALLERY, autoPlay.getGallery());
-    resultIntent.putExtra(ArtworkListActivity.EXTRA_STOP_AUTOPLAY, true);
-    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-    stackBuilder.addParentStack(ArtworkListActivity.class);
-    stackBuilder.addNextIntent(resultIntent);
-    return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+    Intent intent = new Intent(getApplicationContext(), AutoPlayService.class);
+    intent.putExtra(EXTRA_ACTION, ACTION_STOP);
+    intent.putExtra(EXTRA_GALLERY, autoPlay.getGallery());
+    return PendingIntent.getService(getApplicationContext(), 0, intent,
+        PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
   private void showNotification(Bitmap bitmap) {
@@ -236,7 +259,7 @@ public class AutoPlayService extends BaseService {
   }
 
   public void playAudio(Artwork artwork) {
-    bus.post(new AutoPlayAudioStarted(artwork));
+    bus.post(new AutoPlayAudioStartedEvent(artwork));
     autoPlay.setAsPlayingArtwork(artwork);
     Intent i = new Intent(getApplicationContext(), MediaPlayerService.class);
     i.putExtra(MediaPlayerService.ARTWORK, artwork);

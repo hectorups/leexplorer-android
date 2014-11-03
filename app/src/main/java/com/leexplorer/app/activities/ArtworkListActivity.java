@@ -19,11 +19,13 @@ import javax.inject.Inject;
 public class ArtworkListActivity extends BaseActivity implements ArtworkListFragment.Callbacks {
 
   public static final String EXTRA_GALLERY = "extra_gallery";
+  public static final String EXTRA_STOP_AUTOPLAY = "stop_autoplay";
   public static final String EXTRA_FROM_NOTIFICATION = "extra_from_notification";
   public static final int ARTWORK_DETAIL_REQUEST = 0;
 
   private Gallery gallery;
   private ArtworkListFragment fragment;
+  private boolean stopAutoplay;
 
   @Inject Bus bus;
 
@@ -71,7 +73,7 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
     switch (item.getItemId()) {
       case android.R.id.home:
 
-        if( isTabletMode() ) {
+        if (isTabletMode()) {
           Intent i = new Intent(this, GalleryListActivity.class);
           i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
           i.putExtra(GalleryListActivity.EXTRA_INITIAL_GALLERY, gallery);

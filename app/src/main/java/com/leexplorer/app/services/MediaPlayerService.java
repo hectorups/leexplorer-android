@@ -2,7 +2,6 @@ package com.leexplorer.app.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -18,21 +17,17 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
-import com.leexplorer.app.core.EventReporter;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.AudioCompleteEvent;
 import com.leexplorer.app.events.AudioProgressEvent;
 import com.leexplorer.app.events.AudioStartedEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
-import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.inject.Inject;
 
-public class MediaPlayerService extends Service {
+public class MediaPlayerService extends BaseService {
 
   private static final String TAG = "com.leexplorer.app.services.MediaPlayerService";
 
@@ -57,17 +52,22 @@ public class MediaPlayerService extends Service {
   private ServiceHandler serviceHandler;
   private Handler progressHandler = new Handler();
 
-  @Inject Bus bus;
-  @Inject EventReporter eventReporter;
+  protected final class ServiceHandler extends Handler {
+    public ServiceHandler(Looper looper) {
+      super(looper);
+    }
+
+    @Override
+    public void handleMessage(Message msg) {
+      onHandleIntent((Intent) msg.obj);
+    }
+  }
 
   @Override
   public void onCreate() {
     super.onCreate();
 
-    ((LeexplorerApplication) getApplication()).inject(this);
-    bus.register(this);
-
-    HandlerThread thread = new HandlerThread("MediaPlayerService:WorkerThread");
+    HandlerThread thread = new HandlerThread(TAG);
     thread.start();
 
     serviceLooper = thread.getLooper();
@@ -111,11 +111,6 @@ public class MediaPlayerService extends Service {
       default:
         return;
     }
-  }
-
-  @Override public void onDestroy() {
-    bus.unregister(this);
-    super.onDestroy();
   }
 
   private void prepareNotification() {
@@ -229,17 +224,6 @@ public class MediaPlayerService extends Service {
 
   private void broadcastProgress(long totalDuration, long currentDuration) {
     bus.post(new AudioProgressEvent(artwork, totalDuration, currentDuration));
-  }
-
-  private final class ServiceHandler extends Handler {
-    public ServiceHandler(Looper looper) {
-      super(looper);
-    }
-
-    @Override
-    public void handleMessage(Message msg) {
-      onHandleIntent((Intent) msg.obj);
-    }
   }
 
   private Runnable updateTimeTask = new Runnable() {

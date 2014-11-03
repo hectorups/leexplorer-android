@@ -4,9 +4,12 @@ import com.leexplorer.app.models.IBeacon;
 import com.leexplorer.app.util.ble.BleUtils;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class KalmanFir implements BleFir {
+  private static int EXPIRING_TIME = 2 * 60 * 1000;
+
   private ArrayList<Double> distanceBuffer;
   private List<Double> medianBuffer;
   private Double distance;
@@ -14,14 +17,17 @@ public class KalmanFir implements BleFir {
   private double kalmanEstimation;
   private static final int BUFFER_SIZE = 6;
   private Integer txPower;
+  private Date lastUpdatedAt;
 
-  public KalmanFir(){
-    distanceBuffer = new ArrayList<>();
-    medianBuffer = new ArrayList<>();
+  public KalmanFir() {
+    reset();
+    lastUpdatedAt = new Date();
   }
 
-
   public void addAdvertisement(IBeacon iBeacon) {
+    resetIfOld();
+    lastUpdatedAt = new Date();
+
     double varianceSum = 0;
     double expectedDistance = 0;
     double tempDistance = BleUtils.calculateAccuracy(getTxPower(iBeacon), iBeacon.getRssi());
@@ -70,6 +76,7 @@ public class KalmanFir implements BleFir {
   }
 
   @Override public Double getDistance() {
+    resetIfOld();
     return distance;
   }
 
@@ -88,5 +95,18 @@ public class KalmanFir implements BleFir {
     }
 
     return this.txPower;
+  }
+
+  private void resetIfOld() {
+    Date expiringDate = new Date(System.currentTimeMillis() - EXPIRING_TIME);
+    if (lastUpdatedAt.before(expiringDate)) {
+      reset();
+    }
+  }
+
+  private void reset() {
+    distanceBuffer = new ArrayList<>();
+    medianBuffer = new ArrayList<>();
+    distance = null;
   }
 }

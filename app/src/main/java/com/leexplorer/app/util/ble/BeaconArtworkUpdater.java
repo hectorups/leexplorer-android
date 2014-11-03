@@ -1,5 +1,6 @@
 package com.leexplorer.app.util.ble;
 
+import android.util.Log;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.FilteredIBeacon;
 import java.util.List;
@@ -17,7 +18,12 @@ public class BeaconArtworkUpdater {
     for (FilteredIBeacon beacon : beacons) {
       for (Artwork artwork : artworks) {
         if (artwork.getMajorminor().equals(beacon.getMajorminor())) {
-          artwork.setDistance(beacon.getDistance());
+          Double dist = beacon.getDistance();
+          try {
+            artwork.setDistance(dist);
+          } catch (NullPointerException e) {
+            Log.wtf("BeaconArtworkUpdater", e.toString());
+          }
           break;
         }
       }

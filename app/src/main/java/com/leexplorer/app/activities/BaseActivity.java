@@ -88,7 +88,7 @@ public class BaseActivity extends ActionBarActivity {
     super.onResume();
     bus.register(eventhandler);
 
-    BeaconScanService.setScannerAlarm(this, true);
+    BeaconScanService.setScannerAlarm(this, BeaconScanService.Mode.FOREGROUND);
 
     IntentFilter filter = new IntentFilter(BeaconScanService.ACTION_SHOW_NOTIFICATION);
     registerReceiver(onShowNotification, filter, BeaconScanService.PERM_PRIVATE, null);
@@ -108,7 +108,7 @@ public class BaseActivity extends ActionBarActivity {
 
     unregisterReceiver(onShowNotification);
 
-    BeaconScanService.setScannerAlarm(this, false);
+    BeaconScanService.setScannerAlarm(this, BeaconScanService.Mode.BACKGROUND);
   }
 
   public boolean isTabletMode() {

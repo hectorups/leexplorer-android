@@ -7,17 +7,16 @@ import java.util.Map;
 
 public class AppConstants {
 
-  public static final String APP_NAME = "LEEXPLORER";
-
   public static final String APP_FOLDER = "leexplorer";
 
   public static final String LE_UUID = "9133edc4-a87c-5529-befa-4f75f31a45d4";
 
   public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<>();
 
-  //public static final String API_URL = "http://10.12.34.255:1321"; // Hector 1
-  //    public static final String API_URL = "http://10.0.0.2:1321"; // Hector 2
-  //    public static final String SERVER_THUMBOR_URL = "10.0.0.2:8821";
+  // Network
+  public static final int CONNECT_TIMEOUT = 2;
+  public static final int READ_TIMEOUT = 35;
+  public static final int NETWORK_CACHE = 10 * 1024 * 1024;
 
   // Digital Ocean
   public static final String API_URL = "http://api.leexplorer.com:1337";
@@ -27,6 +26,8 @@ public class AppConstants {
   public static final String BUILD_KILLED_MESSAGE = "Client update required, min build:";
   public static final String CLIENT_BUILD_HEADER_KEY = "X-LeExplorer-Client";
   public static final String CLIENT_NAME = "LeExplorer-Android";
+
+  public static final int MIN_METRES_FOR_AUTOPLAY = 7;
 
   static {
     FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);

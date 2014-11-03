@@ -3,8 +3,8 @@ package com.leexplorer.app.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.leexplorer.app.util.ble.Majorminor;
-import com.leexplorer.app.util.ble.firs.AverageFir;
 import com.leexplorer.app.util.ble.firs.BleFir;
+import com.leexplorer.app.util.ble.firs.StandardFir;
 
 public class FilteredIBeacon implements Parcelable {
 
@@ -20,12 +20,16 @@ public class FilteredIBeacon implements Parcelable {
     this.txPower = iBeacon.getTxPower();
     this.major = iBeacon.major;
     this.minor = iBeacon.minor;
-    bleFir = new AverageFir();
+    bleFir = new StandardFir();
     addAdvertisement(iBeacon);
   }
 
   public void addAdvertisement(IBeacon iBeacon) {
     bleFir.addAdvertisement(iBeacon);
+    calculateDistance();
+  }
+
+  public void calculateDistance() {
     distance = bleFir.getDistance();
   }
 
@@ -68,16 +72,19 @@ public class FilteredIBeacon implements Parcelable {
     uuid = in.readString();
     major = in.readInt();
     minor = in.readInt();
-    distance = in.readDouble();
+    double dist = in.readDouble();
+    distance = dist == 0 ? null : dist;
     txPower = in.readInt();
   }
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
+    double dist = distance == null ? 0 : distance;
+
     dest.writeString(uuid);
     dest.writeInt(major);
     dest.writeInt(minor);
-    dest.writeDouble(distance);
+    dest.writeDouble(dist);
     dest.writeInt(txPower);
   }
 }

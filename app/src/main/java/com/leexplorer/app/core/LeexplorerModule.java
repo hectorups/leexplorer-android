@@ -21,6 +21,8 @@ import com.leexplorer.app.fragments.FacilitiesDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.fragments.GalleryMapFragment;
+import com.leexplorer.app.models.FilteredIBeacon;
+import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
@@ -37,6 +39,7 @@ import dagger.Module;
 import dagger.Provides;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 import retrofit.ErrorHandler;
@@ -50,7 +53,7 @@ import retrofit.RequestInterceptor;
         GalleryMapFragment.class, GalleryDownloaderService.class, ArtworkActivity.class,
         GalleryActivity.class, GalleryListActivity.class, ArtworkListActivity.class,
         MediaPlayerService.class, ConfirmDialogFragment.class, Client.class,
-        FullScreenImageActivity.class, FacilitiesDialogFragment.class
+        FullScreenImageActivity.class, FacilitiesDialogFragment.class, AutoPlayService.class
     },
     library = true)
 public class LeexplorerModule {
@@ -64,7 +67,7 @@ public class LeexplorerModule {
   @Provides @Singleton Cache provideCache() {
     try {
       Cache responseCache =
-          new Cache(new File(application.getCacheDir(), "okhttp"), 15 * 1024 * 1024);
+          new Cache(new File(application.getCacheDir(), "okhttp"), AppConstants.NETWORK_CACHE);
       return responseCache;
     } catch (IOException e) {
       return null;
@@ -85,8 +88,8 @@ public class LeexplorerModule {
 
   @Provides @Singleton OkHttpClient providesOkHttpClient(Cache cache) {
     OkHttpClient client = new OkHttpClient();
-    client.setConnectTimeout(5, TimeUnit.SECONDS);
-    client.setReadTimeout(30, TimeUnit.SECONDS);
+    client.setConnectTimeout(AppConstants.CONNECT_TIMEOUT, TimeUnit.SECONDS);
+    client.setReadTimeout(AppConstants.READ_TIMEOUT, TimeUnit.SECONDS);
     client.setCache(cache);
 
     return client;
@@ -115,12 +118,13 @@ public class LeexplorerModule {
   }
 
   @Provides @Singleton Picasso providePicasso(LeexplorerApplication application,
-      OkHttpClient client) {
+      OkHttpClient client, final EventReporter eventReporter) {
     Picasso.Builder builder = new Picasso.Builder(application.getApplicationContext());
     OkHttpDownloader downloader = new OkHttpDownloader(client);
     builder.downloader(downloader).listener(new Picasso.Listener() {
       @Override public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-        Log.d("DottieModule", "url: " + uri.toString() + " exception: " + exception);
+        Log.e("DottieModule", "url: " + uri.toString() + " exception: " + exception);
+        eventReporter.logException(exception);
       }
     });
     return builder.build();
@@ -132,6 +136,10 @@ public class LeexplorerModule {
 
   @Provides @Singleton EventReporter provideEventReported(LeexplorerApplication application) {
     return new EventReporter(application);
+  }
+
+  @Provides @Singleton HashMap<String, FilteredIBeacon> provideBeaconsFound() {
+    return new HashMap<>();
   }
 }
 

@@ -7,9 +7,6 @@ import android.os.Build;
 import android.util.Log;
 import com.leexplorer.app.services.BeaconScanService;
 
-/**
- * Created by hectormonserrate on 22/02/14.
- */
 public class StartupReceiver extends BroadcastReceiver {
   private static final String TAG = "com.leexplorer.services.receivers.startupreceiver";
 
@@ -21,6 +18,6 @@ public class StartupReceiver extends BroadcastReceiver {
       return;
     }
 
-    BeaconScanService.setScannerAlarm(context, false);
+    BeaconScanService.setScannerAlarm(context, BeaconScanService.Mode.BACKGROUND);
   }
 }

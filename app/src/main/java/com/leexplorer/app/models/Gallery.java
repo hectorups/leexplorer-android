@@ -256,6 +256,10 @@ public class Gallery extends Model implements Parcelable {
     this.distanceFromCurrentLocation = distanceFromCurrentLocation;
   }
 
+  public String getMainImage() {
+    return getArtworkImageUrls().get(0);
+  }
+
   public static List<Gallery> getAll() {
     List<Gallery> galleries = new Select().from(Gallery.class).execute();
     for (Gallery gallery : galleries) {

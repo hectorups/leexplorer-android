@@ -67,7 +67,7 @@ public class LeexplorerModule {
   @Provides @Singleton Cache provideCache() {
     try {
       Cache responseCache =
-          new Cache(new File(application.getCacheDir(), "okhttp"), 15 * 1024 * 1024);
+          new Cache(new File(application.getCacheDir(), "okhttp"), AppConstants.NETWORK_CACHE);
       return responseCache;
     } catch (IOException e) {
       return null;
@@ -88,8 +88,8 @@ public class LeexplorerModule {
 
   @Provides @Singleton OkHttpClient providesOkHttpClient(Cache cache) {
     OkHttpClient client = new OkHttpClient();
-    client.setConnectTimeout(5, TimeUnit.SECONDS);
-    client.setReadTimeout(30, TimeUnit.SECONDS);
+    client.setConnectTimeout(AppConstants.CONNECT_TIMEOUT, TimeUnit.SECONDS);
+    client.setReadTimeout(AppConstants.READ_TIMEOUT, TimeUnit.SECONDS);
     client.setCache(cache);
 
     return client;
@@ -118,12 +118,13 @@ public class LeexplorerModule {
   }
 
   @Provides @Singleton Picasso providePicasso(LeexplorerApplication application,
-      OkHttpClient client) {
+      OkHttpClient client, final EventReporter eventReporter) {
     Picasso.Builder builder = new Picasso.Builder(application.getApplicationContext());
     OkHttpDownloader downloader = new OkHttpDownloader(client);
     builder.downloader(downloader).listener(new Picasso.Listener() {
       @Override public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception) {
-        Log.d("DottieModule", "url: " + uri.toString() + " exception: " + exception);
+        Log.e("DottieModule", "url: " + uri.toString() + " exception: " + exception);
+        eventReporter.logException(exception);
       }
     });
     return builder.build();

@@ -13,6 +13,11 @@ public class AppConstants {
 
   public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<>();
 
+  // Network
+  public static final int CONNECT_TIMEOUT = 2;
+  public static final int READ_TIMEOUT = 35;
+  public static final int NETWORK_CACHE = 10 * 1024 * 1024;
+
   // Digital Ocean
   public static final String API_URL = "http://api.leexplorer.com:1337";
   public static final String SERVER_THUMBOR_URL = "http://images.leexplorer.com:8888";

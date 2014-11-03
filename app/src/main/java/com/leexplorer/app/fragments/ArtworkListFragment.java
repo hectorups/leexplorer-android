@@ -44,6 +44,7 @@ public class ArtworkListFragment extends BaseFragment {
   private static final String ARTWORK_LIST_KEY = "arwork_list";
   private static final String BEACONS_KEY = "beacons";
   private static final String GALLERY_KEY = "gallery";
+  private static final String STOP_AUTOPLAY_KEY = "stop_autoplay";
   private static final String TAG = "com.leexplorer.artworklistfragement";
 
   private static final String EXTRA_GALLERY = "extra_gallery";
@@ -81,13 +82,13 @@ public class ArtworkListFragment extends BaseFragment {
     }
   }
 
-  public static ArtworkListFragment newInstance(Gallery gallery) {
+  public static ArtworkListFragment newInstance(Gallery gallery, boolean stopAutoplay) {
     Bundle args = new Bundle();
     args.putParcelable(EXTRA_GALLERY, gallery);
+    args.putBoolean(STOP_AUTOPLAY_KEY, stopAutoplay);
 
     ArtworkListFragment fragment = new ArtworkListFragment();
     fragment.setArguments(args);
-
     return fragment;
   }
 
@@ -124,6 +125,9 @@ public class ArtworkListFragment extends BaseFragment {
       artworks = new ArrayList<>();
       beacons = new ArrayList<>();
       gallery = getArguments().getParcelable(EXTRA_GALLERY);
+      if (getArguments().getBoolean(STOP_AUTOPLAY_KEY, false)) {
+        stopAutoplay();
+      }
     }
   }
 
@@ -131,7 +135,6 @@ public class ArtworkListFragment extends BaseFragment {
   public void onResume() {
     super.onResume();
     bus.register(this);
-
   }
 
   @Override
@@ -340,6 +343,13 @@ public class ArtworkListFragment extends BaseFragment {
     getActivity().startService(i);
   }
 
+  public void stopAutoplay() {
+    Log.d(TAG, "stop autoplay");
+    Intent i = new Intent(getActivity(), AutoPlayService.class);
+    i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_STOP);
+    i.putExtra(AutoPlayService.EXTRA_GALLERY, gallery);
+    getActivity().startService(i);
+  }
 }
 
 

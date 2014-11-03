@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkListActivity;
@@ -89,14 +90,18 @@ public class AutoPlayService extends BaseService {
       return;
     }
 
+    Gallery gallery;
     switch (intent.getIntExtra(EXTRA_ACTION, 0)) {
       case ACTION_START:
-        Gallery gallery = intent.getParcelableExtra(EXTRA_GALLERY);
+        gallery = intent.getParcelableExtra(EXTRA_GALLERY);
         List<Artwork> artworks = intent.getParcelableArrayListExtra(EXTRA_ARTWORKS);
         start(gallery, artworks);
         break;
       case ACTION_STOP:
-        stop();
+        gallery = intent.getParcelableExtra(EXTRA_GALLERY);
+        if (autoPlay != null && autoPlay.getGallery().equals(gallery)) {
+          stop();
+        }
         break;
       default:
         return;
@@ -120,10 +125,8 @@ public class AutoPlayService extends BaseService {
   }
 
   private void prepareNotification() {
-    final int imageWidth =
-        getResources().getDimensionPixelSize(R.dimen.notification_size);
-    final int imageHeight =
-        getResources().getDimensionPixelSize(R.dimen.notification_size);
+    final int imageWidth = getResources().getDimensionPixelSize(R.dimen.notification_size);
+    final int imageHeight = getResources().getDimensionPixelSize(R.dimen.notification_size);
 
     Handler mainHandler = new Handler(getMainLooper());
     Runnable getImageRunnable = new Runnable() {
@@ -156,19 +159,30 @@ public class AutoPlayService extends BaseService {
     mainHandler.post(getImageRunnable);
   }
 
+  private PendingIntent galleryPendingIntent() {
+    Intent intent = new Intent(this, ArtworkListActivity.class);
+    intent.putExtra(ArtworkListActivity.EXTRA_GALLERY, autoPlay.getGallery());
+    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+    return PendingIntent.getActivity(getApplicationContext(), 0, intent,
+        PendingIntent.FLAG_UPDATE_CURRENT);
+  }
+
+  private PendingIntent cancelPendingIntent() {
+    Intent resultIntent = new Intent(this, ArtworkListActivity.class);
+    resultIntent.putExtra(ArtworkListActivity.EXTRA_GALLERY, autoPlay.getGallery());
+    resultIntent.putExtra(ArtworkListActivity.EXTRA_STOP_AUTOPLAY, true);
+    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+    stackBuilder.addParentStack(ArtworkListActivity.class);
+    stackBuilder.addNextIntent(resultIntent);
+    return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+  }
+
   private void showNotification(Bitmap bitmap) {
     if (autoPlay == null) {
       return;
     }
 
     Resources resources = getResources();
-    Intent intent = new Intent(this, ArtworkListActivity.class);
-    intent.putExtra(ArtworkListActivity.EXTRA_GALLERY, autoPlay.getGallery());
-    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent,
-        PendingIntent.FLAG_UPDATE_CURRENT);
-
     String text =
         resources.getString(R.string.autoplay_notification_text, autoPlay.getGallery().getName());
 
@@ -182,9 +196,9 @@ public class AutoPlayService extends BaseService {
                 autoPlay.getGallery().getName()))
             .setContentText(text)
             .addAction(R.drawable.ic_stop_autoplay,
-                resources.getString(R.string.autoplay_notification_stop), pi)
+                resources.getString(R.string.autoplay_notification_stop), cancelPendingIntent())
             .setStyle(bigStyle)
-            .setContentIntent(pi);
+            .setContentIntent(galleryPendingIntent());
 
     if (bitmap != null) {
       builder.setLargeIcon(bitmap);

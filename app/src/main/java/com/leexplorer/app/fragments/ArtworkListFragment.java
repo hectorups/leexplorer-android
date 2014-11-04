@@ -169,7 +169,7 @@ public class ArtworkListFragment extends BaseFragment {
     inflater.inflate(R.menu.artwork_list, menu);
     menuReresh = menu.findItem(R.id.menuRefresh);
     menuAutoplay = menu.findItem(R.id.menuAutoplay);
-    checkAutoplayStatus();
+    AutoPlayService.checkAutoplayStatus(getActivity());
   }
 
   @Override
@@ -341,15 +341,11 @@ public class ArtworkListFragment extends BaseFragment {
     getActivity().startService(i);
   }
 
-  public void checkAutoplayStatus() {
-    Log.d(TAG, "check autoplay status");
-    Intent i = new Intent(getActivity(), AutoPlayService.class);
-    i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_CHECK_STATUS);
-    i.putExtra(AutoPlayService.EXTRA_GALLERY, gallery);
-    getActivity().startService(i);
-  }
-
   @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
+    if( menuAutoplay == null) {
+      return;
+    }
+
     if (event.getStatus() != AutoPlayService.Status.OFF && gallery.equals(event.getGallery())) {
       menuAutoplay.setVisible(false);
     } else {

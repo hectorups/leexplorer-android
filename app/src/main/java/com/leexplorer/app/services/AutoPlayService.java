@@ -2,6 +2,7 @@ package com.leexplorer.app.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -55,6 +56,13 @@ public class AutoPlayService extends BaseService {
   private AutoPlay autoPlay;
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
+
+  static public void checkAutoplayStatus(Context context) {
+    Log.d(TAG, "check autoplay status");
+    Intent i = new Intent(context, AutoPlayService.class);
+    i.putExtra(EXTRA_ACTION, ACTION_CHECK_STATUS);
+    context.startService(i);
+  }
 
   protected final class ServiceHandler extends Handler {
     public ServiceHandler(Looper looper) {

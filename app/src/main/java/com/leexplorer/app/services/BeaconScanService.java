@@ -49,7 +49,7 @@ public class BeaconScanService extends IntentService {
   public static final String SERVICE_NAME = "beaconscan-serviceFromScanRecord";
   public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
   private static final int INTERVAL_AUTOPLAY = 10 * 1000;
-  private static final int INTERVAL_FOREGROUND = 8 * 1000;
+  private static final int INTERVAL_FOREGROUND = 30 * 1000;
   private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000;
   // Don't drain the battery when in bg!
   private static final int SCAN_PERIOD = 4000;
@@ -63,7 +63,7 @@ public class BeaconScanService extends IntentService {
   @Inject HashMap<String, FilteredIBeacon> beacons;
   private BluetoothManager bluetoothManager;
   private BluetoothAdapter bluetoothAdapter;
-  private static Mode currentMode;
+  private static Mode currentMode = Mode.BACKGROUND;
 
   private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
     @Override
@@ -88,8 +88,6 @@ public class BeaconScanService extends IntentService {
           + ':'
           + iBeacon.getMinor()
           + LOG_SEPARATOR
-          + iBeacon.getTxPower()
-          + LOG_SEPARATOR
           + rssi);
 
       String majorminor =
@@ -112,6 +110,8 @@ public class BeaconScanService extends IntentService {
       return;
     }
 
+    Log.d(TAG, "Set beacon scanning mode to: " + mode);
+
     currentMode = mode;
 
     Intent i = new Intent(context, BeaconScanService.class);
@@ -124,11 +124,14 @@ public class BeaconScanService extends IntentService {
     switch (currentMode) {
       case BACKGROUND:
         interval = INTERVAL_BACKGROUND;
+        break;
       case AUTOPLAY:
         interval = INTERVAL_AUTOPLAY;
+        break;
       default:
         interval = INTERVAL_FOREGROUND;
     }
+
     alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), interval, pi);
   }
 

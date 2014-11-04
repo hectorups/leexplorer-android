@@ -30,6 +30,7 @@ import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.models.IBeacon;
+import com.leexplorer.app.util.ble.BluetoothCrashResolver;
 import com.leexplorer.app.util.ble.Majorminor;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class BeaconScanService extends IntentService {
   @Inject Client client;
   @Inject Bus bus;
   @Inject EventReporter eventReporter;
-
+  @Inject BluetoothCrashResolver bluetoothCrashResolver;
   @Inject HashMap<String, FilteredIBeacon> beacons;
   private BluetoothManager bluetoothManager;
   private BluetoothAdapter bluetoothAdapter;
@@ -98,6 +99,8 @@ public class BeaconScanService extends IntentService {
       } else {
         beacons.get(majorminor).addAdvertisement(iBeacon);
       }
+
+      bluetoothCrashResolver.notifyScannedDevice(device,leScanCallback);
     }
   };
 
@@ -138,9 +141,13 @@ public class BeaconScanService extends IntentService {
   @Override public void onCreate() {
     super.onCreate();
     ((LeexplorerApplication) getApplicationContext()).inject(this);
+    bluetoothCrashResolver.start();
   }
 
-
+  @Override public void onDestroy() {
+    bluetoothCrashResolver.stop();
+    super.onDestroy();
+  }
 
   @Override
   protected void onHandleIntent(Intent intent) {
@@ -151,6 +158,10 @@ public class BeaconScanService extends IntentService {
     if (!isBluetoothAdapterHealthy()) {
       eventReporter.logException("Bluetoothadapter null or it is off");
       return;
+    }
+
+    if (bluetoothCrashResolver.isRecoveryInProgress()) {
+      eventReporter.logException("Skipping scan because crash recovery is in progress.");
     }
 
     Log.d(TAG, "begin beacons size: " + beacons.size());

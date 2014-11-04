@@ -8,7 +8,7 @@ import java.util.List;
 public class BeaconArtworkUpdater {
 
   public static List<Artwork> updateDistances(List<Artwork> artworks,
-      List<FilteredIBeacon> beacons) {
+      List<FilteredIBeacon> beacons) throws ArtworkNullException {
     // Reset Distance
     for (Artwork artwork : artworks) {
       artwork.resetDistance();
@@ -22,7 +22,8 @@ public class BeaconArtworkUpdater {
           try {
             artwork.setDistance(dist);
           } catch (NullPointerException e) {
-            Log.wtf("BeaconArtworkUpdater", e.toString());
+            Log.wtf("BeaconArtworkUpdater", "Artwork null?? " + e.toString());
+            throw new ArtworkNullException();
           }
           break;
         }
@@ -31,4 +32,6 @@ public class BeaconArtworkUpdater {
 
     return artworks;
   }
+
+  public static class ArtworkNullException extends Exception{}
 }

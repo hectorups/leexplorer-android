@@ -288,7 +288,11 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   private void refreshArtworkAdapter() {
-    BeaconArtworkUpdater.updateDistances(artworks, beacons);
+    try {
+      BeaconArtworkUpdater.updateDistances(artworks, beacons);
+    } catch (BeaconArtworkUpdater.ArtworkNullException e) {
+      eventReporter.logException(e);
+    }
 
     Collections.sort(artworks, new Artwork.ArtworkComparable());
 

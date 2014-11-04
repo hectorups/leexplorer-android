@@ -28,6 +28,7 @@ import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.AutoPlay;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -142,11 +143,14 @@ public class AutoPlayService extends BaseService {
     Log.d(TAG, "START AUTOPLAY IN SERVICE, autoplaying? " + (artworks == null ? "no" : "yes"));
     autoPlay = new AutoPlay(gallery, artworks);
     prepareNotification();
+    BeaconScanService.setScannerAlarm(getApplicationContext(), BeaconScanService.Mode.AUTOPLAY);
   }
 
   public void stop() {
     Log.d(TAG, "Stop autoplaying");
     clear();
+    // @TODO detect if its foreground or background
+    BeaconScanService.setScannerAlarm(getApplicationContext(), BeaconScanService.Mode.BACKGROUND);
   }
 
   private void clear() {
@@ -250,7 +254,11 @@ public class AutoPlayService extends BaseService {
     }
 
     List<Artwork> artworks = autoPlay.getArtworksPlayList();
-    // BeaconArtworkUpdater.updateDistances(artworks, newBeacons);
+    try {
+      BeaconArtworkUpdater.updateDistances(artworks, newBeacons);
+    } catch (BeaconArtworkUpdater.ArtworkNullException e) {
+      eventReporter.logException(e);
+    }
     Collections.sort(artworks, new Artwork.ArtworkComparable());
 
     for (Artwork artwork : artworks) {

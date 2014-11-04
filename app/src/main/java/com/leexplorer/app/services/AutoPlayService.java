@@ -2,6 +2,7 @@ package com.leexplorer.app.services;
 
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.AutoPlay;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -55,6 +57,13 @@ public class AutoPlayService extends BaseService {
   private AutoPlay autoPlay;
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
+
+  static public void checkAutoplayStatus(Context context) {
+    Log.d(TAG, "check autoplay status");
+    Intent i = new Intent(context, AutoPlayService.class);
+    i.putExtra(EXTRA_ACTION, ACTION_CHECK_STATUS);
+    context.startService(i);
+  }
 
   protected final class ServiceHandler extends Handler {
     public ServiceHandler(Looper looper) {
@@ -93,13 +102,15 @@ public class AutoPlayService extends BaseService {
   }
 
   protected void onHandleIntent(Intent intent) {
-    Log.d(TAG, "Intent received");
     if (intent == null) {
       return;
     }
 
+    int action = intent.getIntExtra(EXTRA_ACTION, 0);
+    Log.d(TAG, "Intent received " + action);
+
     Gallery gallery;
-    switch (intent.getIntExtra(EXTRA_ACTION, 0)) {
+    switch (action) {
       case ACTION_START:
         gallery = intent.getParcelableExtra(EXTRA_GALLERY);
         List<Artwork> artworks = intent.getParcelableArrayListExtra(EXTRA_ARTWORKS);
@@ -134,11 +145,15 @@ public class AutoPlayService extends BaseService {
     Log.d(TAG, "START AUTOPLAY IN SERVICE, autoplaying? " + (artworks == null ? "no" : "yes"));
     autoPlay = new AutoPlay(gallery, artworks);
     prepareNotification();
+    BeaconScanService.setScannerAlarm(getApplicationContext(), BeaconScanService.Mode.AUTOPLAY);
+    forceScan();
   }
 
   public void stop() {
     Log.d(TAG, "Stop autoplaying");
     clear();
+    // @TODO detect if its foreground or background
+    BeaconScanService.setScannerAlarm(getApplicationContext(), BeaconScanService.Mode.BACKGROUND);
   }
 
   private void clear() {
@@ -235,14 +250,14 @@ public class AutoPlayService extends BaseService {
 
   @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
     List<FilteredIBeacon> newBeacons = event.getBeacons();
-    Log.d(TAG, "Beacons detected: " + newBeacons.size());
+    Log.d(TAG, "onBeaconsScanResult: " + newBeacons.size());
 
     if (autoPlay == null || autoPlay.getCurrentlyPlaying() != null) {
       return;
     }
 
     List<Artwork> artworks = autoPlay.getArtworksPlayList();
-    // BeaconArtworkUpdater.updateDistances(artworks, newBeacons);
+    BeaconArtworkUpdater.updateDistances(artworks, newBeacons);
     Collections.sort(artworks, new Artwork.ArtworkComparable());
 
     for (Artwork artwork : artworks) {
@@ -267,6 +282,11 @@ public class AutoPlayService extends BaseService {
     getApplicationContext().startService(i);
   }
 
+  private void forceScan() {
+    Intent i = new Intent(getApplicationContext(), BeaconScanService.class);
+    getApplicationContext().startService(i);
+  }
+
   @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
     Artwork playingArtwork = event.getArtwork();
     if (autoPlay != null && !autoPlay.getCurrentlyPlaying().equals(playingArtwork)) {
@@ -280,6 +300,7 @@ public class AutoPlayService extends BaseService {
 
       if (autoPlay.getCurrentlyPlaying().equals(event.getArtwork())) {
         autoPlay.resetPlayingArtwork();
+        forceScan();
       }
 
       if (autoPlay.isFinished()) {

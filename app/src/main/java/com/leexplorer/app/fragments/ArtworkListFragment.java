@@ -62,27 +62,6 @@ public class ArtworkListFragment extends BaseFragment {
   private MenuItem menuAutoplay;
   private Gallery gallery;
 
-  @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
-    List<FilteredIBeacon> newBeacons = event.getBeacons();
-    Log.d(TAG, "Beacons detected: " + newBeacons.size());
-
-    beacons = newBeacons;
-
-    // If this is true, it means we are able to satisfy the
-    // scanBeacons call
-    if (scaningBeacons) {
-      scaningBeacons = false;
-      if (callbacks != null) {
-        callbacks.onLoading(false);
-      }
-      if (menuReresh != null) {
-        menuReresh.setVisible(true);
-      }
-      refreshArtworks();
-      return;
-    }
-  }
-
   public static ArtworkListFragment newInstance(Gallery gallery) {
     Bundle args = new Bundle();
     args.putParcelable(EXTRA_GALLERY, gallery);
@@ -169,7 +148,7 @@ public class ArtworkListFragment extends BaseFragment {
     inflater.inflate(R.menu.artwork_list, menu);
     menuReresh = menu.findItem(R.id.menuRefresh);
     menuAutoplay = menu.findItem(R.id.menuAutoplay);
-    checkAutoplayStatus();
+    AutoPlayService.checkAutoplayStatus(getActivity());
   }
 
   @Override
@@ -279,6 +258,7 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   public void updateAdapterDataset(List<Artwork> aws) {
+    Log.d("BeaconArtworkUpdater", "RESET ARTWORKS!!!");
     artworks.clear();
     for (Artwork aw : aws) {
       artworks.add(aw);
@@ -289,9 +269,7 @@ public class ArtworkListFragment extends BaseFragment {
 
   private void refreshArtworkAdapter() {
     BeaconArtworkUpdater.updateDistances(artworks, beacons);
-
     Collections.sort(artworks, new Artwork.ArtworkComparable());
-
     artworkAdapter.notifyDataSetChanged();
   }
 
@@ -341,15 +319,11 @@ public class ArtworkListFragment extends BaseFragment {
     getActivity().startService(i);
   }
 
-  public void checkAutoplayStatus() {
-    Log.d(TAG, "check autoplay status");
-    Intent i = new Intent(getActivity(), AutoPlayService.class);
-    i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_CHECK_STATUS);
-    i.putExtra(AutoPlayService.EXTRA_GALLERY, gallery);
-    getActivity().startService(i);
-  }
-
   @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
+    if( menuAutoplay == null) {
+      return;
+    }
+
     if (event.getStatus() != AutoPlayService.Status.OFF && gallery.equals(event.getGallery())) {
       menuAutoplay.setVisible(false);
     } else {
@@ -360,6 +334,27 @@ public class ArtworkListFragment extends BaseFragment {
   @Subscribe public void onAutoplayAudioFinished(AutoPlayAudioFinishedEvent event) {
     if (gallery.equals(event.getGallery())) {
       menuAutoplay.setVisible(true);
+    }
+  }
+
+  @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
+    List<FilteredIBeacon> newBeacons = event.getBeacons();
+    Log.d(TAG, "Beacons detected: " + newBeacons.size());
+
+    beacons = newBeacons;
+
+    // If this is true, it means we are able to satisfy the
+    // scanBeacons call
+    if (scaningBeacons) {
+      scaningBeacons = false;
+      if (callbacks != null) {
+        callbacks.onLoading(false);
+      }
+      if (menuReresh != null) {
+        menuReresh.setVisible(true);
+      }
+      refreshArtworks();
+      return;
     }
   }
 }

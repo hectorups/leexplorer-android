@@ -23,7 +23,9 @@ import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.NetworkErrorEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
+import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
+import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
@@ -49,6 +51,7 @@ public class BaseActivity extends ActionBarActivity {
       setResultCode(Activity.RESULT_CANCELED);
     }
   };
+
   private int processesLoading = 0;
 
   @Override
@@ -77,9 +80,9 @@ public class BaseActivity extends ActionBarActivity {
     processesLoading += loading ? 1 : -1;
     if (processesLoading < 1) {
       processesLoading = 0;
-      setProgressBarIndeterminateVisibility(false);
+      setSupportProgressBarIndeterminateVisibility(false);
     } else {
-      setProgressBarIndeterminateVisibility(true);
+      setSupportProgressBarIndeterminateVisibility(true);
     }
   }
 
@@ -88,11 +91,10 @@ public class BaseActivity extends ActionBarActivity {
     super.onResume();
     bus.register(eventhandler);
 
-    BeaconScanService.setScannerAlarm(this, BeaconScanService.Mode.FOREGROUND);
+    AutoPlayService.checkAutoplayStatus(this);
 
     IntentFilter filter = new IntentFilter(BeaconScanService.ACTION_SHOW_NOTIFICATION);
     registerReceiver(onShowNotification, filter, BeaconScanService.PERM_PRIVATE, null);
-
     // Cancel existing notification if any
     if (Context.NOTIFICATION_SERVICE != null) {
       String ns = Context.NOTIFICATION_SERVICE;
@@ -156,6 +158,14 @@ public class BaseActivity extends ActionBarActivity {
       }
       CroutonCustomView.cancelAllCroutons();
       new CroutonCustomView(BaseActivity.this, messageId, 4000).show();
+    }
+
+    @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
+      if(event.getStatus() == AutoPlayService.Status.OFF) {
+        BeaconScanService.setScannerAlarm(BaseActivity.this, BeaconScanService.Mode.FOREGROUND);
+      } else {
+        BeaconScanService.setScannerAlarm(BaseActivity.this, BeaconScanService.Mode.AUTOPLAY);
+      }
     }
   }
 

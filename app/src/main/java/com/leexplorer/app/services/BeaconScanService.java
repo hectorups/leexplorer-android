@@ -30,6 +30,7 @@ import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.models.IBeacon;
+import com.leexplorer.app.util.ble.BluetoothCrashResolver;
 import com.leexplorer.app.util.ble.Majorminor;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class BeaconScanService extends IntentService {
   public static final String SERVICE_NAME = "beaconscan-serviceFromScanRecord";
   public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
   private static final int INTERVAL_AUTOPLAY = 10 * 1000;
-  private static final int INTERVAL_FOREGROUND = 8 * 1000;
+  private static final int INTERVAL_FOREGROUND = 30 * 1000;
   private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000;
   // Don't drain the battery when in bg!
   private static final int SCAN_PERIOD = 4000;
@@ -59,11 +60,11 @@ public class BeaconScanService extends IntentService {
   @Inject Client client;
   @Inject Bus bus;
   @Inject EventReporter eventReporter;
-
+  @Inject BluetoothCrashResolver bluetoothCrashResolver;
   @Inject HashMap<String, FilteredIBeacon> beacons;
   private BluetoothManager bluetoothManager;
   private BluetoothAdapter bluetoothAdapter;
-  private static Mode currentMode;
+  private static Mode currentMode = Mode.BACKGROUND;
 
   private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
     @Override
@@ -88,8 +89,6 @@ public class BeaconScanService extends IntentService {
           + ':'
           + iBeacon.getMinor()
           + LOG_SEPARATOR
-          + iBeacon.getTxPower()
-          + LOG_SEPARATOR
           + rssi);
 
       String majorminor =
@@ -100,6 +99,8 @@ public class BeaconScanService extends IntentService {
       } else {
         beacons.get(majorminor).addAdvertisement(iBeacon);
       }
+
+      bluetoothCrashResolver.notifyScannedDevice(device,leScanCallback);
     }
   };
 
@@ -111,6 +112,8 @@ public class BeaconScanService extends IntentService {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
       return;
     }
+
+    Log.d(TAG, "Set beacon scanning mode to: " + mode);
 
     currentMode = mode;
 
@@ -124,20 +127,27 @@ public class BeaconScanService extends IntentService {
     switch (currentMode) {
       case BACKGROUND:
         interval = INTERVAL_BACKGROUND;
+        break;
       case AUTOPLAY:
         interval = INTERVAL_AUTOPLAY;
+        break;
       default:
         interval = INTERVAL_FOREGROUND;
     }
+
     alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), interval, pi);
   }
 
   @Override public void onCreate() {
     super.onCreate();
     ((LeexplorerApplication) getApplicationContext()).inject(this);
+    bluetoothCrashResolver.start();
   }
 
-
+  @Override public void onDestroy() {
+    bluetoothCrashResolver.stop();
+    super.onDestroy();
+  }
 
   @Override
   protected void onHandleIntent(Intent intent) {
@@ -148,6 +158,10 @@ public class BeaconScanService extends IntentService {
     if (!isBluetoothAdapterHealthy()) {
       eventReporter.logException("Bluetoothadapter null or it is off");
       return;
+    }
+
+    if (bluetoothCrashResolver.isRecoveryInProgress()) {
+      eventReporter.logException("Skipping scan because crash recovery is in progress.");
     }
 
     Log.d(TAG, "begin beacons size: " + beacons.size());

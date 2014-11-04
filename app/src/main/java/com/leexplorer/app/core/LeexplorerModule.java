@@ -26,6 +26,7 @@ import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
+import com.leexplorer.app.util.ble.BluetoothCrashResolver;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.okhttp.Cache;
@@ -140,6 +141,10 @@ public class LeexplorerModule {
 
   @Provides @Singleton HashMap<String, FilteredIBeacon> provideBeaconsFound() {
     return new HashMap<>();
+  }
+
+  @Provides @Singleton BluetoothCrashResolver provideBluetoothCrashResolver(LeexplorerApplication application) {
+    return new BluetoothCrashResolver(application);
   }
 }
 

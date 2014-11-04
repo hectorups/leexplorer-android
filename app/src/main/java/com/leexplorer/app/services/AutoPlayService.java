@@ -102,13 +102,15 @@ public class AutoPlayService extends BaseService {
   }
 
   protected void onHandleIntent(Intent intent) {
-    Log.d(TAG, "Intent received");
     if (intent == null) {
       return;
     }
 
+    int action = intent.getIntExtra(EXTRA_ACTION, 0);
+    Log.d(TAG, "Intent received " + action);
+
     Gallery gallery;
-    switch (intent.getIntExtra(EXTRA_ACTION, 0)) {
+    switch (action) {
       case ACTION_START:
         gallery = intent.getParcelableExtra(EXTRA_GALLERY);
         List<Artwork> artworks = intent.getParcelableArrayListExtra(EXTRA_ARTWORKS);
@@ -144,6 +146,7 @@ public class AutoPlayService extends BaseService {
     autoPlay = new AutoPlay(gallery, artworks);
     prepareNotification();
     BeaconScanService.setScannerAlarm(getApplicationContext(), BeaconScanService.Mode.AUTOPLAY);
+    forceScan();
   }
 
   public void stop() {
@@ -283,6 +286,11 @@ public class AutoPlayService extends BaseService {
     getApplicationContext().startService(i);
   }
 
+  private void forceScan() {
+    Intent i = new Intent(getApplicationContext(), BeaconScanService.class);
+    getApplicationContext().startService(i);
+  }
+
   @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
     Artwork playingArtwork = event.getArtwork();
     if (autoPlay != null && !autoPlay.getCurrentlyPlaying().equals(playingArtwork)) {
@@ -296,6 +304,7 @@ public class AutoPlayService extends BaseService {
 
       if (autoPlay.getCurrentlyPlaying().equals(event.getArtwork())) {
         autoPlay.resetPlayingArtwork();
+        forceScan();
       }
 
       if (autoPlay.isFinished()) {

@@ -250,18 +250,14 @@ public class AutoPlayService extends BaseService {
 
   @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
     List<FilteredIBeacon> newBeacons = event.getBeacons();
-    Log.d(TAG, "Beacons detected: " + newBeacons.size());
+    Log.d(TAG, "onBeaconsScanResult: " + newBeacons.size());
 
     if (autoPlay == null || autoPlay.getCurrentlyPlaying() != null) {
       return;
     }
 
     List<Artwork> artworks = autoPlay.getArtworksPlayList();
-    try {
-      BeaconArtworkUpdater.updateDistances(artworks, newBeacons);
-    } catch (BeaconArtworkUpdater.ArtworkNullException e) {
-      eventReporter.logException(e);
-    }
+    BeaconArtworkUpdater.updateDistances(artworks, newBeacons);
     Collections.sort(artworks, new Artwork.ArtworkComparable());
 
     for (Artwork artwork : artworks) {

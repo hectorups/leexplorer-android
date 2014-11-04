@@ -258,6 +258,7 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   public void updateAdapterDataset(List<Artwork> aws) {
+    Log.d("BeaconArtworkUpdater", "RESET ARTWORKS!!!");
     artworks.clear();
     for (Artwork aw : aws) {
       artworks.add(aw);
@@ -267,15 +268,8 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   private void refreshArtworkAdapter() {
-    try {
-      BeaconArtworkUpdater.updateDistances(artworks, beacons);
-    } catch (BeaconArtworkUpdater.ArtworkNullException e) {
-      Log.e(TAG, e.toString());
-      eventReporter.logException(e);
-    }
-
+    BeaconArtworkUpdater.updateDistances(artworks, beacons);
     Collections.sort(artworks, new Artwork.ArtworkComparable());
-
     artworkAdapter.notifyDataSetChanged();
   }
 

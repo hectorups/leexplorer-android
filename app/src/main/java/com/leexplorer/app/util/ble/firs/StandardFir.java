@@ -1,6 +1,5 @@
 package com.leexplorer.app.util.ble.firs;
 
-import android.util.Log;
 import com.leexplorer.app.models.IBeacon;
 import com.leexplorer.app.util.ble.BleUtils;
 import java.util.Date;
@@ -90,7 +89,6 @@ public class StandardFir implements BleFir {
 
   private boolean isGone() {
     Date expiringDate = new Date(System.currentTimeMillis() - GONE_TIME);
-    Log.d("beaconscanservice", "isGone? " + expiringDate.toString() + " > " + ( lastUpdatedAt != null ? lastUpdatedAt.toString() : "null") );
     return lastUpdatedAt.before(expiringDate);
   }
 

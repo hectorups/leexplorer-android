@@ -28,6 +28,7 @@ public class AppConstants {
   public static final String CLIENT_NAME = "LeExplorer-Android";
 
   public static final int MIN_METRES_FOR_AUTOPLAY = 7;
+  public static final int MILSEC_ARTWORK_REFRESH = 30000;
 
   static {
     FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);

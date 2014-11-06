@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +19,9 @@ import com.etsy.android.grid.StaggeredGridView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.api.Client;
+import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.core.RepeatableRunnable;
 import com.leexplorer.app.events.ArtworkClickedEvent;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
@@ -61,6 +64,20 @@ public class ArtworkListFragment extends BaseFragment {
   private MenuItem menuReresh;
   private MenuItem menuAutoplay;
   private Gallery gallery;
+  private final Handler handler = new Handler();
+
+  RepeatableRunnable statusChecker = new RepeatableRunnable() {
+    @Override
+    public void run() {
+      scanBeacons();
+      handler.postDelayed(this, AppConstants.MILSEC_ARTWORK_REFRESH);
+    }
+
+    @Override
+    public void stop() {
+      handler.removeCallbacks(this);
+    }
+  };
 
   public static ArtworkListFragment newInstance(Gallery gallery) {
     Bundle args = new Bundle();
@@ -111,11 +128,13 @@ public class ArtworkListFragment extends BaseFragment {
   public void onResume() {
     super.onResume();
     bus.register(this);
+    statusChecker.run();
   }
 
   @Override
   public void onPause() {
     bus.unregister(this);
+    statusChecker.stop();
     super.onPause();
   }
 
@@ -281,7 +300,7 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   private void scanBeacons() {
-    if (getActivity() == null) {
+    if (getActivity() == null || scaningBeacons) {
       return;
     }
 
@@ -295,6 +314,8 @@ public class ArtworkListFragment extends BaseFragment {
     if (menuReresh != null) {
       menuReresh.setVisible(false);
     }
+
+    Log.d(TAG, "scan for beacons");
 
     scaningBeacons = true;
 
@@ -320,7 +341,7 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
-    if( menuAutoplay == null) {
+    if (menuAutoplay == null) {
       return;
     }
 

@@ -124,7 +124,7 @@ public class MediaPlayerService extends BaseService {
     intent.putExtra(ArtworkActivity.EXTRA_ARTWORKS, artworks);
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent,
+    PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 1, intent,
         PendingIntent.FLAG_UPDATE_CURRENT);
 
     Notification notification =

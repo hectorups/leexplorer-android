@@ -39,6 +39,15 @@ public class ArtworkActivity extends BaseActivity {
     super.onPause();
   }
 
+  @Override protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    Log.d(TAG, "onNewIntent");
+    Artwork artwork = intent.getParcelableExtra(EXTRA_ARTWORK);
+    if(artwork != null) {
+      setViewPagerPage(artwork);
+    }
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -68,16 +77,21 @@ public class ArtworkActivity extends BaseActivity {
     viewPager.setOnPageChangeListener(adapter);
 
     // Set page in ViewPager
-    setTitle(currentArtwork.getName());
+    setViewPagerPage(currentArtwork);
+
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  }
+
+  public void setViewPagerPage(Artwork artwork) {
+    // Set page in ViewPager
+    setTitle(artwork.getName());
     for (int i = 0; i < artworks.size(); i++) {
       Artwork aw = artworks.get(i);
-      if (currentArtwork.equals(aw)) {
+      if (artwork.equals(aw)) {
         viewPager.setCurrentItem(i);
         break;
       }
     }
-
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
   }
 
   @Override

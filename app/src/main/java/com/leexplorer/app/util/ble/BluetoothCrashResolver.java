@@ -39,6 +39,7 @@ import java.util.Set;
  *
  * Created by dyoung on 3/24/14.
  */
+@SuppressWarnings("PMD")
 @TargetApi(5)
 public class BluetoothCrashResolver {
   private static final String TAG = "BluetoothCrashResolver";

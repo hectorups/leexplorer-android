@@ -17,10 +17,11 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
-import com.leexplorer.app.events.AudioCompleteEvent;
-import com.leexplorer.app.events.AudioProgressEvent;
-import com.leexplorer.app.events.AudioStartedEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
+import com.leexplorer.app.events.audio.AudioCompleteEvent;
+import com.leexplorer.app.events.audio.AudioProgressEvent;
+import com.leexplorer.app.events.audio.AudioResumingEvent;
+import com.leexplorer.app.events.audio.AudioStartedEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.squareup.otto.Subscribe;
@@ -163,6 +164,7 @@ public class MediaPlayerService extends BaseService {
     if (mediaPlayer != null && this.artwork != null && this.artwork.equals(artwork)) {
       mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
       mediaPlayer.start();
+      bus.post(new AudioResumingEvent(this.artwork));
     } else {
       stop();
       this.artwork = artwork;

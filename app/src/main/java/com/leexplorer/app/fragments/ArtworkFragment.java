@@ -28,9 +28,10 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.leexplorer.app.R;
-import com.leexplorer.app.events.AudioCompleteEvent;
-import com.leexplorer.app.events.AudioProgressEvent;
-import com.leexplorer.app.events.AudioStartedEvent;
+import com.leexplorer.app.events.audio.AudioCompleteEvent;
+import com.leexplorer.app.events.audio.AudioProgressEvent;
+import com.leexplorer.app.events.audio.AudioResumingEvent;
+import com.leexplorer.app.events.audio.AudioStartedEvent;
 import com.leexplorer.app.events.FullScreenImageEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Artwork;
@@ -313,15 +314,22 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     updateSeekbar();
   }
 
-  @Subscribe public void audioComplete(AudioCompleteEvent event) {
+  @Subscribe public void onAudioComplete(AudioCompleteEvent event) {
     Log.d(TAG, "audio: completed");
     setAudioClosed();
     showAudio();
   }
 
-  @Subscribe public void audioFailed(AudioStartedEvent event) {
+  @Subscribe public void onAudioFailed(AudioStartedEvent event) {
     if (event.getArtwork().equals(artwork)) {
       bus.post(new LoadingEvent(false));
+    }
+  }
+
+  @Subscribe public void onAudioResuming(AudioResumingEvent event) {
+    if(event.getArtwork().equals(artwork)) {
+      nowPlaying = true;
+      onPause = false;
     }
   }
 

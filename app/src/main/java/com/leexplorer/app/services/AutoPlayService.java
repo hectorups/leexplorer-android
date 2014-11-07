@@ -17,9 +17,9 @@ import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkListActivity;
 import com.leexplorer.app.core.AppConstants;
-import com.leexplorer.app.events.AudioCompleteEvent;
-import com.leexplorer.app.events.AudioProgressEvent;
-import com.leexplorer.app.events.AudioStartedEvent;
+import com.leexplorer.app.events.audio.AudioCompleteEvent;
+import com.leexplorer.app.events.audio.AudioProgressEvent;
+import com.leexplorer.app.events.audio.AudioStartedEvent;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioStartedEvent;
@@ -41,8 +41,6 @@ public class AutoPlayService extends BaseService {
   public static final String TAG = "com.leexplorer.services.AutoPlayService";
   private static final int NOTIFICATION_ID = 12;
   public static final String EXTRA_ACTION = "com.leexplorer.services.autoplayservice.action";
-  public static final String CANCEL_BROADCAST =
-      "com.leexplorer.services.AutoPlayService.CANCEL_AUTOPLAY";
   public static final int ACTION_START = 1;
   public static final int ACTION_STOP = 2;
   public static final int ACTION_CHECK_STATUS = 3;
@@ -215,6 +213,14 @@ public class AutoPlayService extends BaseService {
         PendingIntent.FLAG_UPDATE_CURRENT);
   }
 
+  private PendingIntent resumePendingIntent() {
+    Intent intent = new Intent(getApplicationContext(), MediaPlayerService.class);
+    intent.putExtra(MediaPlayerService.ARTWORK, autoPlay.getCurrentlyPlaying());
+    intent.putExtra(MediaPlayerService.ACTION, MediaPlayerService.ACTION_PLAY);
+    return PendingIntent.getService(getApplicationContext(), 0, intent,
+        PendingIntent.FLAG_UPDATE_CURRENT);
+  }
+
   private void showNotification(Bitmap bitmap) {
     if (autoPlay == null) {
       return;
@@ -240,6 +246,11 @@ public class AutoPlayService extends BaseService {
 
     if (bitmap != null) {
       builder.setLargeIcon(bitmap);
+    }
+
+    if (autoPlay.isOnPause()) {
+      builder.addAction(R.drawable.ic_play,
+          resources.getString(R.string.autoplay_notification_resume), resumePendingIntent());
     }
 
     Notification notification = builder.build();
@@ -289,8 +300,20 @@ public class AutoPlayService extends BaseService {
 
   @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
     Artwork playingArtwork = event.getArtwork();
-    if (autoPlay != null && !autoPlay.getCurrentlyPlaying().equals(playingArtwork)) {
+    if (autoPlay == null) {
+      return;
+    }
+
+    if (autoPlay.getCurrentlyPlaying().equals(playingArtwork)) {
+      boolean oldOnPause = autoPlay.isOnPause();
+      autoPlay.setOnPause(event.getCurrentDuration() == autoPlay.getCurrentDuration());
+      autoPlay.setCurrentDuration(event.getCurrentDuration());
+      if (oldOnPause != autoPlay.isOnPause()) {
+        prepareNotification();
+      }
+    } else {
       autoPlay.setAsPlayingArtwork(playingArtwork);
+      prepareNotification();
     }
   }
 

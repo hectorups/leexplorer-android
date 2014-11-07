@@ -38,7 +38,8 @@
   <string name="autoplay_notification_text">%1$s artwork\'s audio will autoplay as you come close to
     them.
   </string>
-  <string name="autoplay_notification_stop">Cancel Autoplay</string>
+  <string name="autoplay_notification_stop">Cancel</string>
+  <string name="autoplay_notification_resume">Resume</string>
 
   <!-- GALLERY SCREEN -->
   <string name="title_activity_galery_list">GaleryListActivity</string>

@@ -8,6 +8,8 @@ public class AutoPlay {
   private List<Artwork> artworksPlayList;
   private List<Artwork> playedArtworks;
   private Artwork currentlyPlaying;
+  private long currentDuration;
+  private boolean onPause;
 
   public AutoPlay(Gallery gallery, List<Artwork> artworksPlayList) {
     this.gallery = gallery;
@@ -16,14 +18,11 @@ public class AutoPlay {
   }
 
   public void setAsPlayingArtwork(Artwork artwork) {
-    if (!artworksPlayList.contains(artwork)) {
-      resetPlayingArtwork();
-    } else {
-      if (!wasArtworkPlayed(artwork)) {
-        playedArtworks.add(artwork);
-      }
-      currentlyPlaying = artwork;
+    resetPlayingArtwork();
+    if (!wasArtworkPlayed(artwork)) {
+      playedArtworks.add(artwork);
     }
+    currentlyPlaying = artwork;
   }
 
   public boolean isFinished() {
@@ -31,7 +30,25 @@ public class AutoPlay {
   }
 
   public void resetPlayingArtwork() {
-    this.currentlyPlaying = null;
+    currentlyPlaying = null;
+    currentDuration = 0;
+    onPause = false;
+  }
+
+  public boolean isOnPause() {
+    return onPause;
+  }
+
+  public void setOnPause(boolean onPause) {
+    this.onPause = onPause;
+  }
+
+  public void setCurrentDuration(long currentDuration) {
+    this.currentDuration = currentDuration;
+  }
+
+  public long getCurrentDuration() {
+    return currentDuration;
   }
 
   public boolean wasArtworkPlayed(Artwork artwork) {

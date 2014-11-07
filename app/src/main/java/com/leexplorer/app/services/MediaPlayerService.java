@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -24,9 +26,13 @@ import com.leexplorer.app.events.audio.AudioResumingEvent;
 import com.leexplorer.app.events.audio.AudioStartedEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.inject.Inject;
 
 public class MediaPlayerService extends BaseService {
 
@@ -49,6 +55,7 @@ public class MediaPlayerService extends BaseService {
   private static ArrayList<Artwork> artworks;
   private static int volume = (int) MAX_VOLUME / 2;
 
+  @Inject ImageSourcePicker imageSourcePicker;
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
   private Handler progressHandler = new Handler();
@@ -115,6 +122,40 @@ public class MediaPlayerService extends BaseService {
   }
 
   private void prepareNotification() {
+    final int imageWidth = getResources().getDimensionPixelSize(R.dimen.notification_size);
+    final int imageHeight = getResources().getDimensionPixelSize(R.dimen.notification_size);
+
+    Handler mainHandler = new Handler(getMainLooper());
+    Runnable getImageRunnable = new Runnable() {
+      @Override public void run() {
+        imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_tiny)
+            .resize(imageWidth, imageHeight)
+            .centerCrop()
+            .into(new Target() {
+              @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                showNotification(bitmap);
+              }
+
+              @Override public void onBitmapFailed(Drawable errorDrawable) {
+                if (errorDrawable != null) {
+                  eventReporter.logException(errorDrawable.toString());
+                } else {
+                  eventReporter.logException("Unknown errorDrawable");
+                }
+
+                showNotification(null);
+              }
+
+              @Override public void onPrepareLoad(Drawable placeHolderDrawable) {
+              }
+            });
+      }
+    };
+
+    mainHandler.post(getImageRunnable);
+  }
+
+  private void showNotification(Bitmap bitmap) {
     Resources r = getResources();
     Intent intent = new Intent(this, ArtworkActivity.class);
     intent.putExtra(ArtworkActivity.EXTRA_ARTWORK, artwork);
@@ -127,14 +168,18 @@ public class MediaPlayerService extends BaseService {
     PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 1, intent,
         PendingIntent.FLAG_UPDATE_CURRENT);
 
-    Notification notification =
+    NotificationCompat.Builder builder =
         new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(
             R.drawable.ic_white_play)
             .setContentTitle(r.getString(R.string.audio_notification_title))
             .setContentText(r.getString(R.string.audio_notification_text, artwork.getName()))
-            .setContentIntent(pi)
-            .build();
+            .setContentIntent(pi);
 
+    if (bitmap != null) {
+      builder.setLargeIcon(bitmap);
+    }
+
+    Notification notification = builder.build();
     notification.flags |= Notification.FLAG_ONGOING_EVENT;
 
     startForeground(NOTIFICATION_ID, notification);

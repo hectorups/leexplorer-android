@@ -109,6 +109,10 @@ public class GalleryListActivity extends BaseActivity
         (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
     BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
 
+    if (bluetoothAdapter == null) {
+      return;
+    }
+
     if (bluetoothAdapter.getState() == BluetoothAdapter.STATE_OFF) {
       showBluetoothWarningIcon(true);
     } else {

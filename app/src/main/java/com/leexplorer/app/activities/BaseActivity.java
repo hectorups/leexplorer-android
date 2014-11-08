@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
@@ -80,9 +81,17 @@ public class BaseActivity extends ActionBarActivity {
     processesLoading += loading ? 1 : -1;
     if (processesLoading < 1) {
       processesLoading = 0;
-      setSupportProgressBarIndeterminateVisibility(false);
+      //setSupportProgressBarIndeterminateVisibility(false);
     } else {
-      setSupportProgressBarIndeterminateVisibility(true);
+      //setSupportProgressBarIndeterminateVisibility(true);
+    }
+  }
+
+  public void setupActionBar() {
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    if(toolbar != null) {
+      setSupportActionBar(toolbar);
+      getSupportActionBar().setHomeButtonEnabled(true);
     }
   }
 

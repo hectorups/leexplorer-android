@@ -13,13 +13,13 @@ def getAndroidAppVersionCode() {
 }
 
 android {
-  compileSdkVersion 19
-  buildToolsVersion "19.1.0"
+  compileSdkVersion 21
+  buildToolsVersion "21.1.1"
 
   defaultConfig {
     applicationId "com.leexplorer.app"
     minSdkVersion 10
-    targetSdkVersion 19
+    targetSdkVersion 21
     versionCode getAndroidAppVersionCode()
     versionName "1.0"
 
@@ -61,7 +61,7 @@ android {
 }
 
 dependencies {
-  compile 'com.android.support:appcompat-v7:19.+'
+  compile 'com.android.support:appcompat-v7:21.0.0'
   compile 'com.squareup.picasso:picasso:2.4.0'
   compile 'com.netflix.rxjava:rxjava-core:0.20.0-RC6'
   compile 'com.netflix.rxjava:rxjava-android:0.20.0-RC6'

@@ -27,7 +27,7 @@ public class AppConstants {
   public static final String CLIENT_BUILD_HEADER_KEY = "X-LeExplorer-Client";
   public static final String CLIENT_NAME = "LeExplorer-Android";
 
-  public static final int MIN_METRES_FOR_AUTOPLAY = 7;
+  public static final int MIN_METRES_FOR_AUTOPLAY = 20;
   public static final int MILSEC_ARTWORK_REFRESH = 30000;
 
   static {

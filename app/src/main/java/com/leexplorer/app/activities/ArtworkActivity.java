@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import butterknife.ButterKnife;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkViewPagerAdapter;
@@ -52,6 +53,7 @@ public class ArtworkActivity extends BaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_artwork);
+    setupActionBar();
 
     ButterKnife.inject(this);
 
@@ -66,7 +68,8 @@ public class ArtworkActivity extends BaseActivity {
 
     viewPager = new ViewPager(this);
     viewPager.setId(R.id.viewPager);
-    setContentView(viewPager);
+    FrameLayout frameLayout = (FrameLayout) findViewById(R.id.container);
+    frameLayout.addView(viewPager);
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -78,19 +78,6 @@ public class FullScreenImageActivity extends BaseActivity {
     imageSourcePicker.getRequestCreator(artwork).into(target);
   }
 
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override public void onResume() {
-    super.onResume();
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-      getActionBar().hide();
-    }
-  }
-
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override public void onPause() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-      getActionBar().show();
-    }
-    super.onPause();
-  }
 
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);

@@ -30,6 +30,7 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_artwork_list);
+    setupActionBar();
 
     FragmentManager fm = getSupportFragmentManager();
     fragment = (ArtworkListFragment) fm.findFragmentById(R.id.container);

@@ -50,6 +50,8 @@ public class GalleryListActivity extends BaseActivity
     }
 
     setContentView(R.layout.fragment_gallery_list_responsive);
+    setupActionBar();
+
     if (isTabletMode()) {
       setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }

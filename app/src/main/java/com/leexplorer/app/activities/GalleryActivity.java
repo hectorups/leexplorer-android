@@ -15,6 +15,7 @@ public class GalleryActivity extends BaseActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_gallery);
+    setupActionBar();
 
     if (savedInstanceState == null) {
       gallery = getIntent().getParcelableExtra(GALLERY_KEY);
@@ -30,6 +31,8 @@ public class GalleryActivity extends BaseActivity {
       fragment = GalleryFragment.newInstance(gallery);
       fm.beginTransaction().add(R.id.flGalleryDetailView, fragment).commit();
     }
+
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
   }
 
   @Override protected void onSaveInstanceState(Bundle outState) {

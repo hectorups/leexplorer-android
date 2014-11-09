@@ -2,8 +2,9 @@ package com.leexplorer.app.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import com.leexplorer.app.core.LeexplorerApplication;
+import butterknife.ButterKnife;
 import com.leexplorer.app.core.EventReporter;
+import com.leexplorer.app.core.LeexplorerApplication;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -25,6 +26,11 @@ abstract public class BaseFragment extends Fragment {
   @Override public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     eventReporter.screenViewed(getScreenName());
+  }
+
+  @Override public void onDestroyView() {
+    super.onDestroyView();
+    ButterKnife.reset(this);
   }
 
   abstract public String getScreenName();

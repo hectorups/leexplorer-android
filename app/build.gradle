@@ -42,11 +42,14 @@ android {
 
   buildTypes {
     debug {
-      runProguard false
       applicationIdSuffix '.debug'
+      minifyEnabled false
+      shrinkResources false
     }
+
     release {
-      runProguard false
+      minifyEnabled true
+      shrinkResources true
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
       signingConfig signingConfigs.release
     }
@@ -80,7 +83,7 @@ dependencies {
   compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar')
   compile 'com.mixpanel.android:mixpanel-android:4.2.2@aar'
   compile 'com.mcxiaoke.photoview:library:1.2.3'
-  compile 'uk.co.chrisjenx:calligraphy:1.2.0'
+  compile 'uk.co.chrisjenx:calligraphy:1.1.0'
 }
 
 pmd {

@@ -21,11 +21,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryInfoAdapter;
-import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.core.EventReporter;
+import com.leexplorer.app.core.LeexplorerApplication;
+import com.leexplorer.app.models.Gallery;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.pollexor.Thumbor;
@@ -295,13 +295,13 @@ public class GalleryMapFragment extends SupportMapFragment {
 
       boolean isNewMarker = true;
 
-      for (MarkerDelegate marker : markerDelegateHashMap.keySet()) {
-
+      for (Map.Entry<MarkerDelegate, List<Gallery>> entry : markerDelegateHashMap.entrySet()) {
+        MarkerDelegate marker = entry.getKey();
         //check for overlap, consolidate if it does
         if (isMarkerOverlapping(marker.getPosition(), newPosition, projection)) {
 
           //combine markers - find new position and set new text
-          int consolidatedCount = markerDelegateHashMap.get(marker).size();
+          int consolidatedCount = entry.getValue().size();
           double newLat =
               (marker.getPosition().latitude * consolidatedCount + newPosition.latitude) / (
                   consolidatedCount
@@ -590,8 +590,7 @@ public class GalleryMapFragment extends SupportMapFragment {
           new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_pin))
               .position(position)
               .title(title)
-              .snippet(snippet)
-      );
+              .snippet(snippet));
     }
   }
 

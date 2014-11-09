@@ -374,6 +374,8 @@ public class BluetoothCrashResolver {
             lastBluetoothTurningOnTime = new Date().getTime();
             if (isDebugEnabled()) Log.d(TAG, "Bluetooth state is TURNING_ON");
             break;
+          default:
+            Log.w(TAG, "Unexpected state " + state);
         }
       }
     }

@@ -6,6 +6,15 @@
     <Match>
         <Class name="~.*\.Manifest\$.*" />
     </Match>
+
+  <Match>
+    <Class name="com.leexplorer.app.util.ble.BluetoothCrashResolver" />
+  </Match>
+
+  <Match>
+    <Class name="com.leexplorer.app.services.BaseService" />
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
     <!--<Match>-->
     <!--<Class name="com.samsungaccelerator.team9.memodot.BluetoothLeService"/>-->
     <!--<Bug code="ST"/>-->

@@ -8,9 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by hectormonserrate on 13/02/14.
- */
 @SuppressWarnings("PMD")
 public class FakeData {
 
@@ -65,7 +62,7 @@ public class FakeData {
             gson.fromJson(awj, com.leexplorer.app.api.models.Artwork.class);
         Artwork aw = Artwork.fromJsonModel(awm);
         // Random distance
-        aw.setDistance(new Double(RANDOM.nextInt(1)));
+        aw.setDistance(RANDOM.nextInt(1));
         aw.unlike();
         for (int i = 0; i < 100; i++) {
           aw.setDescription("Avium sodium rules all. " + aw.getDescription());

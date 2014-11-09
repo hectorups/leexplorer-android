@@ -1,13 +1,12 @@
 package com.leexplorer.app.util.offline;
 
 import android.os.Environment;
+import android.util.Log;
 import com.leexplorer.app.core.AppConstants;
 import java.io.File;
 
-/**
- * Created by hectormonserrate on 14/05/14.
- */
 public class FilePathGenerator {
+  public static final String TAG = "FilePathGenerator";
 
   public static File appDirectory() {
     return new File(Environment.getExternalStorageDirectory() + "/" + AppConstants.APP_FOLDER);
@@ -15,25 +14,25 @@ public class FilePathGenerator {
 
   public static void checkAppDirectory() {
     File testDirectory = appDirectory();
-    if (!testDirectory.exists()) {
-      testDirectory.mkdir();
+    if (!testDirectory.exists() && !testDirectory.mkdir()) {
+      Log.e(TAG, "Directory couldnt be created");
     }
   }
 
-  public static File galleryDirectory(String galleryId){
-    return new File( appDirectory().toString() + "/" + galleryId);
+  public static File galleryDirectory(String galleryId) {
+    return new File(appDirectory().toString() + "/" + galleryId);
   }
 
   public static void checkGalleryDirectory(String galleryId) {
     File galleryDirectory = galleryDirectory(galleryId);
-    if( !galleryDirectory.exists() ){
-      galleryDirectory.mkdir();
+    if (!galleryDirectory.exists() && !galleryDirectory.mkdir()) {
+      Log.e(TAG, "Directory couldnt be created");
     }
   }
 
-  public static boolean isGalleryDownloaded(String galleryId){
+  public static boolean isGalleryDownloaded(String galleryId) {
     File galleryDirectory = galleryDirectory(galleryId);
-    if(galleryDirectory.exists() && galleryDirectory.listFiles().length > 0){
+    if (galleryDirectory.exists() && galleryDirectory.listFiles().length > 0) {
       return true;
     }
 

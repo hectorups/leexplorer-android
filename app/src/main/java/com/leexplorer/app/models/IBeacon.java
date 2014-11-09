@@ -68,10 +68,6 @@ public class IBeacon {
    */
   protected int txPower;
 
-  /**
-   * If multiple RSSI samples were available, this is the running average
-   */
-  protected Double runningAverageRssi = null;
 
   /**
    * @return accuracy
@@ -79,7 +75,7 @@ public class IBeacon {
    */
   public double getAccuracy() {
     if (accuracy == null) {
-      accuracy = calculateAccuracy(txPower, runningAverageRssi != null ? runningAverageRssi : rssi);
+      accuracy = calculateAccuracy(txPower, rssi);
     }
     return accuracy;
   }
@@ -153,7 +149,7 @@ public class IBeacon {
     IBeacon thatIBeacon = (IBeacon) that;
     return thatIBeacon.getMajor() == this.getMajor()
         && thatIBeacon.getMinor() == this.getMinor()
-        && thatIBeacon.getProximityUuid() == thatIBeacon.getProximityUuid();
+        && thatIBeacon.getProximityUuid().contentEquals(thatIBeacon.getProximityUuid());
   }
 
   /**
@@ -269,7 +265,7 @@ public class IBeacon {
     return new String(hexChars);
   }
 
-  private static int processMajorminorBytes(byte byte1, byte byte2){
+  private static int processMajorminorBytes(byte byte1, byte byte2) {
     return (byte1 & 0xff) * 0x100 + byte2 & 0xff;
   }
 }

@@ -32,8 +32,12 @@ public class Artwork extends Model implements Parcelable {
   private Date publishedAt;
   @Column(name = "author")
   private String author;
-  @Column(name = "image_url")
-  private String imageUrl;
+  @Column(name = "image_id")
+  private String imageId;
+  @Column(name = "image_width")
+  private int imageWidth;
+  @Column(name = "image_height")
+  private int imageHeight;
   @Column(name = "likes_count")
   private int likesCount;
   // if user has seen this beacon on his phone
@@ -41,8 +45,8 @@ public class Artwork extends Model implements Parcelable {
   private boolean known;
   @Column(name = "i_liked")
   private boolean iLiked;
-  @Column(name = "audio_url")
-  private String audioUrl;
+  @Column(name = "audio_id")
+  private String audioId;
   @Column(name = "gallery_id")
   private String galleryId;
 
@@ -68,12 +72,12 @@ public class Artwork extends Model implements Parcelable {
     artwork.name = apiArtwork.name;
     artwork.majorminor = majorminor;
     artwork.description = apiArtwork.description;
-    artwork.imageUrl = apiArtwork.imageUrl;
+    artwork.imageId = apiArtwork.image.publicId;
     artwork.author = apiArtwork.author;
     artwork.likesCount = apiArtwork.likesCount;
     artwork.publishedAt =
         apiArtwork.publishedAt != null ? setDateFromString(apiArtwork.publishedAt) : null;
-    artwork.audioUrl = apiArtwork.audioUrl;
+    artwork.audioId = apiArtwork.audio != null ? apiArtwork.audio.publicId : null;
     artwork.galleryId = apiArtwork.galleryId;
 
     return artwork;
@@ -101,12 +105,12 @@ public class Artwork extends Model implements Parcelable {
     return new Select().from(Artwork.class).where("majorminor = ?", majorminor).executeSingle();
   }
 
-  public String getAudioUrl() {
-    return audioUrl;
+  public String getAudioId() {
+    return audioId;
   }
 
-  public void setAudioUrl(String audioUrl) {
-    this.audioUrl = audioUrl;
+  public void setAudioId(String audioId) {
+    this.audioId = audioId;
   }
 
   public String getName() {
@@ -152,12 +156,12 @@ public class Artwork extends Model implements Parcelable {
     this.author = author;
   }
 
-  public String getImageUrl() {
-    return imageUrl;
+  public String getImageId() {
+    return imageId;
   }
 
-  public void setImageUrl(String imageUrl) {
-    this.imageUrl = imageUrl;
+  public void setImageId(String imageId) {
+    this.imageId = imageId;
   }
 
   public boolean isKnown() {
@@ -210,6 +214,22 @@ public class Artwork extends Model implements Parcelable {
     return this.iLiked;
   }
 
+  public int getImageWidth() {
+    return imageWidth;
+  }
+
+  public void setImageWidth(int imageWidth) {
+    this.imageWidth = imageWidth;
+  }
+
+  public int getImageHeight() {
+    return imageHeight;
+  }
+
+  public void setImageHeight(int imageHeight) {
+    this.imageHeight = imageHeight;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (!(o instanceof Artwork)) {
@@ -258,14 +278,6 @@ public class Artwork extends Model implements Parcelable {
     return galleryId;
   }
 
-    /*
-     *  Parcelable Overrides
-     */
-
-  public void setGalleryId(String galleryId) {
-    this.galleryId = galleryId;
-  }
-
   @Override
   public int describeContents() {
     return 0;
@@ -290,13 +302,13 @@ public class Artwork extends Model implements Parcelable {
     dest.writeString(name);
     dest.writeString(majorminor);
     dest.writeString(description);
-    dest.writeString(imageUrl);
+    dest.writeString(imageId);
     dest.writeString(author);
     dest.writeInt(likesCount);
     dest.writeLong(publishedAt != null ? publishedAt.getTime() : 0);
     dest.writeInt(iLiked ? 1 : 0);
     dest.writeInt(known ? 1 : 0);
-    dest.writeString(audioUrl);
+    dest.writeString(audioId);
     dest.writeDouble(distance);
     dest.writeString(galleryId);
     dest.writeString(artworkId);
@@ -307,14 +319,14 @@ public class Artwork extends Model implements Parcelable {
     name = in.readString();
     majorminor = in.readString();
     description = in.readString();
-    imageUrl = in.readString();
+    imageId = in.readString();
     author = in.readString();
     likesCount = in.readInt();
     long publishedAtRead = in.readLong();
     publishedAt = publishedAtRead == 0 ? null : new Date(publishedAtRead);
     iLiked = in.readInt() == 1;
     known = in.readInt() == 1;
-    audioUrl = in.readString();
+    audioId = in.readString();
     distance = in.readDouble();
     galleryId = in.readString();
     artworkId = in.readString();

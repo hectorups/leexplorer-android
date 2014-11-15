@@ -12,6 +12,14 @@
   </Match>
 
   <Match>
+    <Class name="com.leexplorer.app.api.models.ImageFile" />
+  </Match>
+
+  <Match>
+    <Class name="com.leexplorer.app.api.models.MediaFile" />
+  </Match>
+
+  <Match>
     <Class name="com.leexplorer.app.services.BaseService" />
     <Bug pattern="IS2_INCONSISTENT_SYNC"/>
   </Match>

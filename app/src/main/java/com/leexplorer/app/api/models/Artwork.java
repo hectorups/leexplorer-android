@@ -10,8 +10,7 @@ public class Artwork {
 
   public String description;
 
-  @SerializedName("image_url")
-  public String imageUrl;
+  public ImageFile image;
 
   @SerializedName("gallery_id")
   public String galleryId;
@@ -29,6 +28,5 @@ public class Artwork {
   @SerializedName("likes_count")
   public int likesCount;
 
-  @SerializedName("audio_url")
-  public String audioUrl;
+  public MediaFile audio;
 }

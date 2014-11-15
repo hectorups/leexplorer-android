@@ -274,7 +274,7 @@ public class AutoPlayService extends BaseService {
     for (Artwork artwork : artworks) {
       if (artwork.getDistance() < AppConstants.MIN_METRES_FOR_AUTOPLAY
           && !autoPlay.wasArtworkPlayed(artwork)
-          && artwork.getAudioUrl() != null) {
+          && artwork.getAudioId() != null) {
 
         // Play!!
         Log.d(TAG, "Ready to play " + artwork.getName());

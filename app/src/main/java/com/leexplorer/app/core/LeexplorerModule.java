@@ -2,6 +2,7 @@ package com.leexplorer.app.core;
 
 import android.net.Uri;
 import android.util.Log;
+import com.cloudinary.Cloudinary;
 import com.leexplorer.app.activities.ArtworkActivity;
 import com.leexplorer.app.activities.ArtworkListActivity;
 import com.leexplorer.app.activities.FullScreenImageActivity;
@@ -41,6 +42,7 @@ import dagger.Provides;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 import retrofit.ErrorHandler;
@@ -110,8 +112,8 @@ public class LeexplorerModule {
   }
 
   @Provides @Singleton ImageSourcePicker provideImageSourcePicker(Picasso picasso,
-      Thumbor thumbor) {
-    return new ImageSourcePicker(application, picasso, thumbor);
+      Cloudinary cloudinary) {
+    return new ImageSourcePicker(application, picasso, cloudinary);
   }
 
   @Provides @Singleton FileDownloader privideFileDownloader(OkUrlFactory factory) {
@@ -143,8 +145,15 @@ public class LeexplorerModule {
     return new HashMap<>();
   }
 
-  @Provides @Singleton BluetoothCrashResolver provideBluetoothCrashResolver(LeexplorerApplication application) {
+  @Provides @Singleton BluetoothCrashResolver provideBluetoothCrashResolver(
+      LeexplorerApplication application) {
     return new BluetoothCrashResolver(application);
+  }
+
+  @Provides @Singleton Cloudinary provideCloudinary() {
+    Map config = new HashMap();
+    config.put("cloud_name", AppConstants.CLOUDINARY_CLOUD_NAME);
+    return new Cloudinary(config);
   }
 }
 

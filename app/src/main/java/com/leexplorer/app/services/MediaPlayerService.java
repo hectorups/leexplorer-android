@@ -201,7 +201,7 @@ public class MediaPlayerService extends BaseService {
 
   synchronized private void play(final Artwork artwork) {
 
-    if (artwork.getAudioUrl() == null) {
+    if (artwork.getAudioId() == null) {
       Log.e(LOG, "I got an artwork to play without an audio file !!!");
       return;
     }
@@ -214,7 +214,7 @@ public class MediaPlayerService extends BaseService {
       stop();
       this.artwork = artwork;
 
-      Uri audioUri = AudioSourcePicker.getUri(artwork.getGalleryId(), artwork.getAudioUrl());
+      Uri audioUri = AudioSourcePicker.getUri(artwork.getGalleryId(), artwork.getAudioId());
       mediaPlayer = new MediaPlayer();
 
       try {

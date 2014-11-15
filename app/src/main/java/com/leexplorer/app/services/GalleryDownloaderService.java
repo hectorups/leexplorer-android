@@ -98,16 +98,16 @@ public class GalleryDownloaderService extends IntentService {
   }
 
   private void saveArtwork(Artwork artwork) throws IOException {
-    if (artwork.getImageUrl() != null) {
-      String url = thumbor.buildImage(artwork.getImageUrl())
+    if (artwork.getImageId() != null) {
+      String url = thumbor.buildImage(artwork.getImageId())
           .resize((int) getResources().getDimension(R.dimen.thumbor_large), 0)
           .toUrl();
 
       saveFile(artwork, url);
     }
 
-    if (artwork.getAudioUrl() != null) {
-      saveFile(artwork, artwork.getAudioUrl());
+    if (artwork.getAudioId() != null) {
+      saveFile(artwork, artwork.getAudioId());
     }
   }
 
@@ -115,11 +115,11 @@ public class GalleryDownloaderService extends IntentService {
     int total = 0;
 
     for (Artwork artwork : artworks) {
-      if (artwork.getAudioUrl() != null) {
+      if (artwork.getAudioId() != null) {
         total++;
       }
 
-      if (artwork.getImageUrl() != null) {
+      if (artwork.getImageId() != null) {
         total++;
       }
     }

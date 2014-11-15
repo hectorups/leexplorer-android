@@ -246,13 +246,13 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
     menuPlay = menu.findItem(R.id.menuPlay);
 
-    if (artwork.getAudioUrl() != null) {
+    if (artwork.getAudioId() != null) {
       menuPlay.setVisible(true);
     } else {
       menuPlay.setVisible(false);
     }
 
-    picasso.load(artwork.getImageUrl()).into(targetForShare);
+    picasso.load(artwork.getImageId()).into(targetForShare);
   }
 
   @Override
@@ -373,7 +373,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   private void showAudio() {
     if (menuPlay != null) {
-      if (audioCurrentDuration == 0 && artwork.getAudioUrl() != null) {
+      if (audioCurrentDuration == 0 && artwork.getAudioId() != null) {
         menuPlay.setVisible(true);
       } else {
         menuPlay.setVisible(false);

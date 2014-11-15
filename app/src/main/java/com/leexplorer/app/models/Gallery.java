@@ -272,8 +272,8 @@ public class Gallery extends Model implements Parcelable {
     List<String> imageUrls = new ArrayList<>();
     List<Artwork> artworks = Artwork.galleryArtworks(this.getGalleryId());
     for (Artwork artwork : artworks) {
-      if (!TextUtils.isEmpty(artwork.getImageUrl())) {
-        imageUrls.add(artwork.getImageUrl());
+      if (!TextUtils.isEmpty(artwork.getImageId())) {
+        imageUrls.add(artwork.getImageId());
       }
     }
     this.setArtworkImageUrls(imageUrls);

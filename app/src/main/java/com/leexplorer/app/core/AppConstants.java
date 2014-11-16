@@ -17,6 +17,9 @@ public class AppConstants {
   public static final int CONNECT_TIMEOUT = 2;
   public static final int READ_TIMEOUT = 35;
   public static final int NETWORK_CACHE = 10 * 1024 * 1024;
+  public static final String HMAC_KEY = "rAs12345ti";
+  public static final String PROXY = "10.0.0.7";
+  public static final int PROXY_PORT = 8887;
 
   // Digital Ocean
   public static final String API_URL = "http://api.leexplorer.com:1337";
@@ -27,6 +30,7 @@ public class AppConstants {
 
   public static final String BUILD_KILLED_MESSAGE = "Client update required, min build:";
   public static final String CLIENT_BUILD_HEADER_KEY = "X-LeExplorer-Client";
+  public static final String CLIENT_HMAC_KEY = "X-LeExplorer-Hmac";
   public static final String CLIENT_NAME = "LeExplorer-Android";
 
   public static final int MIN_METRES_FOR_AUTOPLAY = 20;

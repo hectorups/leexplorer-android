@@ -1,6 +1,7 @@
 package com.leexplorer.app.core;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 import com.cloudinary.Cloudinary;
 import com.leexplorer.app.activities.ArtworkActivity;
@@ -14,6 +15,7 @@ import com.leexplorer.app.adapters.GalleryInfoAdapter;
 import com.leexplorer.app.adapters.GalleryPagerAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.api.LeexplorerErrorHandler;
+import com.leexplorer.app.api.LeexplorerOkClient;
 import com.leexplorer.app.api.LeexplorerRequestInterceptor;
 import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.fragments.ArtworkListFragment;
@@ -41,12 +43,16 @@ import dagger.Module;
 import dagger.Provides;
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Singleton;
 import retrofit.ErrorHandler;
 import retrofit.RequestInterceptor;
+import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 
 @Module(
     injects = {
@@ -95,6 +101,12 @@ public class LeexplorerModule {
     client.setReadTimeout(AppConstants.READ_TIMEOUT, TimeUnit.SECONDS);
     client.setCache(cache);
 
+    if (!TextUtils.isEmpty(AppConstants.PROXY)) {
+      InetSocketAddress socketAddress =
+          InetSocketAddress.createUnresolved(AppConstants.PROXY, AppConstants.PROXY_PORT);
+      client.setProxy(new Proxy(Proxy.Type.HTTP, socketAddress));
+    }
+
     return client;
   }
 
@@ -130,6 +142,7 @@ public class LeexplorerModule {
         eventReporter.logException(exception);
       }
     });
+
     return builder.build();
   }
 
@@ -154,6 +167,19 @@ public class LeexplorerModule {
     Map config = new HashMap();
     config.put("cloud_name", AppConstants.CLOUDINARY_CLOUD_NAME);
     return new Cloudinary(config);
+  }
+
+  @Provides @Singleton OkClient provideOkClient(OkHttpClient httpClient) {
+    return new LeexplorerOkClient(httpClient, AppConstants.HMAC_KEY);
+  }
+
+  @Provides @Singleton RestAdapter provideRestAdapter(OkClient client, ErrorHandler errorHandler,
+      RequestInterceptor requestInterceptor) {
+    return new RestAdapter.Builder().setClient(client)
+        .setEndpoint(AppConstants.API_URL)
+        .setErrorHandler(errorHandler)
+        .setRequestInterceptor(requestInterceptor)
+        .build();
   }
 }
 

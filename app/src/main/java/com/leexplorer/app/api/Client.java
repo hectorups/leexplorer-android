@@ -2,35 +2,22 @@ package com.leexplorer.app.api;
 
 import com.leexplorer.app.BuildConfig;
 import com.leexplorer.app.api.models.Artwork;
-import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.offline.FakeData;
-import com.squareup.okhttp.OkHttpClient;
 import java.util.ArrayList;
 import javax.inject.Inject;
-import retrofit.ErrorHandler;
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.client.OkClient;
 import rx.Observable;
 import rx.Subscriber;
 
 public class Client {
 
   private LeexplorerService service;
-  @Inject OkHttpClient client;
-  @Inject ErrorHandler errorHandler;
-  @Inject RequestInterceptor requestInterceptor;
+  @Inject RestAdapter restAdapter;
 
   public Client(final LeexplorerApplication application) {
     application.inject(this);
-    RestAdapter restAdapter = new RestAdapter.Builder().setClient(new OkClient(client))
-        .setEndpoint(AppConstants.API_URL)
-        .setErrorHandler(errorHandler)
-        .setRequestInterceptor(requestInterceptor)
-        .build();
-
     service = restAdapter.create(LeexplorerService.class);
   }
 

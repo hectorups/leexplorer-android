@@ -73,6 +73,8 @@ public class Artwork extends Model implements Parcelable {
     artwork.majorminor = majorminor;
     artwork.description = apiArtwork.description;
     artwork.imageId = apiArtwork.image.publicId;
+    artwork.imageHeight = apiArtwork.image.height;
+    artwork.imageWidth = apiArtwork.image.width;
     artwork.author = apiArtwork.author;
     artwork.likesCount = apiArtwork.likesCount;
     artwork.publishedAt =
@@ -303,6 +305,8 @@ public class Artwork extends Model implements Parcelable {
     dest.writeString(majorminor);
     dest.writeString(description);
     dest.writeString(imageId);
+    dest.writeInt(imageWidth);
+    dest.writeInt(imageHeight);
     dest.writeString(author);
     dest.writeInt(likesCount);
     dest.writeLong(publishedAt != null ? publishedAt.getTime() : 0);
@@ -320,6 +324,8 @@ public class Artwork extends Model implements Parcelable {
     majorminor = in.readString();
     description = in.readString();
     imageId = in.readString();
+    imageWidth = in.readInt();
+    imageHeight = in.readInt();
     author = in.readString();
     likesCount = in.readInt();
     long publishedAtRead = in.readLong();

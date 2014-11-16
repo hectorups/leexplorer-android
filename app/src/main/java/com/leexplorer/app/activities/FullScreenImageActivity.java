@@ -74,7 +74,8 @@ public class FullScreenImageActivity extends BaseActivity {
     enableFullScreen(true);
 
     showProgress(true);
-    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_xlarge).into(target);
+
+    imageSourcePicker.getRequestCreator(artwork).into(target);
   }
 
   @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override public void onResume() {

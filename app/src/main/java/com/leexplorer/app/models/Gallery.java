@@ -9,13 +9,11 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.leexplorer.app.api.models.ImageFile;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by deepakdhiman on 2/18/14.
- */
 @Table(name = "galleries")
 public class Gallery extends Model implements Parcelable {
 
@@ -47,7 +45,7 @@ public class Gallery extends Model implements Parcelable {
   private boolean wasSeen;
   private double distanceFromCurrentLocation;
 
-  private List<String> artworkImageUrls;
+  private List<String> artworkImageIds;
 
   public Gallery() {
     super();
@@ -70,26 +68,29 @@ public class Gallery extends Model implements Parcelable {
 
   public static Gallery fromApiModel(com.leexplorer.app.api.models.Gallery apiGallery) {
 
-    Gallery g = findById(apiGallery.id);
+    Gallery gallery = findById(apiGallery.id);
 
-    if (g == null) {
-      g = new Gallery();
+    if (gallery == null) {
+      gallery = new Gallery();
     }
 
-    g.galleryId = apiGallery.id;
-    g.name = apiGallery.name;
-    g.address = apiGallery.address;
-    g.type = apiGallery.type;
-    g.price = apiGallery.priceReference;
-    g.hours = apiGallery.hours;
-    g.detailedPrice = apiGallery.priceDescription;
-    g.setFacilities(new ArrayList<>(apiGallery.facilities));
-    g.description = apiGallery.description;
-    g.setLanguages(new ArrayList<>(apiGallery.languages));
-    g.setLatitude(apiGallery.latitude);
-    g.setLongitude(apiGallery.longitude);
-    g.artworkImageUrls = new ArrayList<>(apiGallery.images);
-    return g;
+    gallery.galleryId = apiGallery.id;
+    gallery.name = apiGallery.name;
+    gallery.address = apiGallery.address;
+    gallery.type = apiGallery.type;
+    gallery.price = apiGallery.priceReference;
+    gallery.hours = apiGallery.hours;
+    gallery.detailedPrice = apiGallery.priceDescription;
+    gallery.setFacilities(new ArrayList<>(apiGallery.facilities));
+    gallery.description = apiGallery.description;
+    gallery.setLanguages(new ArrayList<>(apiGallery.languages));
+    gallery.setLatitude(apiGallery.latitude);
+    gallery.setLongitude(apiGallery.longitude);
+    gallery.artworkImageIds = new ArrayList<>();
+    for(ImageFile image : apiGallery.images) {
+      gallery.artworkImageIds.add(image.publicId);
+    }
+    return gallery;
   }
 
   public static Gallery findById(String galleryId) {
@@ -128,12 +129,12 @@ public class Gallery extends Model implements Parcelable {
     return galleryId.hashCode();
   }
 
-  public List<String> getArtworkImageUrls() {
-    return artworkImageUrls;
+  public List<String> getArtworkImageIds() {
+    return artworkImageIds;
   }
 
-  public void setArtworkImageUrls(List<String> artworkImageUrls) {
-    this.artworkImageUrls = artworkImageUrls;
+  public void setArtworkImageIds(List<String> artworkImageIds) {
+    this.artworkImageIds = artworkImageIds;
   }
 
   public String getGalleryId() {
@@ -257,7 +258,7 @@ public class Gallery extends Model implements Parcelable {
   }
 
   public String getMainImage() {
-    return getArtworkImageUrls().get(0);
+    return getArtworkImageIds().get(0);
   }
 
   public static List<Gallery> getAll() {
@@ -269,14 +270,14 @@ public class Gallery extends Model implements Parcelable {
   }
 
   private Gallery fillWithImages() {
-    List<String> imageUrls = new ArrayList<>();
+    List<String> imageIds = new ArrayList<>();
     List<Artwork> artworks = Artwork.galleryArtworks(this.getGalleryId());
     for (Artwork artwork : artworks) {
       if (!TextUtils.isEmpty(artwork.getImageId())) {
-        imageUrls.add(artwork.getImageId());
+        imageIds.add(artwork.getImageId());
       }
     }
-    this.setArtworkImageUrls(imageUrls);
+    this.setArtworkImageIds(imageIds);
 
     return this;
   }
@@ -307,7 +308,7 @@ public class Gallery extends Model implements Parcelable {
     parcel.writeString(description);
     parcel.writeFloat(latitude);
     parcel.writeFloat(longitude);
-    parcel.writeList(artworkImageUrls);
+    parcel.writeList(artworkImageIds);
     parcel.writeInt(wasSeen ? 1 : 0);
   }
 
@@ -324,7 +325,7 @@ public class Gallery extends Model implements Parcelable {
     this.description = parcel.readString();
     this.latitude = parcel.readFloat();
     this.longitude = parcel.readFloat();
-    this.artworkImageUrls = parcel.readArrayList(null);
+    this.artworkImageIds = parcel.readArrayList(null);
     this.wasSeen = parcel.readInt() == 1;
   }
 }

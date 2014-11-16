@@ -174,7 +174,7 @@ public class GalleryMapFragment extends SupportMapFragment {
           int thumborBucket =
               (int) getActivity().getResources().getDimension(GalleryInfoAdapter.THUMNAIL_SIZE);
           String url =
-              thumbor.buildImage(g.getArtworkImageUrls().get(0)).resize(thumborBucket, 0).toUrl();
+              thumbor.buildImage(g.getArtworkImageIds().get(0)).resize(thumborBucket, 0).toUrl();
           picasso.load(url)
               .placeholder(R.drawable.image_place_holder)
               .into(new InfoWindowImage(marker));

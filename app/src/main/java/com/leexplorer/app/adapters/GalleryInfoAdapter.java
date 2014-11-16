@@ -57,7 +57,7 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
     Gallery gallery = mGalleries.get(marker.getId());
     if (gallery != null) {
       imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
-          gallery.getArtworkImageUrls().get(0), THUMNAIL_SIZE)
+          gallery.getArtworkImageIds().get(0), THUMNAIL_SIZE)
           .placeholder(R.drawable.image_place_holder)
           .into(holder.ivImage);
     } else {

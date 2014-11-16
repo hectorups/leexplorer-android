@@ -30,6 +30,7 @@ import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ble.BluetoothCrashResolver;
+import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.okhttp.Cache;
@@ -126,6 +127,10 @@ public class LeexplorerModule {
   @Provides @Singleton ImageSourcePicker provideImageSourcePicker(Picasso picasso,
       Cloudinary cloudinary) {
     return new ImageSourcePicker(application, picasso, cloudinary);
+  }
+
+  @Provides @Singleton AudioSourcePicker provideAudioSourcePicker(Cloudinary cloudinary) {
+    return new AudioSourcePicker(cloudinary);
   }
 
   @Provides @Singleton FileDownloader privideFileDownloader(OkUrlFactory factory) {

@@ -26,7 +26,7 @@ public class GalleryPagerAdapter extends CircularPagerAdapter<String> {
   public GalleryPagerAdapter(GalleryListFragment fragment, final ViewPager pager, Gallery gallery) {
     super();
 
-    setupCircularPagerAdapter(pager, gallery.getArtworkImageUrls());
+    setupCircularPagerAdapter(pager, gallery.getArtworkImageIds());
 
     this.gallery = gallery;
     this.fragment = fragment;

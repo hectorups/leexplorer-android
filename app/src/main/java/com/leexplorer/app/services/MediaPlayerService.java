@@ -56,6 +56,7 @@ public class MediaPlayerService extends BaseService {
   private static int volume = (int) MAX_VOLUME / 2;
 
   @Inject ImageSourcePicker imageSourcePicker;
+  @Inject AudioSourcePicker audioSourcePicker;
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
   private Handler progressHandler = new Handler();
@@ -214,7 +215,7 @@ public class MediaPlayerService extends BaseService {
       stop();
       this.artwork = artwork;
 
-      Uri audioUri = AudioSourcePicker.getUri(artwork.getGalleryId(), artwork.getAudioId());
+      Uri audioUri = audioSourcePicker.getUri(artwork.getGalleryId(), artwork.getAudioId());
       mediaPlayer = new MediaPlayer();
 
       try {

@@ -1,18 +1,23 @@
 package com.leexplorer.app.util.offline;
 
 import android.net.Uri;
+import com.cloudinary.Cloudinary;
 import java.io.File;
 
-/**
- * Created by hectormonserrate on 16/05/14.
- */
 public class AudioSourcePicker {
+  private Cloudinary cloudinary;
 
-  public static Uri getUri(String galleryId, String url) {
-    File file = new File(FilePathGenerator.getFileName(galleryId, url));
+  public AudioSourcePicker(Cloudinary cloudinary) {
+    this.cloudinary = cloudinary;
+  }
+
+  public Uri getUri(String galleryId, String audioId) {
+    File file = new File(FilePathGenerator.getFileName(galleryId, audioId));
     if (file.exists()) {
       return Uri.parse(file.toString());
     }
+
+    String url = cloudinary.url().resourceType("raw").type("upload").generate(audioId);
 
     return Uri.parse(url);
   }

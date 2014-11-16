@@ -10,16 +10,17 @@ import android.content.res.Resources;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import com.leexplorer.app.core.EventReporter;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.GalleryActivity;
 import com.leexplorer.app.api.Client;
+import com.leexplorer.app.core.EventReporter;
+import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.FilePathGenerator;
-import com.squareup.pollexor.Thumbor;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ public class GalleryDownloaderService extends IntentService {
 
   @Inject FileDownloader fileDownloader;
   @Inject Client client;
-  @Inject Thumbor thumbor;
+  @Inject ImageSourcePicker imageSourcePicker;
+  @Inject AudioSourcePicker audioSourcePicker;
   @Inject EventReporter eventReporter;
 
   private Gallery gallery;
@@ -99,15 +101,23 @@ public class GalleryDownloaderService extends IntentService {
 
   private void saveArtwork(Artwork artwork) throws IOException {
     if (artwork.getImageId() != null) {
-      String url = thumbor.buildImage(artwork.getImageId())
-          .resize((int) getResources().getDimension(R.dimen.thumbor_large), 0)
-          .toUrl();
+
+      int maxSize = (int) getResources().getDimension(R.dimen.thumbor_large);
+
+      String url;
+      if (artwork.getImageWidth() > artwork.getImageHeight()) {
+        url = imageSourcePicker.getUrl(artwork.getImageId(), maxSize, 0,
+            ImageSourcePicker.Mode.Limit);
+      } else {
+        url = imageSourcePicker.getUrl(artwork.getImageId(), 0, maxSize,
+            ImageSourcePicker.Mode.Limit);
+      }
 
       saveFile(artwork, url);
     }
 
     if (artwork.getAudioId() != null) {
-      saveFile(artwork, artwork.getAudioId());
+      saveFile(artwork, audioSourcePicker.getUrl(artwork.getAudioId()));
     }
   }
 

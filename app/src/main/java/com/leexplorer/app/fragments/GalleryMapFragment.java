@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
@@ -26,9 +27,9 @@ import com.leexplorer.app.adapters.GalleryInfoAdapter;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.squareup.pollexor.Thumbor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,8 +48,7 @@ public class GalleryMapFragment extends SupportMapFragment {
   private static final int ANIMATE_INFOBOX_DURATION = 300;
   private static final int ANIMATE_DELAY = 200;
   public Callbacks callbacks;
-  @Inject Picasso picasso;
-  @Inject Thumbor thumbor;
+  @Inject ImageSourcePicker imageSourcePicker;
   @Inject EventReporter eventReporter;
   private CameraPosition savedCameraPosition;
   private GoogleMap map;
@@ -169,13 +169,10 @@ public class GalleryMapFragment extends SupportMapFragment {
         List<Gallery> galleries = markerGalleryHashMap.get(marker);
 
         if (galleries != null && galleries.size() == 1) {
-          Gallery g = galleries.get(0);
+          Gallery gallery = galleries.get(0);
 
-          int thumborBucket =
-              (int) getActivity().getResources().getDimension(GalleryInfoAdapter.THUMNAIL_SIZE);
-          String url =
-              thumbor.buildImage(g.getArtworkImageIds().get(0)).resize(thumborBucket, 0).toUrl();
-          picasso.load(url)
+          imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
+              gallery.getArtworkImageIds().get(0), GalleryInfoAdapter.THUMNAIL_SIZE)
               .placeholder(R.drawable.image_place_holder)
               .into(new InfoWindowImage(marker));
         } else {
@@ -614,6 +611,8 @@ public class GalleryMapFragment extends SupportMapFragment {
 
     @Override
     public void onBitmapFailed(Drawable d) {
+      Log.e(TAG, "Failed to open infowindow");
+      eventReporter.logException("Failed to open infowindow");
     }
 
     @Override

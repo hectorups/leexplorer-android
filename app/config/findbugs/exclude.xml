@@ -1,41 +1,47 @@
 <FindBugsFilter>
-    <Match>
-        <Class name="~.*\.R\$.*" />
-        <!--<Method name="run"/>-->
-    </Match>
-    <Match>
-        <Class name="~.*\.Manifest\$.*" />
-    </Match>
-
   <Match>
-    <Class name="com.leexplorer.app.util.ble.BluetoothCrashResolver" />
+    <Class name="~.*\.R\$.*"/>
+    <!--<Method name="run"/>-->
+  </Match>
+  <Match>
+    <Class name="~.*\.Manifest\$.*"/>
   </Match>
 
   <Match>
-    <Class name="com.leexplorer.app.api.models.ImageFile" />
+    <Class name="com.leexplorer.app.util.ble.BluetoothCrashResolver"/>
   </Match>
 
   <Match>
-    <Class name="com.leexplorer.app.api.models.MediaFile" />
+    <Class name="com.leexplorer.app.api.models.ImageFile"/>
   </Match>
 
   <Match>
-    <Class name="com.leexplorer.app.services.BaseService" />
+    <Class name="com.leexplorer.app.api.models.MediaFile"/>
+  </Match>
+
+  <Match>
+    <Class name="com.leexplorer.app.services.BaseService"/>
     <Bug pattern="IS2_INCONSISTENT_SYNC"/>
   </Match>
-    <!--<Match>-->
-    <!--<Class name="com.samsungaccelerator.team9.memodot.BluetoothLeService"/>-->
-    <!--<Bug code="ST"/>-->
-    <!--</Match>-->
-    <!--<Match>-->
-    <!--<Class name="com.samsungaccelerator.team9.memodot.GestureDetectorService"/>-->
-    <!--</Match>-->
-    <!--<Match>-->
-    <!--<Class name="com.samsungaccelerator.team9.phoneactions.PhoneActionsService"/>-->
-    <!--<Bug code="ST"/>-->
-    <!--</Match>-->
-    <!--<Match>-->
-    <!--<Bug pattern="UUF_UNUSED_FIELD"/>-->
-    <!--<Field name="~ajc\$.*"/>-->
-    <!--</Match>-->
+
+  <Match>
+    <Class name="com.leexplorer.app.services.MediaPlayerService"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <!--<Match>-->
+  <!--<Class name="com.samsungaccelerator.team9.memodot.BluetoothLeService"/>-->
+  <!--<Bug code="ST"/>-->
+  <!--</Match>-->
+  <!--<Match>-->
+  <!--<Class name="com.samsungaccelerator.team9.memodot.GestureDetectorService"/>-->
+  <!--</Match>-->
+  <!--<Match>-->
+  <!--<Class name="com.samsungaccelerator.team9.phoneactions.PhoneActionsService"/>-->
+  <!--<Bug code="ST"/>-->
+  <!--</Match>-->
+  <!--<Match>-->
+  <!--<Bug pattern="UUF_UNUSED_FIELD"/>-->
+  <!--<Field name="~ajc\$.*"/>-->
+  <!--</Match>-->
 </FindBugsFilter>

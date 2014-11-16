@@ -15,7 +15,7 @@ import retrofit.client.Request;
 import retrofit.client.Response;
 
 public class LeexplorerOkClient extends OkClient {
-  private final String TAG = "LeexplorerOkClient";
+  private static final String TAG = "LeexplorerOkClient";
   private final String key;
 
   public LeexplorerOkClient(OkHttpClient client, String key) {

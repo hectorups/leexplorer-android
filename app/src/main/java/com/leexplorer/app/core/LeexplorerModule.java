@@ -39,7 +39,6 @@ import com.squareup.okhttp.OkUrlFactory;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
-import com.squareup.pollexor.Thumbor;
 import dagger.Module;
 import dagger.Provides;
 import java.io.File;
@@ -149,10 +148,6 @@ public class LeexplorerModule {
     });
 
     return builder.build();
-  }
-
-  @Provides @Singleton Thumbor provideThumbor() {
-    return Thumbor.create(AppConstants.SERVER_THUMBOR_URL, AppConstants.THUMBOR_KEY);
   }
 
   @Provides @Singleton EventReporter provideEventReported(LeexplorerApplication application) {

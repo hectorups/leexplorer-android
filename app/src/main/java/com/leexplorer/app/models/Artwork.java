@@ -72,14 +72,14 @@ public class Artwork extends Model implements Parcelable {
     artwork.name = apiArtwork.name;
     artwork.majorminor = majorminor;
     artwork.description = apiArtwork.description;
-    artwork.imageId = apiArtwork.image.publicId;
-    artwork.imageHeight = apiArtwork.image.height;
-    artwork.imageWidth = apiArtwork.image.width;
+    artwork.imageId = apiArtwork.getImage().publicId;
+    artwork.imageHeight = apiArtwork.getImage().getHeight();
+    artwork.imageWidth = apiArtwork.getImage().getWidth();
     artwork.author = apiArtwork.author;
     artwork.likesCount = apiArtwork.likesCount;
     artwork.publishedAt =
         apiArtwork.publishedAt != null ? setDateFromString(apiArtwork.publishedAt) : null;
-    artwork.audioId = apiArtwork.audio != null ? apiArtwork.audio.publicId : null;
+    artwork.audioId = apiArtwork.getAudio() != null ? apiArtwork.getAudio().publicId : null;
     artwork.galleryId = apiArtwork.galleryId;
 
     return artwork;

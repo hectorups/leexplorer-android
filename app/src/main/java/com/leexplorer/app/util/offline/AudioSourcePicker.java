@@ -17,8 +17,10 @@ public class AudioSourcePicker {
       return Uri.parse(file.toString());
     }
 
-    String url = cloudinary.url().resourceType("raw").type("upload").generate(audioId);
+    return Uri.parse(getUrl(audioId));
+  }
 
-    return Uri.parse(url);
+  public String getUrl(String audioId) {
+    return cloudinary.url().resourceType("raw").type("upload").generate(audioId);
   }
 }

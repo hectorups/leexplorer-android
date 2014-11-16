@@ -29,4 +29,12 @@ public class Artwork {
   public int likesCount;
 
   public MediaFile audio;
+
+  public MediaFile getAudio() {
+    return audio;
+  }
+
+  public ImageFile getImage() {
+    return image;
+  }
 }

@@ -22,7 +22,7 @@ public class ImageSourcePicker {
     this.cloudinary = cloudinary;
   }
 
-  enum Mode {
+  public enum Mode {
     Fill, Limit
   }
 
@@ -45,16 +45,7 @@ public class ImageSourcePicker {
       return picasso.load(file);
     }
 
-    String format = "webp";
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-      format = "jpg";
-    }
-
-    String thumborUrl = cloudinary.url()
-        .transformation(new Transformation().width(width).height(height).crop(modeString(mode)))
-        .generate(mediaId + "." + format);
-
-    return picasso.load(thumborUrl);
+    return picasso.load(getUrl(mediaId, width, height, mode));
   }
 
   public RequestCreator getRequestCreator(String galleryId, String mediaId, int bucketResourceId) {
@@ -78,12 +69,40 @@ public class ImageSourcePicker {
     return getRequestCreator(galleryId, mediaId, bestWidth, bestHeight, Mode.Fill);
   }
 
+  public String getUrl(String mediaId, int width, int height, Mode mode) {
+    return cloudinary.url()
+        .transformation(getTransformation(width, height, mode))
+        .generate(mediaId + "." + getBestFormat());
+  }
+
+  public Transformation getTransformation(int width, int height, Mode mode) {
+    Transformation transformation = new Transformation().crop(modeString(mode));
+
+    if (width != 0) {
+      transformation.width(width);
+    }
+
+    if (height != 0) {
+      transformation.height(height);
+    }
+
+    return transformation;
+  }
+
   private String modeString(Mode mode) {
     switch (mode) {
       case Fill:
         return "fill";
       default:
         return "limit";
+    }
+  }
+
+  private String getBestFormat() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+      return "jpg";
+    } else {
+      return "webp";
     }
   }
 }

@@ -1,6 +1,7 @@
 package com.leexplorer.app.util;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -14,11 +15,10 @@ public final class EncodingUtils {
   public static byte[] hmacSha1(byte[] message, String key) {
     try {
       Mac mac = Mac.getInstance("HmacSHA1");
-      mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA1"));
+      mac.init(new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA1"));
       return mac.doFinal(message);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
-
 }

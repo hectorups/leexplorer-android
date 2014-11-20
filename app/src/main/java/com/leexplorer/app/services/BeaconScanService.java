@@ -71,7 +71,7 @@ public class BeaconScanService extends IntentService {
     public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
       IBeacon iBeacon = IBeacon.fromScanData(scanRecord, rssi);
 
-      if (!isLeBeacon(iBeacon)) {
+      if (iBeacon == null || !isLeBeacon(iBeacon)) {
         return;
       }
 

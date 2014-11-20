@@ -3,7 +3,7 @@
 
   <style name="AppTheme.Base" parent="Theme.AppCompat.Light">
     <item name="colorPrimary">@color/le_white</item>
-    <item name="colorPrimaryDark">@color/le_white</item>
+    <item name="colorPrimaryDark">@color/le_black</item>
     <item name="android:windowNoTitle">true</item>
     <item name="windowActionBar">false</item>
   </style>

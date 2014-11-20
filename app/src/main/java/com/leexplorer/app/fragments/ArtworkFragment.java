@@ -62,7 +62,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private static final String SAVED_NOW_PLAYING = "saved_now_playing";
   private static final String SAVED_ON_PAUSE = "saved_on_pause";
 
-  @Inject Picasso picasso;
   @Inject ImageSourcePicker imageSourcePicker;
   @Inject Bus bus;
 
@@ -252,7 +251,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       menuPlay.setVisible(false);
     }
 
-    picasso.load(artwork.getImageId()).into(targetForShare);
+    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_medium).into(targetForShare);
   }
 
   @Override
@@ -327,7 +326,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   }
 
   @Subscribe public void onAudioResuming(AudioResumingEvent event) {
-    if(event.getArtwork().equals(artwork)) {
+    if (event.getArtwork().equals(artwork)) {
       nowPlaying = true;
       onPause = false;
     }

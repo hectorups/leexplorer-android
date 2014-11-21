@@ -28,6 +28,7 @@ import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
+import com.leexplorer.app.util.Tint;
 import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -35,7 +36,7 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 import javax.inject.Inject;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class BaseActivity extends ActionBarActivity {
+public abstract class BaseActivity extends ActionBarActivity {
   public static final String TAG = "com.leexplorer.activities.baseactivity";
   // This Receiver is ON when the activity is displaying. When on it catches the notification
   // before NotificationReceiver does and cancels it.
@@ -89,9 +90,14 @@ public class BaseActivity extends ActionBarActivity {
 
   public void setupActionBar() {
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-    if(toolbar != null) {
+    if (toolbar != null) {
       setSupportActionBar(toolbar);
       getSupportActionBar().setHomeButtonEnabled(true);
+      if (showHomeButton()) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(
+            Tint.getTintedDrawable(getResources(), R.drawable.ic_action_home, R.color.le_blue));
+      }
     }
   }
 
@@ -170,7 +176,7 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
-      if(event.getStatus() == AutoPlayService.Status.OFF) {
+      if (event.getStatus() == AutoPlayService.Status.OFF) {
         BeaconScanService.setScannerAlarm(BaseActivity.this, BeaconScanService.Mode.FOREGROUND);
       } else {
         BeaconScanService.setScannerAlarm(BaseActivity.this, BeaconScanService.Mode.AUTOPLAY);
@@ -189,5 +195,9 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     return super.onKeyDown(keyCode, event);
+  }
+
+  public boolean showHomeButton() {
+    return false;
   }
 }

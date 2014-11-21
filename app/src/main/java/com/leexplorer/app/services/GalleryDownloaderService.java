@@ -20,6 +20,7 @@ import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.FilePathGenerator;
+import com.leexplorer.app.util.offline.ImageResizer;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import java.io.IOException;
 import java.net.URL;
@@ -103,17 +104,14 @@ public class GalleryDownloaderService extends IntentService {
     if (artwork.getImageId() != null) {
 
       int maxSize = (int) getResources().getDimension(R.dimen.thumbor_large);
+      String url = imageSourcePicker.getUrl(artwork.getImageId(), maxSize, artwork.getImageWidth(),
+          artwork.getImageHeight(), ImageSourcePicker.Mode.Limit);
 
-      String url;
-      if (artwork.getImageWidth() > artwork.getImageHeight()) {
-        url = imageSourcePicker.getUrl(artwork.getImageId(), maxSize, 0,
-            ImageSourcePicker.Mode.Limit);
-      } else {
-        url = imageSourcePicker.getUrl(artwork.getImageId(), 0, maxSize,
-            ImageSourcePicker.Mode.Limit);
-      }
-
-      saveFile(artwork, url);
+      String imagePath = saveFile(artwork, url);
+      String resizedImagePath = FilePathGenerator.getFileName(artwork.getGalleryId(), url,
+          FilePathGenerator.Version.SMALL);
+      int smallSize = (int) getResources().getDimension(R.dimen.thumbor_small);
+      ImageResizer.resizeImage(imagePath, resizedImagePath, smallSize);
     }
 
     if (artwork.getAudioId() != null) {
@@ -137,10 +135,11 @@ public class GalleryDownloaderService extends IntentService {
     return total;
   }
 
-  private void saveFile(Artwork artwork, String url) throws IOException {
+  private String saveFile(Artwork artwork, String url) throws IOException {
     downloadProgress.setCurrentFile(downloadProgress.getCurrentFile() + 1);
-    fileDownloader.downloadToFile(FilePathGenerator.getFileName(artwork.getGalleryId(), url),
-        new URL(url), downloadProgress);
+    String fileName = FilePathGenerator.getFileName(artwork.getGalleryId(), url);
+    fileDownloader.downloadToFile(fileName, new URL(url), downloadProgress);
+    return fileName;
   }
 
   private void prepareNotification() {

@@ -40,7 +40,8 @@ public class ImageSourcePicker {
   public RequestCreator getRequestCreator(String galleryId, String mediaId, int width, int height,
       Mode mode) {
 
-    File file = new File(FilePathGenerator.getFileName(galleryId, mediaId));
+    FilePathGenerator.Version version = getVersionFromHeight(height);
+    File file = new File(FilePathGenerator.getFileName(galleryId, mediaId, version));
     if (file.exists()) {
       return picasso.load(file);
     }
@@ -56,23 +57,22 @@ public class ImageSourcePicker {
   public RequestCreator getRequestCreator(String galleryId, String mediaId, int maxSize, int width,
       int height) {
 
-    int bestWidth;
-    int bestHeight;
-    if (width > height) {
-      bestWidth = Math.min(width, maxSize);
-      bestHeight = Math.abs(height * bestWidth / width);
-    } else {
-      bestHeight = Math.min(height, maxSize);
-      bestWidth = Math.abs(width * bestHeight / height);
-    }
+    ImageResizer.Size bestSize = ImageResizer.getBestSize(maxSize, width, height);
 
-    return getRequestCreator(galleryId, mediaId, bestWidth, bestHeight, Mode.Fill);
+    return getRequestCreator(galleryId, mediaId, bestSize.getWidth(), bestSize.getHeight(),
+        Mode.Fill);
   }
 
   public String getUrl(String mediaId, int width, int height, Mode mode) {
     return cloudinary.url()
         .transformation(getTransformation(width, height, mode))
         .generate(mediaId + "." + getBestFormat());
+  }
+
+  public String getUrl(String mediaId, int maxSize, int width, int height, Mode mode) {
+    ImageResizer.Size bestSize = ImageResizer.getBestSize(maxSize, width, height);
+
+    return getUrl(mediaId, bestSize.getWidth(), bestSize.getHeight(), mode);
   }
 
   public Transformation getTransformation(int width, int height, Mode mode) {
@@ -103,6 +103,16 @@ public class ImageSourcePicker {
       return "jpg";
     } else {
       return "webp";
+    }
+  }
+
+  private FilePathGenerator.Version getVersionFromHeight(int height) {
+    int mediumHeight = (int) context.getResources().getDimension(R.dimen.thumbor_medium);
+
+    if (height > mediumHeight) {
+      return FilePathGenerator.Version.NORMAL;
+    } else {
+      return FilePathGenerator.Version.SMALL;
     }
   }
 }

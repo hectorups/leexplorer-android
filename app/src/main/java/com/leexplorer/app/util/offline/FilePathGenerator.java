@@ -39,10 +39,22 @@ public class FilePathGenerator {
     return false;
   }
 
-  public static String getFileName(String galleryId, String url) {
+  private static String getFileName(String galleryId, String url, String prefix) {
     checkGalleryDirectory(galleryId);
     File theFile = new File(url);
     String fileName = theFile.getName().replaceAll("[^a-zA-Z0-9.-]", "_");
-    return galleryDirectory(galleryId) + "/" + fileName;
+    return galleryDirectory(galleryId) + "/" + prefix + fileName;
+  }
+
+  public static String getFileName(String galleryId, String url, Version version) {
+    return getFileName(galleryId, url, version == Version.SMALL ? "s_" : "");
+  }
+
+  public static String getFileName(String galleryId, String url) {
+    return getFileName(galleryId, url, Version.NORMAL);
+  }
+
+  public enum Version {
+    NORMAL, SMALL
   }
 }

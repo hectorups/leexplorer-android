@@ -48,7 +48,10 @@ public class ArtworkListActivity extends BaseActivity implements ArtworkListFrag
       fm.beginTransaction().add(R.id.container, fragment).commit();
     }
 
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  }
+
+  @Override public boolean showHomeButton() {
+    return true;
   }
 
   @Override public void onResume() {

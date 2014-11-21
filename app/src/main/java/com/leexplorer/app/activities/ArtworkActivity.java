@@ -81,8 +81,10 @@ public class ArtworkActivity extends BaseActivity {
 
     // Set page in ViewPager
     setViewPagerPage(currentArtwork);
+  }
 
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  @Override public boolean showHomeButton() {
+    return true;
   }
 
   public void setViewPagerPage(Artwork artwork) {

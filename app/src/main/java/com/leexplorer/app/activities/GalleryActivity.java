@@ -32,7 +32,10 @@ public class GalleryActivity extends BaseActivity {
       fm.beginTransaction().add(R.id.flGalleryDetailView, fragment).commit();
     }
 
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+  }
+
+  @Override public boolean showHomeButton() {
+    return true;
   }
 
   @Override protected void onSaveInstanceState(Bundle outState) {

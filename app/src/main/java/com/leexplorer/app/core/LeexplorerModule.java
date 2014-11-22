@@ -176,7 +176,7 @@ public class LeexplorerModule {
   @Provides @Singleton RestAdapter provideRestAdapter(OkClient client, ErrorHandler errorHandler,
       RequestInterceptor requestInterceptor) {
     return new RestAdapter.Builder().setClient(client)
-        .setEndpoint(AppConstants.API_URL)
+        .setEndpoint(AppConstants.getEndpoint())
         .setErrorHandler(errorHandler)
         .setRequestInterceptor(requestInterceptor)
         .build();

@@ -1,5 +1,6 @@
 package com.leexplorer.app.core;
 
+import android.text.TextUtils;
 import com.leexplorer.app.BuildConfig;
 import com.leexplorer.app.R;
 import java.util.HashMap;
@@ -22,9 +23,8 @@ public class AppConstants {
   public static final int PROXY_PORT = 8887;
 
   // Digital Ocean
-  public static final String API_URL = "http://api.leexplorer.com:1337";
-  public static final String SERVER_THUMBOR_URL = "http://images.leexplorer.com:8888";
-  public static final String THUMBOR_KEY = "SBxmeZb96YXq7qf";
+  public static final String API_URL = "http://api.leexplorer.com";
+  public static final String STAGING_API_URL = "http://staging.leexplorer.com:1337";
 
   public static final String CLOUDINARY_CLOUD_NAME = "leexplorer";
 
@@ -53,7 +53,19 @@ public class AppConstants {
   public static final String MIXPANEL_TOKEN = "b66f535a8b703ce67e53b646b99de279";
   public static final String GOOGLE_ANALYTICS_ID = "UA-53532539-1";
 
+  public static String getEndpoint() {
+    return isProduction() ? API_URL : STAGING_API_URL;
+  }
+
   public static boolean isDebug() {
-    return BuildConfig.DEBUG;
+    return !isProduction();
+  }
+
+  public static boolean isProduction() {
+    if (!TextUtils.isEmpty(BuildConfig.ENVIRONMENT)) {
+      return BuildConfig.ENVIRONMENT.contentEquals("production");
+    } else {
+      return !BuildConfig.DEBUG;
+    }
   }
 }

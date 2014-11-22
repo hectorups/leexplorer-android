@@ -24,6 +24,18 @@ android {
     versionName "1.0"
 
     buildConfigField "boolean", "FAKE_DATA", "false"
+
+    //specify "staging" or "production" to use a different backend
+    //if set to "", the BuildConfig.DEBUG flag will be used to determine this
+    buildConfigField "String", "ENVIRONMENT", "\"\""
+
+    applicationVariants.all { variant ->
+      for (currentOutput in variant.outputs) {
+        def file = currentOutput.outputFile
+        currentOutput.outputFile =
+            new File(file.parent, file.name.replace(".apk", "-" + versionCode + ".apk"))
+      }
+    }
   }
 
   compileOptions {

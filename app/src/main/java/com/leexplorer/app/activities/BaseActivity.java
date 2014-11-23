@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import com.leexplorer.app.R;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
@@ -22,6 +23,7 @@ import com.leexplorer.app.events.BuildKilledEvent;
 import com.leexplorer.app.events.LoadArtworksEvent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
+import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.events.NetworkErrorEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
@@ -185,6 +187,19 @@ public abstract class BaseActivity extends ActionBarActivity {
         BeaconScanService.setScannerAlarm(BaseActivity.this, BeaconScanService.Mode.FOREGROUND);
       } else {
         BeaconScanService.setScannerAlarm(BaseActivity.this, BeaconScanService.Mode.AUTOPLAY);
+      }
+    }
+
+    @Subscribe public void onMainLoadingIndicator(MainLoadingIndicator event) {
+      FrameLayout view = (FrameLayout) findViewById(R.id.mainLoadingIndicator);
+      if (view == null) {
+        return;
+      }
+
+      if (event.isLoading()) {
+        view.setVisibility(View.VISIBLE);
+      } else {
+        view.setVisibility(View.GONE);
       }
     }
   }

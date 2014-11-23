@@ -13,5 +13,20 @@
       tools:context="com.leexplorer.app.activities.GalleryListActivity"
       tools:ignore="MergeRootFrame"/>
 
+  <FrameLayout android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/mainLoadingIndicator"
+      android:visibility="gone"
+      android:layout_below="@+id/toolbar">
+
+    <include layout="@layout/progress_indicator"
+        android:layout_width="@dimen/progress_indicator_large"
+        android:layout_height="@dimen/progress_indicator_large"
+        android:layout_gravity="center"
+        />
+
+  </FrameLayout>
+
+
 </RelativeLayout>
 

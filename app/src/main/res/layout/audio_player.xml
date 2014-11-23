@@ -25,7 +25,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_weight="1"
-          android:gravity="left"
+          android:gravity="start"
           android:text="00:00"
           android:textColor="@color/le_white"
           android:textStyle="bold"/>
@@ -45,7 +45,10 @@
     <SeekBar
         android:id="@+id/sbAudio"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:progressTint="@color/le_blue"
+        android:thumbTint="@color/le_blue"
+    />
 
   </LinearLayout>
 

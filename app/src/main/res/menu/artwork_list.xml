@@ -6,6 +6,7 @@
       android:id="@+id/menuRefresh"
       android:icon="@drawable/ic_action_refresh"
       leexplorer:showAsAction="always"
+      android:visible="false"
       />
 
   <item

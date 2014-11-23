@@ -10,6 +10,7 @@
   <color name="le_light_grey_bg">#F1F4F2</color>
   <color name="le_white_trans">#88FFFFFF</color>
   <color name="le_off_white">#FFF7F7F7</color>
+  <color name="le_transparent">@android:color/transparent</color>
 
 
   <color name="le_blue">#FF0098C6</color>

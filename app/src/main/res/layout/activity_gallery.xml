@@ -1,16 +1,16 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
   <include layout="@layout/toolbar"/>
 
-<FrameLayout
-    android:id="@+id/flGalleryDetailView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.leexplorer.app.activities.GalleryActivity"
-    tools:ignore="MergeRootFrame"/>
+  <FrameLayout
+      android:id="@+id/flGalleryDetailView"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@+id/toolbar"
+      tools:context="com.leexplorer.app.activities.GalleryActivity"
+      tools:ignore="MergeRootFrame"/>
 
-</LinearLayout>
+</RelativeLayout>

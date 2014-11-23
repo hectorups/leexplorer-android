@@ -1,7 +1,10 @@
-<ProgressBar
+<com.pnikosis.materialishprogress.ProgressWheel
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/loading_status"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    style="@android:style/Widget.ProgressBar.Large"
- />
+    android:layout_width="160dp"
+    android:layout_height="160dp"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    wheel:barColor="@color/le_blue"
+    wheel:progressIndeterminate="true"/>

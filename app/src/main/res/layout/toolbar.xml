@@ -1,7 +1,33 @@
-<android.support.v7.widget.Toolbar
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:elevation="4dp"
-    android:background="?attr/colorPrimary"/>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:elevation="4dp"
+      android:background="?attr/colorPrimary"/>
+
+  <fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      android:id="@+id/pbToolbar"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@+id/toolbar"
+      android:visibility="gone"
+      android:background="@color/le_background"
+      android:indeterminate="true"
+      app:spb_sections_count="4"
+      app:spb_color="@color/le_blue"
+      app:spb_speed="1.0"
+      app:spb_stroke_width="5dp"
+      app:spb_stroke_separator_length="3dp"
+      app:spb_reversed="false"
+      app:spb_mirror_mode="false"
+      app:spb_progressiveStart_activated="false"
+      app:spb_progressiveStart_speed="1.0"
+      app:spb_progressiveStop_speed="3.4"
+      app:spb_interpolator="spb_interpolator_acceleratedecelerate"
+      />
+
+</merge>

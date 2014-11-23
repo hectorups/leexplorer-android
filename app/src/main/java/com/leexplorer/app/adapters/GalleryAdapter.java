@@ -18,9 +18,6 @@ import com.squareup.otto.Bus;
 import java.util.List;
 import javax.inject.Inject;
 
-/**
- * Created by deepakdhiman on 2/18/14.
- */
 public class GalleryAdapter extends LeBaseAdapter<Gallery> {
 
   GalleryListFragment fragment;

@@ -5,8 +5,8 @@
     android:layout_height="match_parent">
 
   <include layout="@layout/progress_indicator"
-      android:layout_width="140dp"
-      android:layout_height="140dp"
+      android:layout_width="@dimen/progress_indicator_large"
+      android:layout_height="@dimen/progress_indicator_large"
       android:layout_gravity="center"/>
 
 </FrameLayout>

@@ -16,6 +16,7 @@ import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.LoadingEvent;
+import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.LocationService;
 import com.leexplorer.app.util.GalleryComparator;
@@ -52,8 +53,14 @@ public class GalleryListFragment extends BaseFragment {
     View view = inflater.inflate(R.layout.fragment_gallery_list, container, false);
     ButterKnife.inject(this, view);
     lvGalleries.setAdapter(galleryAdapter);
-    loadArtworkList();
     return view;
+  }
+
+  @Override public void onResume() {
+    super.onResume();
+    if (galleries.size() == 0) {
+      loadGalleries();
+    }
   }
 
   @Override
@@ -75,7 +82,7 @@ public class GalleryListFragment extends BaseFragment {
     callbacks = null;
   }
 
-  private void loadArtworkList() {
+  private void loadGalleries() {
     //Get data from Api or DB
     if (((LeexplorerApplication) getActivity().getApplicationContext()).isOnline()) {
       loadGalleryListFromApi();
@@ -85,9 +92,7 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void loadGalleryListFromApi() {
-    if (callbacks != null) {
-      bus.post(new LoadingEvent(true));
-    }
+    bus.post(new MainLoadingIndicator(true));
 
     addSubscription(client.getGalleriesData()
         .subscribeOn(Schedulers.io())
@@ -95,22 +100,19 @@ public class GalleryListFragment extends BaseFragment {
         .subscribe(new Observer<ArrayList<Gallery>>() {
           @Override
           public void onCompleted() {
+            bus.post(new MainLoadingIndicator(false));
           }
 
           @Override
           public void onError(Throwable throwable) {
             eventReporter.logException(throwable);
-            if (callbacks != null) {
-              bus.post(new LoadingEvent(false));
-            }
+            onCompleted();
+            loadGalleryListFromDB();
           }
 
           @Override
           public void onNext(ArrayList<Gallery> galleries) {
             updateAdapterDataset(galleries);
-            if (callbacks != null) {
-              bus.post(new LoadingEvent(false));
-            }
           }
         }));
   }
@@ -136,15 +138,13 @@ public class GalleryListFragment extends BaseFragment {
     Collections.sort(galleries, new GalleryComparator());
     galleryAdapter.notifyDataSetChanged();
 
-    if(callbacks != null) {
+    if (callbacks != null) {
       callbacks.galleriesLoaded(galleries);
     }
   }
 
   private void loadGalleryListFromDB() {
-    if (callbacks != null) {
-      bus.post(new LoadingEvent(true));
-    }
+    bus.post(new MainLoadingIndicator(true));
 
     addSubscription(Observable.create(new Observable.OnSubscribe<List<Gallery>>() {
       @Override
@@ -157,10 +157,11 @@ public class GalleryListFragment extends BaseFragment {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<List<Gallery>>() {
           @Override public void onCompleted() {
-            bus.post(new LoadingEvent(false));
+            bus.post(new MainLoadingIndicator(false));
           }
 
           @Override public void onError(Throwable throwable) {
+            onCompleted();
           }
 
           @Override public void onNext(List<Gallery> galleries) {
@@ -179,6 +180,7 @@ public class GalleryListFragment extends BaseFragment {
 
   public interface Callbacks {
     void loadGalleryDetails(Gallery gallery);
+
     void galleriesLoaded(List<Gallery> galleries);
   }
 

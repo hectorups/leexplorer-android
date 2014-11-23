@@ -8,4 +8,5 @@
     android:layout_centerVertical="true"
     wheel:barColor="@color/le_blue"
     wheel:fillRadius="true"
+    wheel:barWidth="@dimen/progress_indicator_thickness"
     wheel:progressIndeterminate="true"/>

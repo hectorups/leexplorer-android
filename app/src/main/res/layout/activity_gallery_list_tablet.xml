@@ -31,4 +31,6 @@
     </FrameLayout>
   </LinearLayout>
 
+  <include layout="@layout/main_progress_bar"/>
+
 </RelativeLayout>

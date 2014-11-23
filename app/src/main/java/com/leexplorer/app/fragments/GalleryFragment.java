@@ -251,8 +251,10 @@ public class GalleryFragment extends BaseFragment {
   public void setupDownload(int download) {
     downloadingPercentage = download;
     downloading = true;
-    pbDownload.setProgress(download);
-    pbDownload.setVisibility(View.VISIBLE);
+    if(pbDownload != null) {
+      pbDownload.setProgress(download);
+      pbDownload.setVisibility(View.VISIBLE);
+    }
   }
 
   public void stopDownload() {

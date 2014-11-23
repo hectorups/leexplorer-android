@@ -147,11 +147,15 @@ public class GalleryFragment extends BaseFragment {
         .placeholder(R.drawable.image_place_holder)
         .into(ivGalleryDetail, new Callback() {
           @Override public void onSuccess() {
-            llOverlayInfo.setVisibility(View.VISIBLE);
+            if(llOverlayInfo != null) {
+              llOverlayInfo.setVisibility(View.VISIBLE);
+            }
           }
 
           @Override public void onError() {
-            llOverlayInfo.setVisibility(View.VISIBLE);
+            if(llOverlayInfo != null) {
+              llOverlayInfo.setVisibility(View.VISIBLE);
+            }
           }
         });
 

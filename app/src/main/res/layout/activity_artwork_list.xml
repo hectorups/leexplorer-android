@@ -12,4 +12,6 @@
       android:layout_below="@+id/toolbar"
       tools:context="com.leexplorer.app.activities.ArtworkListActivity"
       tools:ignore="MergeRootFrame"/>
+
+  <include layout="@layout/main_progress_bar"/>
 </RelativeLayout>

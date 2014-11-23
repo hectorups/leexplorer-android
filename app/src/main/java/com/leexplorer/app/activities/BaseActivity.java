@@ -14,7 +14,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Window;
+import android.view.View;
 import com.leexplorer.app.R;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
@@ -33,6 +33,7 @@ import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import javax.inject.Inject;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -43,6 +44,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 
   @Inject Bus bus;
   @Inject EventReporter eventReporter;
+  private SmoothProgressBar progressBar;
 
   private final EventHandler eventhandler = new EventHandler();
 
@@ -64,7 +66,6 @@ public abstract class BaseActivity extends ActionBarActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    supportRequestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
     ((LeexplorerApplication) getApplication()).inject(this);
   }
 
@@ -82,14 +83,18 @@ public abstract class BaseActivity extends ActionBarActivity {
     processesLoading += loading ? 1 : -1;
     if (processesLoading < 1) {
       processesLoading = 0;
-      //setSupportProgressBarIndeterminateVisibility(false);
+      progressBar.setVisibility(View.GONE);
+      progressBar.progressiveStop();
     } else {
-      //setSupportProgressBarIndeterminateVisibility(true);
+      progressBar.setVisibility(View.VISIBLE);
+      progressBar.progressiveStart();
     }
   }
 
   public void setupActionBar() {
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    progressBar = (SmoothProgressBar) findViewById(R.id.pbToolbar);
+    progressBar.bringToFront();
     if (toolbar != null) {
       setSupportActionBar(toolbar);
       getSupportActionBar().setHomeButtonEnabled(true);

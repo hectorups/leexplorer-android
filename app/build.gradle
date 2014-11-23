@@ -95,6 +95,8 @@ dependencies {
   compile 'com.mixpanel.android:mixpanel-android:4.2.2@aar'
   compile 'com.mcxiaoke.photoview:library:1.2.3'
   compile 'uk.co.chrisjenx:calligraphy:1.1.0'
+  compile 'com.pnikosis:materialish-progress:1.0'
+  compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
 }
 
 pmd {

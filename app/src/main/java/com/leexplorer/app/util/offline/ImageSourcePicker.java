@@ -1,7 +1,6 @@
 package com.leexplorer.app.util.offline;
 
 import android.content.Context;
-import android.os.Build;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.leexplorer.app.R;
@@ -66,7 +65,7 @@ public class ImageSourcePicker {
   public String getUrl(String mediaId, int width, int height, Mode mode) {
     return cloudinary.url()
         .transformation(getTransformation(width, height, mode))
-        .generate(mediaId + "." + getBestFormat());
+        .generate(mediaId + "." + FilePathGenerator.getBestFormat());
   }
 
   public String getUrl(String mediaId, int maxSize, int width, int height, Mode mode) {
@@ -95,14 +94,6 @@ public class ImageSourcePicker {
         return "fill";
       default:
         return "limit";
-    }
-  }
-
-  private String getBestFormat() {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-      return "jpg";
-    } else {
-      return "webp";
     }
   }
 

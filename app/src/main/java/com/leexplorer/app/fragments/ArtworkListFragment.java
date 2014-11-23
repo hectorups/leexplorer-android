@@ -24,6 +24,7 @@ import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.core.RepeatableRunnable;
 import com.leexplorer.app.events.ArtworkClickedEvent;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
+import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.models.Artwork;
@@ -69,7 +70,9 @@ public class ArtworkListFragment extends BaseFragment {
   RepeatableRunnable statusChecker = new RepeatableRunnable() {
     @Override
     public void run() {
-      scanBeacons();
+      if (artworks.size() > 0) {
+        scanBeacons();
+      }
       handler.postDelayed(this, AppConstants.MILSEC_ARTWORK_REFRESH);
     }
 
@@ -128,6 +131,9 @@ public class ArtworkListFragment extends BaseFragment {
   public void onResume() {
     super.onResume();
     bus.register(this);
+    if (artworks.size() == 0) {
+      loadArtworkList();
+    }
     statusChecker.run();
   }
 
@@ -147,8 +153,6 @@ public class ArtworkListFragment extends BaseFragment {
 
     artworkAdapter = new ArtworkAdapter(this, artworks);
     sgvArtworks.setAdapter(artworkAdapter);
-
-    refreshArtworks();
 
     return rootView;
   }
@@ -197,9 +201,7 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   private void loadArtworkListFromApi() {
-    if (callbacks != null) {
-      callbacks.onLoading(true);
-    }
+    bus.post(new MainLoadingIndicator(true));
 
     addSubscription(client.getArtworksData(gallery.getGalleryId())
         .subscribeOn(Schedulers.io())
@@ -207,33 +209,27 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribe(new Observer<ArrayList<Artwork>>() {
           @Override
           public void onCompleted() {
+            bus.post(new MainLoadingIndicator(false));
           }
 
           @Override
           public void onError(Throwable throwable) {
             eventReporter.logException(throwable);
-            if (callbacks != null) {
-              callbacks.onLoading(false);
-            }
             if (artworks == null || artworks.size() == 0) {
               loadArtworkListFromDB();
             }
+            onCompleted();
           }
 
           @Override
           public void onNext(ArrayList<Artwork> aws) {
             updateAdapterDataset(aws);
-            if (callbacks != null) {
-              callbacks.onLoading(false);
-            }
           }
         }));
   }
 
   private void loadArtworkListFromDB() {
-    if (callbacks != null) {
-      callbacks.onLoading(true);
-    }
+    bus.post(new MainLoadingIndicator(true));
 
     addSubscription(Observable.create(new Observable.OnSubscribe<ArrayList<Artwork>>() {
       @Override public void call(Subscriber<? super ArrayList<Artwork>> subscriber) {
@@ -246,7 +242,7 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribe(new Observer<ArrayList<Artwork>>() {
           @Override
           public void onCompleted() {
-            callbacks.onLoading(false);
+            bus.post(new MainLoadingIndicator(false));
           }
 
           @Override

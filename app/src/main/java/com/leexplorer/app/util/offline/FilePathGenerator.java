@@ -1,5 +1,6 @@
 package com.leexplorer.app.util.offline;
 
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import com.leexplorer.app.core.AppConstants;
@@ -43,7 +44,7 @@ public class FilePathGenerator {
     checkGalleryDirectory(galleryId);
     File theFile = new File(url);
     String fileName = theFile.getName().replaceAll("[^a-zA-Z0-9.-]", "_");
-    return galleryDirectory(galleryId) + "/" + prefix + fileName;
+    return galleryDirectory(galleryId) + "/" + prefix + fileName + "." + getBestFormat();
   }
 
   public static String getFileName(String galleryId, String url, Version version) {
@@ -52,6 +53,14 @@ public class FilePathGenerator {
 
   public static String getFileName(String galleryId, String url) {
     return getFileName(galleryId, url, Version.NORMAL);
+  }
+
+  public static String getBestFormat() {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+      return "jpg";
+    } else {
+      return "webp";
+    }
   }
 
   public enum Version {

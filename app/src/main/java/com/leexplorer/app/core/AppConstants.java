@@ -24,7 +24,7 @@ public class AppConstants {
 
   // Digital Ocean
   public static final String API_URL = "http://api.leexplorer.com";
-  public static final String STAGING_API_URL = "http://staging.leexplorer.com:1337";
+  public static final String STAGING_API_URL = "https://leexplorer.herokuapp.com";
 
   public static final String CLOUDINARY_CLOUD_NAME = "leexplorer";
 

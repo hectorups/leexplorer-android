@@ -33,9 +33,9 @@ public class EventReporter {
   // EVENT ATTRS
   private static final String ATTR_ARTWORK_MAC = "artwork_mac";
   private static final String ATTR_ARTWORK_NAME = "artwork_name";
-  private static final String ATTR_ARTWORK_ID = "artwork_mac";
+  private static final String ATTR_ARTWORK_ID = "artwork_id";
   private static final String ATTR_GALLERY_NAME = "gallery_name";
-  private static final String ATTR_GALLERY_ID = "gallery_name";
+  private static final String ATTR_GALLERY_ID = "gallery_id";
 
   public EventReporter(Context context) {
     // Crashalytics

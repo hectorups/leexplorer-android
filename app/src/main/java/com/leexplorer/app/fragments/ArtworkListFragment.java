@@ -135,6 +135,7 @@ public class ArtworkListFragment extends BaseFragment {
       loadArtworkList();
     }
     statusChecker.run();
+    AutoPlayService.checkAutoplayStatus(getActivity());
   }
 
   @Override
@@ -171,7 +172,6 @@ public class ArtworkListFragment extends BaseFragment {
     inflater.inflate(R.menu.artwork_list, menu);
     menuReresh = menu.findItem(R.id.menuRefresh);
     menuAutoplay = menu.findItem(R.id.menuAutoplay);
-    AutoPlayService.checkAutoplayStatus(getActivity());
   }
 
   @Override

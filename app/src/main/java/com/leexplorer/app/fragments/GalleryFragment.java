@@ -230,7 +230,7 @@ public class GalleryFragment extends BaseFragment {
     }
   }
 
-  @OnClick(R.id.ivGalleryDetail)
+  @OnClick({R.id.ivGalleryDetail, R.id.exploreCollectionBtn})
   public void loadArtworks(View view) {
     bus.post(new LoadArtworksEvent(gallery));
   }

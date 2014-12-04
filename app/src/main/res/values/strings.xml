@@ -47,6 +47,7 @@
   <string name="title_activity_gallery">GalleryActivity</string>
   <string name="download_gallery">download</string>
   <string name="gallery_downloaded">Gallery Downloaded</string>
+  <string name="explore_collection">Explore Collection</string>
 
   <!-- GALLERY LIST SCREEN -->
   <string name="menu_gallery_map">map</string>

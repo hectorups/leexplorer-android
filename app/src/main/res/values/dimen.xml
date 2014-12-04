@@ -19,4 +19,6 @@
 
   <dimen name="progress_indicator_large">120dp</dimen>
   <dimen name="progress_indicator_thickness">7dp</dimen>
+
+  <dimen name="explore_collection_button_height">50dp</dimen>
 </resources>

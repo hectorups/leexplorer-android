@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.leexplorer.app.util.GalleryComparator;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -33,17 +35,25 @@ import rx.schedulers.Schedulers;
 
 public class GalleryListFragment extends BaseFragment {
   private static final String TAG = "com.leexplorer.galleryListFragment";
+  private static final String GALLERIES_KEY = "galleries";
   public Callbacks callbacks;
   @Inject Client client;
   @Inject Bus bus;
   @InjectView(R.id.lvGalleries) ListView lvGalleries;
   private List<Gallery> galleries;
   private GalleryAdapter galleryAdapter;
+  private Date galleriesLoadedAt;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    galleries = new ArrayList<>();
+
+    if (savedInstanceState != null) {
+      galleries = savedInstanceState.getParcelableArrayList(GALLERIES_KEY);
+    } else {
+      galleries = new ArrayList<>();
+    }
+
     galleryAdapter = new GalleryAdapter(this, galleries);
   }
 
@@ -61,6 +71,11 @@ public class GalleryListFragment extends BaseFragment {
     if (galleries.size() == 0) {
       loadGalleries();
     }
+  }
+
+  @Override public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putParcelableArrayList(GALLERIES_KEY, new ArrayList<Parcelable>(galleries));
   }
 
   @Override
@@ -118,6 +133,7 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void updateAdapterDataset(List<Gallery> galleries) {
+    galleriesLoadedAt = new Date();
     this.galleries.clear();
     LocationService service = new LocationService(getActivity());
     Location currentLocation = null;

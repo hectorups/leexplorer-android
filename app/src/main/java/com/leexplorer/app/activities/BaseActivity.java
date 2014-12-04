@@ -37,7 +37,6 @@ import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import javax.inject.Inject;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public abstract class BaseActivity extends ActionBarActivity {
   public static final String TAG = "com.leexplorer.activities.baseactivity";
@@ -59,11 +58,6 @@ public abstract class BaseActivity extends ActionBarActivity {
   };
 
   private int processesLoading = 0;
-
-  @Override
-  protected void attachBaseContext(Context newBase) {
-    super.attachBaseContext(new CalligraphyContextWrapper(newBase));
-  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

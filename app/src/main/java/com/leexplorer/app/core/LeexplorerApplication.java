@@ -6,11 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.activeandroid.ActiveAndroid;
 import com.crashlytics.android.Crashlytics;
-import com.leexplorer.app.R;
 import dagger.ObjectGraph;
 import java.util.Arrays;
 import java.util.List;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 public class LeexplorerApplication extends Application {
 
@@ -29,8 +27,6 @@ public class LeexplorerApplication extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
-
-    CalligraphyConfig.initDefault("fonts/Museo500-Regular.otf", R.attr.fontPath);
 
     graph = ObjectGraph.create(getModules().toArray());
     Crashlytics.start(this);

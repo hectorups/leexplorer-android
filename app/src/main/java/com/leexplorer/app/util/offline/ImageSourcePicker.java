@@ -91,7 +91,7 @@ public class ImageSourcePicker {
   private String modeString(Mode mode) {
     switch (mode) {
       case Fill:
-        return "fill";
+        return "lfill";
       default:
         return "limit";
     }

@@ -238,13 +238,17 @@ public class MediaPlayerService extends BaseService {
           stop();
         }
       });
+      mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+        @Override public void onPrepared(MediaPlayer mp) {
+          updateProgress();
+          prepareNotification();
+        }
+      });
       mediaPlayer.start();
 
       eventReporter.artworkAudioPlayed(artwork);
     }
 
-    updateProgress();
-    prepareNotification();
   }
 
   synchronized private void pause() {

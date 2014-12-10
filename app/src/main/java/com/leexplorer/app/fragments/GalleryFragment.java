@@ -33,7 +33,6 @@ import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.TextUtil;
-import com.leexplorer.app.util.offline.FilePathGenerator;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Callback;
@@ -192,7 +191,7 @@ public class GalleryFragment extends BaseFragment {
     miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
     menuDownload = menu.findItem(R.id.menuDownloadGallery);
-    if (FilePathGenerator.isGalleryDownloaded(gallery.getGalleryId())) {
+    if (gallery.isGalleryDownloaded()) {
       menuDownload.setVisible(false);
     } else {
       menuDownload.setVisible(true);

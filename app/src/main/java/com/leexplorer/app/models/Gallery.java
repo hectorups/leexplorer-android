@@ -10,6 +10,7 @@ import com.activeandroid.query.Select;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.leexplorer.app.api.models.ImageFile;
+import com.leexplorer.app.util.offline.FilePathGenerator;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -280,6 +281,10 @@ public class Gallery extends Model implements Parcelable {
     this.setArtworkImageIds(imageIds);
 
     return this;
+  }
+
+  public boolean isGalleryDownloaded() {
+    return FilePathGenerator.isGalleryDownloaded(this.getGalleryId());
   }
 
   public static final Parcelable.Creator<Gallery> CREATOR = new Parcelable.Creator<Gallery>() {

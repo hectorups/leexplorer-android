@@ -25,6 +25,7 @@ import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -146,7 +147,6 @@ public class GalleryListFragment extends BaseFragment {
         float[] results = new float[4];
         Location.distanceBetween(currentLocation.getLatitude(), currentLocation.getLongitude(),
             gallery.getLatitude(), gallery.getLongitude(), results);
-        //float distanceInMiles = /1609.344f;
         gallery.setDistanceFromCurrentLocation(results[0]);
       }
       this.galleries.add(gallery);
@@ -181,6 +181,12 @@ public class GalleryListFragment extends BaseFragment {
           }
 
           @Override public void onNext(List<Gallery> galleries) {
+            for (Iterator<Gallery> it = galleries.iterator(); it.hasNext(); ) {
+              if (!it.next().isGalleryDownloaded()) {
+                it.remove();
+              }
+            }
+
             updateAdapterDataset(galleries);
           }
         }));

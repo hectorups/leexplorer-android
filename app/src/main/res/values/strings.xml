@@ -50,6 +50,7 @@
   <string name="explore_collection">Explore Collection</string>
 
   <!-- GALLERY LIST SCREEN -->
+  <string name="gallery_list_screen_title">Leexplorer Galleries</string>
   <string name="menu_gallery_map">map</string>
   <string name="manu_gallery_list">list</string>
   <string name="bluetooth_warning_title">Your Bluetooth is off</string>

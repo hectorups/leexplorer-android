@@ -160,8 +160,6 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void loadGalleryListFromDB() {
-    bus.post(new MainLoadingIndicator(true));
-
     addSubscription(Observable.create(new Observable.OnSubscribe<List<Gallery>>() {
       @Override
       public void call(Subscriber<? super List<Gallery>> subscriber) {
@@ -173,7 +171,6 @@ public class GalleryListFragment extends BaseFragment {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<List<Gallery>>() {
           @Override public void onCompleted() {
-            bus.post(new MainLoadingIndicator(false));
           }
 
           @Override public void onError(Throwable throwable) {

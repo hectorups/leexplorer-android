@@ -13,23 +13,28 @@
 
   <!-- SIGNAL INDICATOR -->
 
-  <FrameLayout
-      android:id="@+id/flSignalIndicator"
+  <LinearLayout
+      android:id="@+id/llSignalIndicator"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_gravity="right|top"
-      android:layout_margin="5dp">
+      android:orientation="vertical">
+
+    <ImageView android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/ivSignal"
+        android:layout_gravity="right"
+     />
 
     <TextView
-        android:id="@+id/tvSignalIcon"
+        android:id="@+id/tvSignalDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/far_rounded_rectangle"
-        android:padding="4dp"
-        android:text="close"
+        android:textSize="12sp"
+        android:gravity="center"
         android:textColor="@color/le_white"/>
 
-  </FrameLayout>
+  </LinearLayout>
 
   <!-- ARTWORK INFO -->
 

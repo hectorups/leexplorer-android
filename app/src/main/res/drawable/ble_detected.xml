@@ -1,6 +1,6 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:drawable="@drawable/ble1" android:duration="700"/>
-  <item android:drawable="@drawable/ble2" android:duration="700"/>
-  <item android:drawable="@drawable/ble3" android:duration="700"/>
-  <item android:drawable="@drawable/ble4" android:duration="700"/>
+  <item android:drawable="@drawable/ble1" android:duration="400"/>
+  <item android:drawable="@drawable/ble2" android:duration="400"/>
+  <item android:drawable="@drawable/ble3" android:duration="400"/>
+  <item android:drawable="@drawable/ble4" android:duration="400"/>
 </animation-list>

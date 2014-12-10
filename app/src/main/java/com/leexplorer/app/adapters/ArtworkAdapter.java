@@ -1,11 +1,13 @@
 package com.leexplorer.app.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -76,35 +78,21 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
 
   private void setSignalIndicator(ViewHolder holder, Artwork artwork) {
     if (artwork.getNormalizedDistance() == Artwork.Distance.OUT_OF_RANGE) {
-      holder.flSignalIndicator.setVisibility(View.INVISIBLE);
+      holder.llSignalIndicator.setVisibility(View.INVISIBLE);
       return;
     }
 
-    int color = R.color.le_green;
-    int signal = R.string.signal_immediate;
-    String signalText;
-    int bg_drawable = R.drawable.immediate_rounded_rectanble;
-
-    if (artwork.getNormalizedDistance() == Artwork.Distance.CLOSE) {
-      color = R.color.le_blue;
-      signal = R.string.signal_close;
-      bg_drawable = R.drawable.close_rounded_rectangle;
-    } else if (artwork.getNormalizedDistance() == Artwork.Distance.FAR) {
-      color = R.color.le_yellow;
-      signal = R.string.signal_far;
-      bg_drawable = R.drawable.far_rounded_rectangle;
-    }
-
     if (AppConstants.isDebug()) {
-      signalText = String.format("%.2f m", artwork.getDistance());
+      holder.tvSignalDistance.setText(String.format("%.2f m", artwork.getDistance()));
     } else {
-      signalText = fragment.getString(signal);
+      holder.tvSignalDistance.setVisibility(View.GONE);
     }
 
-    holder.tvSignalIcon.setText(signalText);
-    holder.tvSignalIcon.setTextColor(fragment.getResources().getColor(color));
-    holder.tvSignalIcon.setBackgroundResource(bg_drawable);
-    holder.flSignalIndicator.setVisibility(View.VISIBLE);
+    holder.ivSignal.setImageResource(R.drawable.ble_detected);
+    AnimationDrawable animationDrawable = (AnimationDrawable) holder.ivSignal.getDrawable();
+    animationDrawable.start();
+
+    holder.llSignalIndicator.setVisibility(View.VISIBLE);
   }
 
   // @todo: this is for testing, needs to be implemted depending on
@@ -125,8 +113,9 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     @InjectView(R.id.tvAuthor) TextView tvAuthor;
     @InjectView(R.id.tvDate) TextView tvDate;
     @InjectView(R.id.ivArtworkThumb) DynamicHeightImageView ivArtworkThumb;
-    @InjectView(R.id.flSignalIndicator) FrameLayout flSignalIndicator;
-    @InjectView(R.id.tvSignalIcon) TextView tvSignalIcon;
+    @InjectView(R.id.llSignalIndicator) LinearLayout llSignalIndicator;
+    @InjectView(R.id.tvSignalDistance) TextView tvSignalDistance;
+    @InjectView(R.id.ivSignal) ImageView ivSignal;
 
     private ArtworkListFragment fragment;
 

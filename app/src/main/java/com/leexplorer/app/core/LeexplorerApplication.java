@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import com.activeandroid.ActiveAndroid;
 import com.crashlytics.android.Crashlytics;
 import dagger.ObjectGraph;
+import io.fabric.sdk.android.Fabric;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,9 +28,9 @@ public class LeexplorerApplication extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
+    Fabric.with(this, new Crashlytics());
 
     graph = ObjectGraph.create(getModules().toArray());
-    Crashlytics.start(this);
 
     ActiveAndroid.initialize(this);
   }

@@ -1,12 +1,8 @@
 apply plugin: 'android'
+apply plugin: 'io.fabric'
 apply plugin: 'android-apt'
-apply plugin: 'crashlytics'
 apply plugin: 'pmd'
 apply plugin: 'findbugs'
-
-repositories {
-  maven { url 'http://download.crashlytics.com/maven' }
-}
 
 def getAndroidAppVersionCode() {
   return 'git rev-list HEAD --count'.execute().text.trim().toInteger()
@@ -76,7 +72,6 @@ dependencies {
   compile 'com.google.android.gms:play-services:6.1.71'
   compile project(':paralloidviews')
   compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-  compile 'com.crashlytics.android:crashlytics:1.+'
   compile 'com.squareup.dagger:dagger:1.2.2'
   apt 'com.squareup.dagger:dagger-compiler:1.2.2'
   compile 'com.squareup.okhttp:okhttp:2.0.0'
@@ -89,6 +84,9 @@ dependencies {
   compile 'com.pnikosis:materialish-progress:1.0'
   compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
   compile 'com.github.traex.rippleeffect:library:1.2.2'
+  compile('com.crashlytics.sdk.android:crashlytics:2.1.0@aar') {
+    transitive = true;
+  }
 }
 
 pmd {

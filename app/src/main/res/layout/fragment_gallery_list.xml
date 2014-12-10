@@ -1,7 +1,9 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp">
+    android:padding="0dp"
+    android:id="@+id/srGalleries">
 
   <ListView
       android:id="@+id/lvGalleries"
@@ -9,4 +11,5 @@
       android:layout_height="wrap_content"
       android:divider="@color/le_black"
       android:dividerHeight="1.5dp"/>
-</FrameLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>

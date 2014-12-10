@@ -6,6 +6,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,7 @@ public class GalleryListFragment extends BaseFragment {
   @Inject Client client;
   @Inject Bus bus;
   @InjectView(R.id.lvGalleries) ListView lvGalleries;
+  @InjectView(R.id.srGalleries) SwipeRefreshLayout swipeView;
   private List<Gallery> galleries;
   private GalleryAdapter galleryAdapter;
   private Date galleriesLoadedAt;
@@ -58,13 +60,30 @@ public class GalleryListFragment extends BaseFragment {
     galleryAdapter = new GalleryAdapter(this, galleries);
   }
 
+
   @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_gallery_list, container, false);
     ButterKnife.inject(this, view);
+
     lvGalleries.setAdapter(galleryAdapter);
+    setupSwipe();
+
     return view;
+  }
+
+  private void setupSwipe() {
+    swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        loadGalleries();
+      }
+    });
+
+    swipeView.setColorSchemeResources(R.color.refresh_progress_1,
+        R.color.refresh_progress_2,
+        R.color.refresh_progress_3);
   }
 
   @Override public void onResume() {
@@ -108,7 +127,9 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void loadGalleryListFromApi() {
-    bus.post(new MainLoadingIndicator(true));
+    if(!swipeView.isRefreshing()) {
+      bus.post(new MainLoadingIndicator(true));
+    }
 
     addSubscription(client.getGalleriesData()
         .subscribeOn(Schedulers.io())
@@ -116,7 +137,11 @@ public class GalleryListFragment extends BaseFragment {
         .subscribe(new Observer<ArrayList<Gallery>>() {
           @Override
           public void onCompleted() {
-            bus.post(new MainLoadingIndicator(false));
+            if(!swipeView.isRefreshing()) {
+              bus.post(new MainLoadingIndicator(false));
+            } else {
+              swipeView.setRefreshing(false);
+            }
           }
 
           @Override
@@ -171,6 +196,7 @@ public class GalleryListFragment extends BaseFragment {
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<List<Gallery>>() {
           @Override public void onCompleted() {
+            swipeView.setRefreshing(false);
           }
 
           @Override public void onError(Throwable throwable) {

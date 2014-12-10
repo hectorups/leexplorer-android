@@ -34,4 +34,8 @@
   <color name="le_emphasis_blue_transparent">#BB00C4F1</color>
   <color name="le_yellow">#f1c300</color>
 
+  <color name="refresh_progress_1">@color/le_blue</color>
+  <color name="refresh_progress_2">@color/le_dark_grey</color>
+  <color name="refresh_progress_3">@color/le_emphasis_blue</color>
+
 </resources>

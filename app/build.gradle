@@ -88,6 +88,7 @@ dependencies {
   compile 'com.mcxiaoke.photoview:library:1.2.3'
   compile 'com.pnikosis:materialish-progress:1.0'
   compile 'com.hannesdorfmann.smoothprogressbar:library:1.0.0'
+  compile 'com.github.traex.rippleeffect:library:1.2.2'
 }
 
 pmd {

@@ -18,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,7 +56,7 @@ public class GalleryFragment extends BaseFragment {
   @InjectView(R.id.txDetailGalleryType) TextView txDetailGalleryType;
   @InjectView(R.id.txLanguage) TextView txLanguage;
   @InjectView(R.id.llOverlayInfo) LinearLayout llOverlayInfo;
-
+  @InjectView(R.id.exploreCollectionBtn) Button exploreCollectionBtn;
   @InjectView(R.id.txHours) TextView txHours;
   @InjectView(R.id.txDetailedPrice) TextView txDetailedPrice;
   @InjectView(R.id.txDescription) TextView txDescription;
@@ -254,6 +255,7 @@ public class GalleryFragment extends BaseFragment {
     if(pbDownload != null) {
       pbDownload.setProgress(download);
       pbDownload.setVisibility(View.VISIBLE);
+      exploreCollectionBtn.setVisibility(View.INVISIBLE);
     }
   }
 
@@ -263,6 +265,7 @@ public class GalleryFragment extends BaseFragment {
     downloadingPercentage = 0;
     pbDownload.setProgress(0);
     pbDownload.setVisibility(View.GONE);
+    exploreCollectionBtn.setVisibility(View.VISIBLE);
   }
 
   @Override public String getScreenName() {

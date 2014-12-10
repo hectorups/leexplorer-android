@@ -160,13 +160,12 @@
       android:id="@+id/exploreCollectionBtn"
       android:layout_width="match_parent"
       android:layout_height="@dimen/explore_collection_button_height"
-      android:background="@color/le_blue_transparent"
+      android:background="@drawable/blue_button_state"
       android:text="@string/explore_collection"
       android:textColor="@color/le_white"
       android:textSize="18sp"
       android:textStyle="bold"
       android:layout_gravity="bottom"
-      android:gravity="center"
       />
 
   <com.daimajia.numberprogressbar.NumberProgressBar

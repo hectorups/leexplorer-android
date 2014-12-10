@@ -14,7 +14,7 @@
 
 
   <color name="le_blue">#FF0098C6</color>
-  <color name="le_blue_transparent">#990098C6</color>
+  <color name="le_blue_transparent">#BB0098C6</color>
   <color name="le_mid_blue">#88D3ED</color>
   <color name="le_light_blue">#E5F5FC</color>
   <color name="le_black_transparent">#99000000</color>
@@ -31,6 +31,7 @@
   <color name="le_gray">#9B9b9B</color>
   <color name="le_red">#C1272D</color>
   <color name="le_emphasis_blue">#00C4f1</color>
+  <color name="le_emphasis_blue_transparent">#BB00C4F1</color>
   <color name="le_yellow">#f1c300</color>
 
 </resources>

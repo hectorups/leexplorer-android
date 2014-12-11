@@ -25,7 +25,6 @@ import com.leexplorer.app.util.GalleryComparator;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.inject.Inject;
@@ -45,7 +44,6 @@ public class GalleryListFragment extends BaseFragment {
   @InjectView(R.id.srGalleries) SwipeRefreshLayout swipeView;
   private List<Gallery> galleries;
   private GalleryAdapter galleryAdapter;
-  private Date galleriesLoadedAt;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -159,7 +157,6 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void updateAdapterDataset(List<Gallery> galleries) {
-    galleriesLoadedAt = new Date();
     this.galleries.clear();
     LocationService service = new LocationService(getActivity());
     Location currentLocation = null;

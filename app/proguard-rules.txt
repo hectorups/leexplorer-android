@@ -70,7 +70,7 @@
 # platform version.  We know about them, and they are safe.
 -dontwarn android.support.**
 
-# Keep Line Numbers
+# Keep Line Numbers (Crashlytics)
 -keepattributes SourceFile,LineNumberTable
 
 # Support Library
@@ -136,7 +136,6 @@
 -keepattributes SourceFile,LineNumberTable
 
 #Activeandroid
--libraryjars libs/ActiveAndroid-3.1.jar
 -keep class com.activeandroid.** { *; }
 -keep class com.activeandroid.**.** { *; }
 -keep class * extends com.activeandroid.Model

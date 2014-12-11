@@ -43,8 +43,7 @@ import javax.inject.Inject;
 import uk.co.chrisjenx.paralloid.Parallaxor;
 import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 
-public class ArtworkFragment extends BaseFragment
-    implements SeekBar.OnSeekBarChangeListener {
+public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarChangeListener {
   private static final String TAG = "com.leexplorer.artworkfragment";
   private static final String EXTRA_ARTWORK = "extra_artwork";
   private static final String SAVED_CURRENT_DURAITON = "saved_current_duration";
@@ -195,7 +194,7 @@ public class ArtworkFragment extends BaseFragment
 
   private void setupShare() {
     targetForShare = new ImageShareTarget(getCompositeSubscription());
-    targetForShare.setCallbacks(new ImageShareTarget.Callbacks(){
+    targetForShare.setCallbacks(new ImageShareTarget.Callbacks() {
       @Override public void readyToShare(Uri bmpUri) {
         Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
@@ -248,14 +247,12 @@ public class ArtworkFragment extends BaseFragment
     if (artwork.equals(playingArtwork)) {
       if (audioCurrentDuration == 0) {
         bus.post(new LoadingEvent(false));
-      } else if (!onPause && !nowPlaying) {
-        if (audioCurrentDuration == event.getCurrentDuration()) {
-          onPause = true;
-          nowPlaying = false;
-        } else {
-          onPause = false;
-          nowPlaying = true;
-        }
+      } else if (event.isPaused()) {
+        onPause = true;
+        nowPlaying = false;
+      } else {
+        onPause = false;
+        nowPlaying = true;
       }
 
       audioTotalDuration = event.getTotalDuration();

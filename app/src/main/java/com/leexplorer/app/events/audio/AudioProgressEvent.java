@@ -6,11 +6,17 @@ public class AudioProgressEvent {
   private Artwork artwork;
   private long totalDuration;
   private long currentDuration;
+  private boolean paused;
 
-  public AudioProgressEvent(Artwork artwork, long totalDuration, long currentDuration) {
+  public AudioProgressEvent(Artwork artwork, long totalDuration, long currentDuration, boolean paused) {
     this.artwork = artwork;
     this.totalDuration = totalDuration;
     this.currentDuration = currentDuration;
+    this.paused = paused;
+  }
+
+  public boolean isPaused() {
+    return paused;
   }
 
   public Artwork getArtwork() {

@@ -50,10 +50,12 @@ public class MediaPlayerService extends BaseService {
   private static final String LOG = "com.leexplorer.services.mediaplayerservice";
   private static final int STATUS_INTERVAL = 500;
   private static final int NOTIFICATION_ID = 11;
-  private static MediaPlayer mediaPlayer;
-  private static Artwork artwork;
-  private static ArrayList<Artwork> artworks;
-  private static int volume = (int) MAX_VOLUME / 2;
+  private static int volume = MAX_VOLUME / 2;
+
+  private MediaPlayer mediaPlayer;
+  private Artwork artwork;
+  private boolean paused;
+  private ArrayList<Artwork> artworks;
 
   @Inject ImageSourcePicker imageSourcePicker;
   @Inject AudioSourcePicker audioSourcePicker;
@@ -210,6 +212,7 @@ public class MediaPlayerService extends BaseService {
     if (mediaPlayer != null && this.artwork != null && this.artwork.equals(artwork)) {
       mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
       mediaPlayer.start();
+      paused = false;
       bus.post(new AudioResumingEvent(this.artwork));
     } else {
       stop();
@@ -245,6 +248,7 @@ public class MediaPlayerService extends BaseService {
         }
       });
       mediaPlayer.start();
+      paused = false;
 
       eventReporter.artworkAudioPlayed(artwork);
     }
@@ -258,6 +262,7 @@ public class MediaPlayerService extends BaseService {
 
     stopForeground(true);
     mediaPlayer.pause();
+    paused = true;
   }
 
   synchronized private void seek_to(int position) {
@@ -275,7 +280,7 @@ public class MediaPlayerService extends BaseService {
   }
 
   private void broadcastProgress(long totalDuration, long currentDuration) {
-    bus.post(new AudioProgressEvent(artwork, totalDuration, currentDuration));
+    bus.post(new AudioProgressEvent(artwork, totalDuration, currentDuration, paused));
   }
 
   private Runnable updateTimeTask = new Runnable() {

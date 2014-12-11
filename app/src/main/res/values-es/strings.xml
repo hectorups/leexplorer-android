@@ -1,0 +1,63 @@
+<resources>
+
+  <string name="app_name">Leexplorer</string>
+  <string name="action_settings">Preferencias</string>
+  <string name="title_activity_artwork">Exhibit</string>
+  <string name="unknown_date">unknown</string>
+  <string name="error_app_too_old">Leexplorer needs to be updated</string>
+  <string name="error_problem_with_connection">Sistema temporalmente no disponible, inténtelo denuevo más tarde
+  </string>
+  <string name="error_no_connection">Sin conexión</string>
+
+  <!-- ARWORK SCREEN -->
+  <string name="artwork_description_header">Descripción</string>
+  <string name="share_image">Compartir</string>
+  <string name="play_artwork">poner audio</string>
+
+  <!-- ARTWORK LIST SCREEN -->
+  <string name="refresh">refrescar</string>
+  <string name="autoplay">autoguia</string>
+
+  <!-- AUDIO SERVICE -->
+  <string name="audio_notification_title">Leexplorer</string>
+  <string name="audio_notification_text">%1$s</string>
+
+  <!-- GALLERY DOWNLOAD SERVICE -->
+  <string name="download_notification_title">Bajando Galería</string>
+  <string name="download_notification_text">Bajando %1$s</string>
+
+  <!-- BEACON SCAN SERVICE -->
+  <string name="beacon_notification_title">Hay Galerías Leexplorer cerca</string>
+  <string name="beacon_notification_text">Dentro del area de %1$s</string>
+
+  <!-- AUTOPLAY SERVICE -->
+  <string name="autoplay_notification_title">Leexplorer Autoguia</string>
+  <string name="autoplay_notification_text">%1$s artwork\'s audio will autoplay as you come close to
+    them.
+  </string>
+  <string name="autoplay_notification_stop">Cancelar</string>
+  <string name="autoplay_notification_resume">Reanudar</string>
+
+  <!-- GALLERY SCREEN -->
+  <string name="title_activity_galery_list">GaleryListActivity</string>
+  <string name="title_activity_gallery">GalleryActivity</string>
+  <string name="download_gallery">bajar</string>
+  <string name="gallery_downloaded">Galería bajada con éxito</string>
+  <string name="explore_collection">Explorar Galería</string>
+
+  <!-- GALLERY LIST SCREEN -->
+  <string name="gallery_list_screen_title">Galerías Leexplorer</string>
+  <string name="menu_gallery_map">mapa</string>
+  <string name="manu_gallery_list">lista</string>
+  <string name="bluetooth_warning_title">Tú bluetooth esta desactivado</string>
+  <string name="bluetooth_warning_message">Para tener la mejor experiencia activa tu bluetooth.
+  </string>
+
+  <!-- GALLERY MAP SCREEN -->
+  <string name="consolidated_marker_title">%1$d galerías</string>
+
+  <!-- CONFIRM DIALOG -->
+  <string name="confirm_dialog_ok">Ok</string>
+  <string name="confirm_dialog_cancel">Cancelar</string>
+
+</resources>

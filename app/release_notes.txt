@@ -1,0 +1,3 @@
+2014-12-10
+
+* First Release of the android app for fabric

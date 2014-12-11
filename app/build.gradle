@@ -52,6 +52,8 @@ android {
       shrinkResources true
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
       signingConfig signingConfigs.release
+      ext.betaDistributionReleaseNotesFilePath='app/release_notes.txt'
+      ext.betaDistributionEmailsFilePath='app/beta_distribution_emails.txt'
     }
   }
 

@@ -229,8 +229,6 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   private void loadArtworkListFromDB() {
-    bus.post(new MainLoadingIndicator(true));
-
     addSubscription(Observable.create(new Observable.OnSubscribe<ArrayList<Artwork>>() {
       @Override public void call(Subscriber<? super ArrayList<Artwork>> subscriber) {
         subscriber.onNext(Artwork.galleryArtworks(gallery.getGalleryId()));
@@ -242,7 +240,6 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribe(new Observer<ArrayList<Artwork>>() {
           @Override
           public void onCompleted() {
-            bus.post(new MainLoadingIndicator(false));
           }
 
           @Override

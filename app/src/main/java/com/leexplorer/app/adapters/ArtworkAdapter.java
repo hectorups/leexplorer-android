@@ -95,8 +95,6 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     holder.llSignalIndicator.setVisibility(View.VISIBLE);
   }
 
-  // @todo: this is for testing, needs to be implemted depending on
-  // the overal gallery score
   private double getHeightRatioFromPopularity(Artwork artwork) {
     double factor = 0;
     if (artwork.getLikesCount() > 100) {
@@ -105,7 +103,7 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
       factor = 0.5;
     }
 
-    return factor / 2.0 + 1.0; // height will be 1.0 - 1.5 the width
+    return factor / 2.0 + 1.0;
   }
 
   static class ViewHolder {

@@ -1,11 +1,8 @@
 package com.leexplorer.app.fragments;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
@@ -28,33 +25,26 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.leexplorer.app.R;
+import com.leexplorer.app.events.FullScreenImageEvent;
+import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.audio.AudioCompleteEvent;
 import com.leexplorer.app.events.audio.AudioProgressEvent;
 import com.leexplorer.app.events.audio.AudioResumingEvent;
 import com.leexplorer.app.events.audio.AudioStartedEvent;
-import com.leexplorer.app.events.FullScreenImageEvent;
-import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.AudioTime;
+import com.leexplorer.app.util.ImageShareTarget;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import javax.inject.Inject;
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.schedulers.Schedulers;
 import uk.co.chrisjenx.paralloid.Parallaxor;
 import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
 
-public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarChangeListener {
+public class ArtworkFragment extends BaseFragment
+    implements SeekBar.OnSeekBarChangeListener {
   private static final String TAG = "com.leexplorer.artworkfragment";
   private static final String EXTRA_ARTWORK = "extra_artwork";
   private static final String SAVED_CURRENT_DURAITON = "saved_current_duration";
@@ -83,61 +73,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private int originalContentPadding;
 
   private MenuItem menuPlay;
-  private Target targetForShare = new Target() {
-    @Override
-    public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-      // Do it in the bg so the ui feels fast
-      addSubscription(Observable.create(new Observable.OnSubscribe<Uri>() {
-        @Override
-        public void call(Subscriber<? super Uri> subscriber) {
-          Uri bmpUri;
-          try {
-            File file = new File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                "share_image.png");
-            FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.close();
-            bmpUri = Uri.fromFile(file);
-            if (bmpUri != null) {
-              subscriber.onNext(bmpUri);
-            }
-            subscriber.onCompleted();
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
-      })
-          .subscribeOn(Schedulers.newThread())
-          .observeOn(Schedulers.io())
-          .subscribe(new Observer<Uri>() {
-            @Override public void onCompleted() {
-            }
-
-            @Override public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(Uri bmpUri) {
-              // Construct a ShareIntent with link to image
-              Intent shareIntent = new Intent();
-              shareIntent.setAction(Intent.ACTION_SEND);
-              shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-              shareIntent.setType("image/*");
-
-              miShareAction.setShareIntent(shareIntent);
-            }
-          }));
-    }
-
-    @Override
-    public void onBitmapFailed(Drawable d) {
-    }
-
-    @Override
-    public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
-    }
-  };
+  private ImageShareTarget targetForShare;
 
   private long audioTotalDuration = 0;
   private long audioCurrentDuration = 0;
@@ -197,41 +133,11 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
     ButterKnife.inject(this, rootView);
 
+    setupShare();
+
     showAudio();
 
-    tvAuthorAndDate.setText(artwork.getAuthor());
-    String dateText = ArtDate.shortDate(artwork.getPublishedAt());
-    if (!TextUtils.isEmpty(dateText)) {
-      tvAuthorAndDate.setText(tvAuthorAndDate.getText() + " - " + dateText);
-    }
-
-    tvDescription.setText(artwork.getDescription());
-
-    if (svDescription instanceof Parallaxor) {
-      ((Parallaxor) svDescription).parallaxViewBy(ivArtwork, new InvertTransformer(), 0.35f);
-    }
-
-    if (flHeaderOverlay != null) {
-      flHeaderOverlay.setOnClickListener(new View.OnClickListener() {
-        @Override public void onClick(View view) {
-          bus.post(new FullScreenImageEvent(artwork));
-        }
-      });
-    } else {
-      ivArtwork.setOnClickListener(new View.OnClickListener() {
-        @Override public void onClick(View view) {
-          bus.post(new FullScreenImageEvent(artwork));
-        }
-      });
-    }
-
-    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large)
-        .placeholder(R.drawable.image_place_holder)
-        .into(ivArtwork);
-
-    sbAudio.setOnSeekBarChangeListener(this);
-
-    originalContentPadding = llArtworkContent.getPaddingBottom();
+    setupUI();
 
     return rootView;
   }
@@ -285,6 +191,56 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   @Override public String getScreenName() {
     return TAG;
+  }
+
+  private void setupShare() {
+    targetForShare = new ImageShareTarget(getCompositeSubscription());
+    targetForShare.setCallbacks(new ImageShareTarget.Callbacks(){
+      @Override public void readyToShare(Uri bmpUri) {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+        shareIntent.setType("image/*");
+
+        miShareAction.setShareIntent(shareIntent);
+      }
+    });
+  }
+
+  private void setupUI() {
+    tvAuthorAndDate.setText(artwork.getAuthor());
+    String dateText = ArtDate.shortDate(artwork.getPublishedAt());
+    if (!TextUtils.isEmpty(dateText)) {
+      tvAuthorAndDate.setText(tvAuthorAndDate.getText() + " - " + dateText);
+    }
+
+    tvDescription.setText(artwork.getDescription());
+
+    if (svDescription instanceof Parallaxor) {
+      ((Parallaxor) svDescription).parallaxViewBy(ivArtwork, new InvertTransformer(), 0.35f);
+    }
+
+    if (flHeaderOverlay != null) {
+      flHeaderOverlay.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          bus.post(new FullScreenImageEvent(artwork));
+        }
+      });
+    } else {
+      ivArtwork.setOnClickListener(new View.OnClickListener() {
+        @Override public void onClick(View view) {
+          bus.post(new FullScreenImageEvent(artwork));
+        }
+      });
+    }
+
+    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_large)
+        .placeholder(R.drawable.image_place_holder)
+        .into(ivArtwork);
+
+    sbAudio.setOnSeekBarChangeListener(this);
+
+    originalContentPadding = llArtworkContent.getPaddingBottom();
   }
 
   @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {

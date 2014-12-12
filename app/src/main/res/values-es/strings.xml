@@ -59,5 +59,12 @@
   <!-- CONFIRM DIALOG -->
   <string name="confirm_dialog_ok">Ok</string>
   <string name="confirm_dialog_cancel">Cancelar</string>
+  <string name="app_settings">configuración</string>
+  <string name="settings_version">Versión</string>
+  <string name="settings_about">ACERCA</string>
+  <string name="settings_feedback">Opinión</string>
+  <string name="settings_feedback_description">Danos tú opinión acerca de Leexplorer</string>
+  <string name="feedback_email_chooser">Enviar Comentario por email</string>
+  <string name="feedback_email_title">Comentario acerca de Leexplorer</string>
 
 </resources>

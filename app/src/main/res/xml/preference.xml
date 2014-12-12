@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="PintyPrefs">
+
+  <PreferenceCategory
+      android:title="@string/settings_about">
+
+    <Preference android:title="@string/settings_feedback"
+        android:key="preference_feedback"
+        android:editable="false"
+        android:summary="@string/settings_feedback_description"
+        />
+
+    <Preference android:title="@string/settings_version"
+        android:key="preference_version"
+        android:editable="false"
+        android:defaultValue="unknown"
+        />
+  </PreferenceCategory>
+</PreferenceScreen>

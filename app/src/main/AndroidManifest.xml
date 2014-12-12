@@ -73,6 +73,10 @@
       </intent-filter>
     </receiver>
 
+    <activity android:name="com.leexplorer.app.activities.AppPreferencesActivity"
+      android:label="@string/app_settings"
+        android:parentActivityName=".activities.GalleryListActivity"/>
+
     <activity
         android:name="com.leexplorer.app.activities.ArtworkListActivity"
         android:label="@string/app_name"
@@ -104,14 +108,12 @@
     <activity
         android:name="com.leexplorer.app.activities.GalleryActivity"
         android:parentActivityName=".activities.GalleryListActivity"
-        android:label="@string/app_name">
-    </activity>
+        android:label="@string/app_name"/>
 
     <activity
         android:name="com.leexplorer.app.activities.FullScreenImageActivity"
         android:parentActivityName=".activities.ArtworkActivity"
-        android:label="@string/app_name">
-    </activity>
+        android:label="@string/app_name"/>
 
     <meta-data android:name="com.google.android.gms.version"
         android:value="@integer/google_play_services_version"/>

@@ -59,5 +59,12 @@
   <!-- CONFIRM DIALOG -->
   <string name="confirm_dialog_ok">Ok</string>
   <string name="confirm_dialog_cancel">Cancel</string>
+  <string name="app_settings">settings</string>
+  <string name="settings_version">Version</string>
+  <string name="settings_about">ABOUT</string>
+  <string name="settings_feedback">Feedback</string>
+  <string name="settings_feedback_description">Give us your feedback about Leexplorer</string>
+  <string name="feedback_email_title">Leexplorer feedback</string>
+  <string name="feedback_email_chooser">Send Feedback Email</string>
 
 </resources>

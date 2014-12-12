@@ -36,6 +36,8 @@ public class AppConstants {
   public static final int MIN_METRES_FOR_AUTOPLAY = 20;
   public static final int MILSEC_ARTWORK_REFRESH = 30000;
 
+  public static final String FEEDBACK_EMAIL = "hectorups@gmail.com";
+
   static {
     FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);
     FACILITIES_IMG_MAP.put("wifi", R.drawable.ic_facilities_wifi);

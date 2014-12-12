@@ -7,6 +7,11 @@
       android:title="Bluetooth Disabled"
       leexplorer:showAsAction="always"/>
 
+  <item android:id="@+id/menuSettings"
+    android:title="@string/app_settings"
+    leexplorer:showAsAction="never"
+    />
+
   <item
       android:id="@+id/menuMap"
       android:icon="@drawable/ic_action_map"

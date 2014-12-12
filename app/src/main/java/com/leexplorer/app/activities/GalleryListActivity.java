@@ -31,6 +31,7 @@ public class GalleryListActivity extends BaseActivity
   public static final String EXTRA_INITIAL_GALLERY = "initial_gallery";
   private static final String LIST_FRAGMENT_TAG = "list_fragment_tag";
   private static final String MAP_FRAGMENT_TAG = "map_fragment_tag";
+  private static final int RESULT_SETTINGS = 1;
   private MenuItem menuList;
   private MenuItem menuMap;
   private MenuItem bluetoothWarning;
@@ -166,6 +167,10 @@ public class GalleryListActivity extends BaseActivity
     GalleryMapFragment mapFragment = (GalleryMapFragment) fm.findFragmentByTag(MAP_FRAGMENT_TAG);
 
     switch (id) {
+      case R.id.menuSettings:
+        Intent i = new Intent(this, AppPreferencesActivity.class);
+        startActivityForResult(i, RESULT_SETTINGS);
+        break;
       case R.id.bluetoothWarning:
         ConfirmDialogFragment.newInstance(TAG,
             this.getResources().getString(R.string.bluetooth_warning_title),

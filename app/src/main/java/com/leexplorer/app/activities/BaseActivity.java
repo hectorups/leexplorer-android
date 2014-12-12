@@ -20,7 +20,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.BuildKilledEvent;
-import com.leexplorer.app.events.LoadArtworksEvent;
+import com.leexplorer.app.events.artwork.LoadArtworksEvent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.MainLoadingIndicator;

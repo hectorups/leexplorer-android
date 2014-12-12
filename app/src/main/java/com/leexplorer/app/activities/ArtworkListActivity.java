@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import com.leexplorer.app.R;
-import com.leexplorer.app.events.ArtworkClickedEvent;
+import com.leexplorer.app.events.artwork.ArtworkClickedEvent;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.Gallery;

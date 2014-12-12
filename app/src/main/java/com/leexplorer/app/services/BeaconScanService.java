@@ -26,7 +26,7 @@ import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
-import com.leexplorer.app.events.BeaconsScanResultEvent;
+import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
 import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.models.IBeacon;

@@ -20,7 +20,7 @@ import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.events.audio.AudioCompleteEvent;
 import com.leexplorer.app.events.audio.AudioProgressEvent;
 import com.leexplorer.app.events.audio.AudioStartedEvent;
-import com.leexplorer.app.events.BeaconsScanResultEvent;
+import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioStartedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;

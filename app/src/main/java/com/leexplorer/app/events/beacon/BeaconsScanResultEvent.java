@@ -1,4 +1,4 @@
-package com.leexplorer.app.events;
+package com.leexplorer.app.events.beacon;
 
 import com.leexplorer.app.models.FilteredIBeacon;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.leexplorer.app.events;
+package com.leexplorer.app.events.artwork;
 
 import com.leexplorer.app.models.Artwork;
 

@@ -27,7 +27,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.leexplorer.app.R;
-import com.leexplorer.app.events.LoadArtworksEvent;
+import com.leexplorer.app.events.artwork.LoadArtworksEvent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.models.Gallery;

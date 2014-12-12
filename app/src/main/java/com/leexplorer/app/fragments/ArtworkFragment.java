@@ -25,7 +25,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.leexplorer.app.R;
-import com.leexplorer.app.events.FullScreenImageEvent;
+import com.leexplorer.app.events.artwork.FullScreenImageEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.audio.AudioCompleteEvent;
 import com.leexplorer.app.events.audio.AudioProgressEvent;

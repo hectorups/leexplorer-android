@@ -34,6 +34,7 @@ import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
+import com.leexplorer.app.util.ShareManager;
 import com.leexplorer.app.util.Tint;
 import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
@@ -51,6 +52,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 
   @Inject Bus bus;
   @Inject EventReporter eventReporter;
+  @Inject ShareManager shareManager;
   private SmoothProgressBar progressBar;
 
   private final EventHandler eventhandler = new EventHandler();
@@ -205,44 +207,8 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     @Subscribe public void onShareContent(ShareEvent event) {
       eventReporter.itemShared(event.getType(), event.getTitle());
-
-      List<Intent> targets = new ArrayList<>();
-      Intent template = new Intent(Intent.ACTION_SEND);
-      template.setType("image/*");
-      List<ResolveInfo> candidates = getPackageManager().queryIntentActivities(template, 0);
-
-      for (ResolveInfo candidate : candidates) {
-        String packageName = candidate.activityInfo.packageName;
-        boolean allowed = false;
-        for (String allowedPackage : AppConstants.ALLOWED_SHARED_PACKAGE_NAMES) {
-          if (packageName.contains(allowedPackage)) {
-            allowed = true;
-            break;
-          }
-        }
-
-        if (!allowed) {
-          continue;
-        }
-
-        Intent target = new Intent(android.content.Intent.ACTION_SEND);
-        target.setType("*/*");
-        target.putExtra(Intent.EXTRA_STREAM, event.getBmpUri());
-        target.putExtra(Intent.EXTRA_SUBJECT, event.getTitle());
-        target.putExtra(Intent.EXTRA_TEXT, event.getDescription());
-        target.setPackage(packageName);
-
-        if (packageName.contains("com.facebook") || packageName.contains("com.instagram")) {
-          target.setType("image/*");
-        }
-
-        targets.add(target);
-      }
-
-      Intent chooser = Intent.createChooser(targets.remove(0), getString(R.string.share_chooser));
-      chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targets.toArray(new Parcelable[] {
-      }));
-      startActivity(chooser);
+      Intent intent = shareManager.shareIntent(event);
+      startActivity(intent);
     }
   }
 

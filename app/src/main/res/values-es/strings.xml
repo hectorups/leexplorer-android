@@ -66,5 +66,7 @@
   <string name="settings_feedback_description">Danos tú opinión acerca de Leexplorer</string>
   <string name="feedback_email_chooser">Enviar Comentario por email</string>
   <string name="feedback_email_title">Comentario acerca de Leexplorer</string>
+  <string name="share_chooser">Elige donde compartir</string>
+  <string name="share_artwork_description">Impresionante obra de arte</string>
 
 </resources>

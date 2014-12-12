@@ -66,5 +66,7 @@
   <string name="settings_feedback_description">Give us your feedback about Leexplorer</string>
   <string name="feedback_email_title">Leexplorer feedback</string>
   <string name="feedback_email_chooser">Send Feedback Email</string>
+  <string name="share_chooser">Choose where to share</string>
+  <string name="share_artwork_description">Check out this amazing artwork</string>
 
 </resources>

@@ -29,6 +29,7 @@ public class EventReporter {
   private static final String EVENT_ARTWORK_AUDIO_PLAYED = "arwork_audio_played";
   private static final String EVENT_GALLERY_DISCOVERED = "gallery_discovered";
   private static final String EVENT_GALLERY_DOWNLOADED = "gallery_downloaded";
+  private static final String EVENT_ITEM_SHARED = "item_shared";
 
   // EVENT ATTRS
   private static final String ATTR_ARTWORK_MAC = "artwork_mac";
@@ -36,6 +37,8 @@ public class EventReporter {
   private static final String ATTR_ARTWORK_ID = "artwork_id";
   private static final String ATTR_GALLERY_NAME = "gallery_name";
   private static final String ATTR_GALLERY_ID = "gallery_id";
+  private static final String ATTR_ITEM_SHARE_TYPE = "item_share_id";
+  private static final String ATTR_ITEM_SHARE_NAME = "item_share_name";
 
   public EventReporter(Context context) {
     // Crashalytics
@@ -90,6 +93,13 @@ public class EventReporter {
     attrs.put(ATTR_ARTWORK_NAME, artwork.getMajorminor());
     attrs.put(ATTR_GALLERY_ID, artwork.getGalleryId());
     logUserEvent(EVENT_ARTWORK_AUDIO_PLAYED, attrs);
+  }
+
+  public void itemShared(String type, String name) {
+    Map<String, String> attrs = new HashMap<>();
+    attrs.put(ATTR_ITEM_SHARE_TYPE, type);
+    attrs.put(ATTR_ITEM_SHARE_NAME, name);
+    logUserEvent(EVENT_ITEM_SHARED, attrs);
   }
 
   public void galleryDiscovered(Gallery gallery) {

@@ -7,8 +7,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,15 +19,17 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.BuildKilledEvent;
-import com.leexplorer.app.events.artwork.LoadArtworksEvent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.events.NetworkErrorEvent;
+import com.leexplorer.app.events.ShareEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
+import com.leexplorer.app.events.artwork.LoadArtworksEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.services.AutoPlayService;
@@ -36,6 +40,8 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 
 public abstract class BaseActivity extends ActionBarActivity {
@@ -195,6 +201,48 @@ public abstract class BaseActivity extends ActionBarActivity {
       } else {
         view.setVisibility(View.GONE);
       }
+    }
+
+    @Subscribe public void onShareContent(ShareEvent event) {
+      eventReporter.itemShared(event.getType(), event.getTitle());
+
+      List<Intent> targets = new ArrayList<>();
+      Intent template = new Intent(Intent.ACTION_SEND);
+      template.setType("image/*");
+      List<ResolveInfo> candidates = getPackageManager().queryIntentActivities(template, 0);
+
+      for (ResolveInfo candidate : candidates) {
+        String packageName = candidate.activityInfo.packageName;
+        boolean allowed = false;
+        for (String allowedPackage : AppConstants.ALLOWED_SHARED_PACKAGE_NAMES) {
+          if (packageName.contains(allowedPackage)) {
+            allowed = true;
+            break;
+          }
+        }
+
+        if (!allowed) {
+          continue;
+        }
+
+        Intent target = new Intent(android.content.Intent.ACTION_SEND);
+        target.setType("*/*");
+        target.putExtra(Intent.EXTRA_STREAM, event.getBmpUri());
+        target.putExtra(Intent.EXTRA_SUBJECT, event.getTitle());
+        target.putExtra(Intent.EXTRA_TEXT, event.getDescription());
+        target.setPackage(packageName);
+
+        if (packageName.contains("com.facebook") || packageName.contains("com.instagram")) {
+          target.setType("image/*");
+        }
+
+        targets.add(target);
+      }
+
+      Intent chooser = Intent.createChooser(targets.remove(0), getString(R.string.share_chooser));
+      chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targets.toArray(new Parcelable[] {
+      }));
+      startActivity(chooser);
     }
   }
 

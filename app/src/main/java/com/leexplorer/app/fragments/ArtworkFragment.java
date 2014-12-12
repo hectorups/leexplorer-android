@@ -25,14 +25,16 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.leexplorer.app.R;
-import com.leexplorer.app.events.artwork.FullScreenImageEvent;
 import com.leexplorer.app.events.LoadingEvent;
+import com.leexplorer.app.events.ShareEvent;
+import com.leexplorer.app.events.artwork.FullScreenImageEvent;
 import com.leexplorer.app.events.audio.AudioCompleteEvent;
 import com.leexplorer.app.events.audio.AudioProgressEvent;
 import com.leexplorer.app.events.audio.AudioResumingEvent;
 import com.leexplorer.app.events.audio.AudioStartedEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService;
+import com.leexplorer.app.services.MediaPlayerService.Status;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.AudioTime;
 import com.leexplorer.app.util.ImageShareTarget;
@@ -42,7 +44,6 @@ import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 import uk.co.chrisjenx.paralloid.Parallaxor;
 import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
-import com.leexplorer.app.services.MediaPlayerService.Status;
 
 public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarChangeListener {
   private static final String TAG = "com.leexplorer.artworkfragment";
@@ -77,6 +78,8 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private long audioTotalDuration = 0;
   private long audioCurrentDuration = 0;
   private Status audioStatus;
+  private boolean waitingForShareImage = false;
+  private Uri shareImage;
 
   public static ArtworkFragment newInstance(Artwork aw) {
     Bundle args = new Bundle();
@@ -174,6 +177,9 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
         menuPlay.setVisible(false);
         playAudio(btnPlay);
         break;
+      case R.id.menuShare:
+        shareArtwork();
+        break;
       default:
         return super.onOptionsItemSelected(item);
     }
@@ -194,12 +200,11 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     targetForShare = new ImageShareTarget(getCompositeSubscription());
     targetForShare.setCallbacks(new ImageShareTarget.Callbacks() {
       @Override public void readyToShare(Uri bmpUri) {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-        shareIntent.setType("image/*");
-
-        miShareAction.setShareIntent(shareIntent);
+        shareImage = bmpUri;
+        if (waitingForShareImage) {
+          waitingForShareImage = false;
+          shareArtwork();
+        }
       }
     });
   }
@@ -238,6 +243,16 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     sbAudio.setOnSeekBarChangeListener(this);
 
     originalContentPadding = llArtworkContent.getPaddingBottom();
+  }
+
+  private void shareArtwork() {
+    if (shareImage == null) {
+      waitingForShareImage = true;
+      return;
+    }
+
+    bus.post(new ShareEvent(artwork.getName(), getString(R.string.share_artwork_description), null,
+        "artwork", shareImage));
   }
 
   @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {

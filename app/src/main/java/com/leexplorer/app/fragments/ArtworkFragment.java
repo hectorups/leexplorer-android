@@ -69,7 +69,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @InjectView(R.id.llArtwoContent) LinearLayout llArtworkContent;
 
   private Artwork artwork;
-  private ShareActionProvider miShareAction;
   private int originalContentPadding;
 
   private MenuItem menuPlay;
@@ -145,10 +144,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @Override public void onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
 
-    MenuItem item = menu.findItem(R.id.menuShare);
-
-    miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-
     menuPlay = menu.findItem(R.id.menuPlay);
 
     if (artwork.getAudioId() != null) {
@@ -157,7 +152,6 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       menuPlay.setVisible(false);
     }
 
-    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_medium).into(targetForShare);
   }
 
   @Override
@@ -207,6 +201,8 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
         }
       }
     });
+
+    imageSourcePicker.getRequestCreator(artwork, R.dimen.thumbor_medium).into(targetForShare);
   }
 
   private void setupUI() {

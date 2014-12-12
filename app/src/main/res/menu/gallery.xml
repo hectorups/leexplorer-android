@@ -8,4 +8,10 @@
       leexplorer:showAsAction="always"
       />
 
+  <item
+      android:id="@+id/menuShare"
+      android:title="@string/share_image"
+      android:icon="@drawable/ic_action_share"
+      leexplorer:showAsAction="always"/>
+
 </menu>

@@ -33,10 +33,10 @@ android {
 
   signingConfigs {
     release {
-      //storeFile file(LE_STORE_FILE)
-      //storePassword LE_STORE_PASSWORD
-      //keyAlias LE_KEY_ALIAS
-      //keyPassword LE_KEY_PASSWORD
+      storeFile file(LE_STORE_FILE)
+      storePassword LE_STORE_PASSWORD
+      keyAlias LE_KEY_ALIAS
+      keyPassword LE_KEY_PASSWORD
     }
   }
 

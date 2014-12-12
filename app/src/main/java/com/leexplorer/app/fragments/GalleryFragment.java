@@ -7,11 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,11 +26,13 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.leexplorer.app.R;
-import com.leexplorer.app.events.artwork.LoadArtworksEvent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
+import com.leexplorer.app.events.ShareEvent;
+import com.leexplorer.app.events.artwork.LoadArtworksEvent;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
+import com.leexplorer.app.util.ImageShareTarget;
 import com.leexplorer.app.util.TextUtil;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Bus;
@@ -49,6 +50,7 @@ public class GalleryFragment extends BaseFragment {
   private static final String DOWNLOADING_PERCENTAGE_KEY = "downloading_percentage";
 
   @Inject Bus bus;
+  @Inject ImageSourcePicker imageSourcePicker;
 
   @InjectView(R.id.ivGalleryDetail) ImageView ivGalleryDetail;
   @InjectView(R.id.txDetailAddress) TextView txDetailAddress;
@@ -63,11 +65,11 @@ public class GalleryFragment extends BaseFragment {
   @InjectView(R.id.pbDownload) NumberProgressBar pbDownload;
   private boolean downloading;
   private int downloadingPercentage;
-  ShareActionProvider miShareAction;
   private MenuItem menuDownload;
-
-  @Inject ImageSourcePicker imageSourcePicker;
   private Gallery gallery;
+  private boolean waitingForShareImage = false;
+  private Uri shareImage;
+  private ImageShareTarget targetForShare;
 
   public static GalleryFragment newInstance(Gallery gallery) {
     Bundle args = new Bundle();
@@ -140,43 +142,9 @@ public class GalleryFragment extends BaseFragment {
     View view = inflater.inflate(R.layout.fragment_gallery_content, container, false);
     ButterKnife.inject(this, view);
 
-    imageSourcePicker.getRequestCreator(gallery.getGalleryId(),
-        gallery.getMainImage(), R.dimen.thumbor_medium)
-        .fit()
-        .centerCrop()
-        .placeholder(R.drawable.image_place_holder)
-        .into(ivGalleryDetail, new Callback() {
-          @Override public void onSuccess() {
-            if(llOverlayInfo != null) {
-              llOverlayInfo.setVisibility(View.VISIBLE);
-            }
-          }
+    setupShare();
 
-          @Override public void onError() {
-            if(llOverlayInfo != null) {
-              llOverlayInfo.setVisibility(View.VISIBLE);
-            }
-          }
-        });
-
-    txDetailAddress.setText(gallery.getAddress());
-    txDetailGalleryType.setText(TextUtil.capitalizeFirstLetter(gallery.getType()));
-
-    StringBuffer languages = new StringBuffer();
-    for (String language : gallery.getLanguages()) {
-      languages.append(languages.length() == 0 ? "" : ", ")
-          .append(TextUtil.capitalizeFirstLetter(language));
-    }
-    txLanguage.setText(languages.toString());
-
-    txHours.setText(gallery.getHours());
-    txDetailedPrice.setText(gallery.getDetailedPrice());
-
-    txDescription.setText(gallery.getDescription());
-
-    if (downloading) {
-      setupDownload(downloadingPercentage);
-    }
+    setupUI();
 
     setFacilities();
 
@@ -185,10 +153,6 @@ public class GalleryFragment extends BaseFragment {
 
   @Override public void onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
-
-    MenuItem item = menu.findItem(R.id.menuShare);
-
-    miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
     menuDownload = menu.findItem(R.id.menuDownloadGallery);
     if (gallery.isGalleryDownloaded()) {
@@ -212,8 +176,67 @@ public class GalleryFragment extends BaseFragment {
         GalleryDownloaderService.callService(getActivity(), gallery);
         menuDownload.setVisible(false);
         return true;
+      case R.id.menuShare:
+        shareGallery();
+        return true;
       default:
         return super.onOptionsItemSelected(item);
+    }
+  }
+
+  private void setupShare() {
+    targetForShare = new ImageShareTarget(getCompositeSubscription());
+    targetForShare.setCallbacks(new ImageShareTarget.Callbacks() {
+      @Override public void readyToShare(Uri bmpUri) {
+        shareImage = bmpUri;
+        if (waitingForShareImage) {
+          waitingForShareImage = false;
+          shareGallery();
+        }
+      }
+    });
+
+    imageSourcePicker.getRequestCreator(gallery.getGalleryId(), gallery.getMainImage(),
+        R.dimen.thumbor_medium).into(targetForShare);
+  }
+
+  private void setupUI() {
+    imageSourcePicker.getRequestCreator(gallery.getGalleryId(), gallery.getMainImage(),
+        R.dimen.thumbor_medium)
+        .fit()
+        .centerCrop()
+        .placeholder(R.drawable.image_place_holder)
+        .into(ivGalleryDetail, new Callback() {
+          @Override public void onSuccess() {
+            if (llOverlayInfo != null) {
+              llOverlayInfo.setVisibility(View.VISIBLE);
+            }
+          }
+
+          @Override public void onError() {
+            if (llOverlayInfo != null) {
+              llOverlayInfo.setVisibility(View.VISIBLE);
+            }
+          }
+        });
+
+    txDetailAddress.setText(gallery.getAddress());
+    txDetailGalleryType.setText(TextUtil.capitalizeFirstLetter(gallery.getType()));
+
+    StringBuffer languages = new StringBuffer();
+    for (String language : gallery.getLanguages()) {
+      languages.append(languages.length() == 0 ? "" : ", ")
+          .append(TextUtil.capitalizeFirstLetter(language));
+    }
+    txLanguage.setText(languages.toString());
+
+    txHours.setText(gallery.getHours());
+    txDetailedPrice.setText(gallery.getDetailedPrice());
+
+    txDescription.setText(gallery.getDescription());
+
+    if (downloading) {
+      setupDownload(downloadingPercentage);
     }
   }
 
@@ -230,7 +253,17 @@ public class GalleryFragment extends BaseFragment {
     }
   }
 
-  @OnClick({R.id.ivGalleryDetail, R.id.exploreCollectionBtn})
+  private void shareGallery() {
+    if (shareImage == null) {
+      waitingForShareImage = true;
+      return;
+    }
+
+    bus.post(new ShareEvent(gallery.getName(), getString(R.string.share_artwork_description), null,
+        "gallery", shareImage));
+  }
+
+  @OnClick({ R.id.ivGalleryDetail, R.id.exploreCollectionBtn })
   public void loadArtworks(View view) {
     bus.post(new LoadArtworksEvent(gallery));
   }
@@ -251,7 +284,7 @@ public class GalleryFragment extends BaseFragment {
   public void setupDownload(int download) {
     downloadingPercentage = download;
     downloading = true;
-    if(pbDownload != null) {
+    if (pbDownload != null) {
       pbDownload.setProgress(download);
       pbDownload.setVisibility(View.VISIBLE);
       exploreCollectionBtn.setVisibility(View.INVISIBLE);

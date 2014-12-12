@@ -1,22 +1,23 @@
 package com.leexplorer.app.events.audio;
 
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.services.MediaPlayerService.Status;
 
 public class AudioProgressEvent {
   private Artwork artwork;
   private long totalDuration;
   private long currentDuration;
-  private boolean paused;
+  private Status status;
 
-  public AudioProgressEvent(Artwork artwork, long totalDuration, long currentDuration, boolean paused) {
+  public AudioProgressEvent(Artwork artwork, long totalDuration, long currentDuration, Status status) {
     this.artwork = artwork;
     this.totalDuration = totalDuration;
     this.currentDuration = currentDuration;
-    this.paused = paused;
+    this.status = status;
   }
 
-  public boolean isPaused() {
-    return paused;
+  public Status getStatus() {
+    return status;
   }
 
   public Artwork getArtwork() {

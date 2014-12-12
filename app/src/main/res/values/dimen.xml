@@ -21,4 +21,7 @@
   <dimen name="progress_indicator_thickness">7dp</dimen>
 
   <dimen name="explore_collection_button_height">50dp</dimen>
+
+  <dimen name="playing_indicator_size">30dp</dimen>
+  <dimen name="playing_indicator_shadow_margin">-2dp</dimen>
 </resources>

@@ -6,6 +6,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ble.Majorminor;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -51,6 +52,7 @@ public class Artwork extends Model implements Parcelable {
   private String galleryId;
 
   private double distance;
+  private MediaPlayerService.Status status;
 
   public Artwork() {
     super();
@@ -230,6 +232,14 @@ public class Artwork extends Model implements Parcelable {
 
   public void setImageHeight(int imageHeight) {
     this.imageHeight = imageHeight;
+  }
+
+  public MediaPlayerService.Status getStatus() {
+    return status;
+  }
+
+  public void setStatus(MediaPlayerService.Status status) {
+    this.status = status;
   }
 
   @Override

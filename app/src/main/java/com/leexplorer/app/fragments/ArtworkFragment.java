@@ -42,14 +42,14 @@ import com.squareup.otto.Subscribe;
 import javax.inject.Inject;
 import uk.co.chrisjenx.paralloid.Parallaxor;
 import uk.co.chrisjenx.paralloid.transform.InvertTransformer;
+import com.leexplorer.app.services.MediaPlayerService.Status;
 
 public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarChangeListener {
   private static final String TAG = "com.leexplorer.artworkfragment";
   private static final String EXTRA_ARTWORK = "extra_artwork";
   private static final String SAVED_CURRENT_DURAITON = "saved_current_duration";
   private static final String SAVED_TOTAL_DURAITON = "saved_total_duration";
-  private static final String SAVED_NOW_PLAYING = "saved_now_playing";
-  private static final String SAVED_ON_PAUSE = "saved_on_pause";
+  private static final String SAVED_STATUS = "saved_now_playing";
 
   @Inject ImageSourcePicker imageSourcePicker;
   @Inject Bus bus;
@@ -76,8 +76,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   private long audioTotalDuration = 0;
   private long audioCurrentDuration = 0;
-  private boolean nowPlaying = false;
-  private boolean onPause = false;
+  private Status audioStatus;
 
   public static ArtworkFragment newInstance(Artwork aw) {
     Bundle args = new Bundle();
@@ -95,10 +94,10 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       artwork = savedInstanceState.getParcelable(EXTRA_ARTWORK);
       audioCurrentDuration = savedInstanceState.getLong(SAVED_CURRENT_DURAITON);
       audioTotalDuration = savedInstanceState.getLong(SAVED_TOTAL_DURAITON);
-      nowPlaying = savedInstanceState.getBoolean(SAVED_NOW_PLAYING);
-      onPause = savedInstanceState.getBoolean(SAVED_ON_PAUSE);
+      audioStatus = MediaPlayerService.Status.values()[savedInstanceState.getInt(SAVED_STATUS, 0)];
     } else {
       artwork = getArguments().getParcelable(EXTRA_ARTWORK);
+      audioStatus = Status.Idle;
     }
     setHasOptionsMenu(true);
   }
@@ -120,9 +119,8 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     super.onSaveInstanceState(savedInstanceState);
     savedInstanceState.putLong(SAVED_CURRENT_DURAITON, audioCurrentDuration);
     savedInstanceState.putLong(SAVED_TOTAL_DURAITON, audioTotalDuration);
-    savedInstanceState.putBoolean(SAVED_NOW_PLAYING, nowPlaying);
-    savedInstanceState.putBoolean(SAVED_ON_PAUSE, onPause);
     savedInstanceState.putParcelable(EXTRA_ARTWORK, artwork);
+    savedInstanceState.putInt(SAVED_STATUS, audioStatus.ordinal());
   }
 
   @SuppressWarnings("PMD") @Override
@@ -247,18 +245,19 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     if (artwork.equals(playingArtwork)) {
       if (audioCurrentDuration == 0) {
         bus.post(new LoadingEvent(false));
-      } else if (event.isPaused()) {
-        onPause = true;
-        nowPlaying = false;
-      } else {
-        onPause = false;
-        nowPlaying = true;
       }
 
+      audioStatus = event.getStatus();
       audioTotalDuration = event.getTotalDuration();
       audioCurrentDuration = event.getCurrentDuration();
-      Log.d(TAG, "audio: " + audioCurrentDuration + " of " + audioTotalDuration);
+      Log.d(TAG, "Audio: "
+          + audioStatus.name()
+          + " "
+          + audioCurrentDuration
+          + " of "
+          + audioTotalDuration);
     } else {
+      audioStatus = Status.Idle;
       setAudioClosed();
     }
 
@@ -280,26 +279,23 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   @Subscribe public void onAudioResuming(AudioResumingEvent event) {
     if (event.getArtwork().equals(artwork)) {
-      nowPlaying = true;
-      onPause = false;
+      audioStatus = Status.Paused;
     }
   }
 
   private void setAudioClosed() {
     audioCurrentDuration = 0;
     audioTotalDuration = 0;
-    nowPlaying = false;
-    onPause = false;
+    audioStatus = Status.Idle;
   }
 
   @OnClick(R.id.btnPlay)
   public void playAudio(View view) {
     updateSeekbar();
-    if (onPause == false) {
+    if (audioStatus == Status.Idle) {
       bus.post(new LoadingEvent(true));
     }
-    nowPlaying = true;
-    onPause = false;
+    audioStatus = Status.Playing;
     showAudio();
 
     Intent i = new Intent(getActivity(), MediaPlayerService.class);
@@ -332,7 +328,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       }
     }
 
-    if (!nowPlaying && !onPause) {
+    if (audioStatus == Status.Idle) {
       if (llArtworkContent.getPaddingBottom() > originalContentPadding) {
         llArtworkContent.setPadding(llArtworkContent.getPaddingLeft(),
             llArtworkContent.getPaddingTop(), llArtworkContent.getPaddingRight(),
@@ -349,7 +345,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     }
 
     flPlayAudio.setVisibility(View.VISIBLE);
-    if (nowPlaying) {
+    if (audioStatus == Status.Playing) {
       btnPause.setVisibility(View.VISIBLE);
       btnPlay.setVisibility(View.GONE);
     } else {
@@ -361,8 +357,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   @OnClick(R.id.btnPause)
   public void pauseAudio(View view) {
     pause();
-    onPause = true;
-    nowPlaying = false;
+    audioStatus = Status.Paused;
     showAudio();
   }
 
@@ -382,7 +377,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   @Override
   public void onStopTrackingTouch(SeekBar seekBar) {
-    if (!nowPlaying) {
+    if (audioStatus != Status.Playing) {
       return;
     }
     int currentPosition =

@@ -24,7 +24,7 @@
         android:layout_height="50dp"
         android:id="@+id/ivSignal"
         android:layout_gravity="right"
-     />
+        />
 
     <TextView
         android:id="@+id/tvSignalDistance"
@@ -35,6 +35,41 @@
         android:textColor="@color/le_white"/>
 
   </LinearLayout>
+
+  <!-- PLAYING INDICATOR -->
+
+  <FrameLayout
+      android:id="@+id/flPlayingIndicator"
+      android:layout_gravity="left|top"
+      android:visibility="gone"
+      android:layout_marginTop="10dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ivPlayingIndicatorShadow1"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:layout_marginRight="@dimen/playing_indicator_shadow_margin"
+        android:layout_width="@dimen/playing_indicator_size"
+        android:layout_height="@dimen/playing_indicator_size"/>
+
+    <ImageView
+        android:id="@+id/ivPlayingIndicatorShadow2"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:layout_marginRight="@dimen/playing_indicator_shadow_margin"
+        android:layout_marginBottom="@dimen/playing_indicator_shadow_margin"
+        android:layout_width="@dimen/playing_indicator_size"
+        android:layout_height="@dimen/playing_indicator_size"/>
+
+    <ImageView
+        android:id="@+id/ivPlayingIndicator"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:layout_width="@dimen/playing_indicator_size"
+        android:layout_height="@dimen/playing_indicator_size"/>
+  </FrameLayout>
 
   <!-- ARTWORK INFO -->
 

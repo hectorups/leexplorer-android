@@ -25,6 +25,7 @@ import com.leexplorer.app.core.RepeatableRunnable;
 import com.leexplorer.app.events.ArtworkClickedEvent;
 import com.leexplorer.app.events.BeaconsScanResultEvent;
 import com.leexplorer.app.events.MainLoadingIndicator;
+import com.leexplorer.app.events.audio.AudioProgressEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.models.Artwork;
@@ -32,6 +33,7 @@ import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
+import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -60,6 +62,7 @@ public class ArtworkListFragment extends BaseFragment {
   @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
   private List<Artwork> artworks;
   private List<FilteredIBeacon> beacons;
+  private Artwork currentlyPlaying;
   private boolean artworksLoaded;
   private boolean scaningBeacons;
   private MenuItem menuReresh;
@@ -331,6 +334,37 @@ public class ArtworkListFragment extends BaseFragment {
     i.putExtra(AutoPlayService.EXTRA_GALLERY, gallery);
     i.putExtra(AutoPlayService.EXTRA_ARTWORKS, (ArrayList<Artwork>) artworks);
     getActivity().startService(i);
+  }
+
+  @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
+    Artwork playingArtwork = event.getArtwork();
+
+    // Exit conditions
+    if (artworks == null) {
+      return;
+    }
+
+    if (playingArtwork.equals(currentlyPlaying)
+        && event.getStatus() == currentlyPlaying.getStatus()) {
+      return;
+    }
+
+    if (currentlyPlaying == null && !gallery.getGalleryId()
+        .contentEquals(playingArtwork.getGalleryId())) {
+      return;
+    }
+
+    // Update needed if we are still here
+    currentlyPlaying = null;
+    for (Artwork artwork : artworks) {
+      artwork.setStatus(MediaPlayerService.Status.Idle);
+      if (artwork.equals(playingArtwork)) {
+        artwork.setStatus(event.getStatus());
+        currentlyPlaying = artwork;
+      }
+    }
+
+    artworkAdapter.notifyDataSetChanged();
   }
 
   @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {

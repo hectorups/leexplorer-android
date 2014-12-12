@@ -54,7 +54,7 @@ public class MediaPlayerService extends BaseService {
 
   private MediaPlayer mediaPlayer;
   private Artwork artwork;
-  private boolean paused;
+  private Status status;
   private ArrayList<Artwork> artworks;
 
   @Inject ImageSourcePicker imageSourcePicker;
@@ -74,6 +74,10 @@ public class MediaPlayerService extends BaseService {
     }
   }
 
+  public enum Status {
+    Idle, Playing, Paused
+  }
+
   @Override
   public void onCreate() {
     super.onCreate();
@@ -83,6 +87,7 @@ public class MediaPlayerService extends BaseService {
 
     serviceLooper = thread.getLooper();
     serviceHandler = new ServiceHandler(serviceLooper);
+    status = Status.Idle;
   }
 
   @Override
@@ -198,6 +203,7 @@ public class MediaPlayerService extends BaseService {
     if (mediaPlayer != null) {
       mediaPlayer.release();
       mediaPlayer = null;
+      status = Status.Idle;
       stopForeground(true);
     }
   }
@@ -212,7 +218,7 @@ public class MediaPlayerService extends BaseService {
     if (mediaPlayer != null && this.artwork != null && this.artwork.equals(artwork)) {
       mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
       mediaPlayer.start();
-      paused = false;
+      status = Status.Playing;
       bus.post(new AudioResumingEvent(this.artwork));
     } else {
       stop();
@@ -243,12 +249,13 @@ public class MediaPlayerService extends BaseService {
       });
       mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
         @Override public void onPrepared(MediaPlayer mp) {
+          status = Status.Playing;
           updateProgress();
           prepareNotification();
         }
       });
       mediaPlayer.start();
-      paused = false;
+
 
       eventReporter.artworkAudioPlayed(artwork);
     }
@@ -262,7 +269,7 @@ public class MediaPlayerService extends BaseService {
 
     stopForeground(true);
     mediaPlayer.pause();
-    paused = true;
+    status = Status.Paused;
   }
 
   synchronized private void seek_to(int position) {
@@ -280,7 +287,7 @@ public class MediaPlayerService extends BaseService {
   }
 
   private void broadcastProgress(long totalDuration, long currentDuration) {
-    bus.post(new AudioProgressEvent(artwork, totalDuration, currentDuration, paused));
+    bus.post(new AudioProgressEvent(artwork, totalDuration, currentDuration, status));
   }
 
   private Runnable updateTimeTask = new Runnable() {

@@ -1,11 +1,18 @@
 package com.leexplorer.app.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +24,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
+import com.leexplorer.app.services.MediaPlayerService.Status;
 import com.leexplorer.app.util.ArtDate;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.leexplorer.app.util.transformations.AspectRationDummyTransformation;
@@ -49,8 +57,15 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
 
     Artwork artwork = getItem(position);
 
-    double aspectRatio = getHeightRatioFromPopularity(artwork);
+    setupView(holder, artwork);
+    setupPlayingIndicator(holder, artwork);
+    setupSignalIndicator(holder, artwork);
 
+    return view;
+  }
+
+  private void setupView(ViewHolder holder, Artwork artwork) {
+    double aspectRatio = getHeightRatioFromPopularity(artwork);
     holder.tvName.setText(artwork.getName());
     holder.tvName.setMaxLines(1);
     holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
@@ -70,13 +85,9 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
         .placeholder(R.drawable.image_place_holder)
         .transform(new AspectRationDummyTransformation(aspectRatio))
         .into(holder.ivArtworkThumb);
-
-    setSignalIndicator(holder, artwork);
-
-    return view;
   }
 
-  private void setSignalIndicator(ViewHolder holder, Artwork artwork) {
+  private void setupSignalIndicator(ViewHolder holder, Artwork artwork) {
     if (artwork.getNormalizedDistance() == Artwork.Distance.OUT_OF_RANGE) {
       holder.llSignalIndicator.setVisibility(View.INVISIBLE);
       return;
@@ -106,6 +117,34 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     return factor / 2.0 + 1.0;
   }
 
+  private void setupPlayingIndicator(ViewHolder holder, Artwork artwork) {
+    FrameLayout indicator = holder.flPlayingIndicator;
+
+    int imageResource = 0;
+    Status status = artwork.getStatus();
+
+    if (status == null || status == Status.Idle) {
+      indicator.setVisibility(View.GONE);
+      return;
+    } else if (status == Status.Playing) {
+      imageResource = R.drawable.ic_play;
+    } else if (status == Status.Paused) {
+      imageResource = R.drawable.ic_pause;
+    }
+
+    indicator.setVisibility(View.VISIBLE);
+
+    Drawable d = getContext().getResources().getDrawable(imageResource);
+    holder.ivPlayingIndicator.setImageDrawable(d);
+
+    Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(), imageResource);
+    d = new BitmapDrawable(getContext().getResources(), bitmap);
+    int color = getContext().getResources().getColor(R.color.le_black_more_transparent);
+    d.setColorFilter(new PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY));
+    holder.ivPlayingIndicatorShadow1.setImageDrawable(d);
+    holder.ivPlayingIndicatorShadow2.setImageDrawable(d);
+  }
+
   static class ViewHolder {
     @InjectView(R.id.tvName) TextView tvName;
     @InjectView(R.id.tvAuthor) TextView tvAuthor;
@@ -114,6 +153,10 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     @InjectView(R.id.llSignalIndicator) LinearLayout llSignalIndicator;
     @InjectView(R.id.tvSignalDistance) TextView tvSignalDistance;
     @InjectView(R.id.ivSignal) ImageView ivSignal;
+    @InjectView(R.id.ivPlayingIndicator) ImageView ivPlayingIndicator;
+    @InjectView(R.id.ivPlayingIndicatorShadow1) ImageView ivPlayingIndicatorShadow1;
+    @InjectView(R.id.ivPlayingIndicatorShadow2) ImageView ivPlayingIndicatorShadow2;
+    @InjectView(R.id.flPlayingIndicator) FrameLayout flPlayingIndicator;
 
     private ArtworkListFragment fragment;
 

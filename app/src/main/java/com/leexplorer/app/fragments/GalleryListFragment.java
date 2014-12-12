@@ -17,7 +17,6 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.LeexplorerApplication;
-import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.LocationService;
@@ -210,10 +209,6 @@ public class GalleryListFragment extends BaseFragment {
             updateAdapterDataset(galleries);
           }
         }));
-
-    if (callbacks != null) {
-      bus.post(new LoadingEvent(false));
-    }
   }
 
   public ArrayList<Gallery> getGalleries() {

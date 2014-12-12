@@ -1,0 +1,13 @@
+<com.melnykov.fab.FloatingActionButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/btnAutoplay"
+    android:visibility="gone"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|right"
+    android:layout_margin="16dp"
+    android:src="@drawable/ic_autoplay_white"
+    app:fab_colorRipple="@color/le_mid_blue"
+    app:fab_colorNormal="@color/le_blue"
+    app:fab_colorPressed="@color/le_emphasis_blue"/>

@@ -12,4 +12,6 @@
       app:column_count_portrait="3"
       app:item_margin="2dp"/>
 
+  <include layout="@layout/fab_autoplay"/>
+
 </FrameLayout>

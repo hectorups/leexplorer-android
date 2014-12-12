@@ -9,12 +9,4 @@
       android:visible="false"
       />
 
-  <item
-      android:title="@string/autoplay"
-      android:id="@+id/menuAutoplay"
-      android:icon="@drawable/ic_action_autoplay"
-      leexplorer:showAsAction="ifRoom"
-      android:visible="false"
-      />
-
 </menu>

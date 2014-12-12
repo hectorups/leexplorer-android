@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import com.etsy.android.grid.StaggeredGridView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
@@ -35,6 +36,7 @@ import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.MediaPlayerService;
 import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
+import com.melnykov.fab.FloatingActionButton;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
@@ -53,20 +55,21 @@ public class ArtworkListFragment extends BaseFragment {
   private static final String BEACONS_KEY = "beacons";
   private static final String GALLERY_KEY = "gallery";
   private static final String TAG = "com.leexplorer.artworklistfragement";
-
   private static final String EXTRA_GALLERY = "extra_gallery";
-  public Callbacks callbacks;
-  protected ArtworkAdapter artworkAdapter;
+
   @Inject Client client;
   @Inject Bus bus;
   @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
+  @InjectView(R.id.btnAutoplay) FloatingActionButton btnAutoplay;
+
+  public Callbacks callbacks;
+  protected ArtworkAdapter artworkAdapter;
   private List<Artwork> artworks;
   private List<FilteredIBeacon> beacons;
   private Artwork currentlyPlaying;
   private boolean artworksLoaded;
   private boolean scaningBeacons;
   private MenuItem menuReresh;
-  private MenuItem menuAutoplay;
   private Gallery gallery;
   private final Handler handler = new Handler();
 
@@ -157,6 +160,7 @@ public class ArtworkListFragment extends BaseFragment {
 
     artworkAdapter = new ArtworkAdapter(this, artworks);
     sgvArtworks.setAdapter(artworkAdapter);
+    btnAutoplay.attachToListView(sgvArtworks);
 
     return rootView;
   }
@@ -174,7 +178,6 @@ public class ArtworkListFragment extends BaseFragment {
     super.onCreateOptionsMenu(menu, inflater);
     inflater.inflate(R.menu.artwork_list, menu);
     menuReresh = menu.findItem(R.id.menuRefresh);
-    menuAutoplay = menu.findItem(R.id.menuAutoplay);
   }
 
   @Override
@@ -183,13 +186,23 @@ public class ArtworkListFragment extends BaseFragment {
       case R.id.menuRefresh:
         scanBeacons();
         return true;
-      case R.id.menuAutoplay:
-        startAutoplay();
-        menuAutoplay.setVisible(false);
-        return true;
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+
+  @OnClick(R.id.btnAutoplay)
+  public void onAutoplay(View view) {
+    startAutoplay();
+    btnAutoplay.hide();
+
+    Handler hideHandler = new Handler();
+    Runnable hideRunnable = new Runnable() {
+      @Override public void run() {
+        btnAutoplay.setVisibility(View.GONE);
+      }
+    };
+    hideHandler.postDelayed(hideRunnable, 200);
   }
 
   private void loadArtworkList() {
@@ -368,20 +381,17 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
-    if (menuAutoplay == null) {
-      return;
-    }
-
     if (event.getStatus() != AutoPlayService.Status.OFF && gallery.equals(event.getGallery())) {
-      menuAutoplay.setVisible(false);
+      btnAutoplay.setVisibility(View.GONE);
     } else {
-      menuAutoplay.setVisible(true);
+      btnAutoplay.setVisibility(View.VISIBLE);
     }
   }
 
   @Subscribe public void onAutoplayAudioFinished(AutoPlayAudioFinishedEvent event) {
     if (gallery.equals(event.getGallery())) {
-      menuAutoplay.setVisible(true);
+      btnAutoplay.setVisibility(View.VISIBLE);
+      btnAutoplay.show();
     }
   }
 

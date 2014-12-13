@@ -20,6 +20,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.BuildKilledEvent;
+import com.leexplorer.app.events.ConfirmDialogResultEvent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.MainLoadingIndicator;
@@ -27,7 +28,9 @@ import com.leexplorer.app.events.NetworkErrorEvent;
 import com.leexplorer.app.events.ShareEvent;
 import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.events.artworks.LoadArtworksEvent;
+import com.leexplorer.app.events.autoplay.AutoPlayReadyToPlayEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
+import com.leexplorer.app.fragments.ConfirmDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
@@ -37,11 +40,13 @@ import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import javax.inject.Inject;
 
 public abstract class BaseActivity extends ActionBarActivity {
   public static final String TAG = "com.leexplorer.activities.baseactivity";
+  public static final String CONFIRM_TAG = TAG + "_confirm";
   // This Receiver is ON when the activity is displaying. When on it catches the notification
   // before NotificationReceiver does and cancels it.
 
@@ -202,6 +207,29 @@ public abstract class BaseActivity extends ActionBarActivity {
       eventReporter.itemShared(event.getType(), event.getTitle());
       Intent intent = shareManager.shareIntent(event);
       startActivity(intent);
+    }
+
+    @Subscribe public void onConfirmResult(ConfirmDialogResultEvent event) {
+      if (event.getCaller().contentEquals(CONFIRM_TAG)) {
+        Intent i = new Intent(BaseActivity.this, AutoPlayService.class);
+        if (event.getResult()) {
+          Crouton.makeText(BaseActivity.this, R.string.autoplay_artwork_will_play, Style.CONFIRM)
+              .show();
+          i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_CONFIRM);
+        } else {
+          Crouton.makeText(BaseActivity.this, R.string.autoplay_audio_skipped, Style.INFO).show();
+          i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_SKIP);
+        }
+        BaseActivity.this.startService(i);
+      }
+    }
+
+    @Subscribe public void onAutoplayReadyToPlay(AutoPlayReadyToPlayEvent event) {
+      ConfirmDialogFragment confirmDialogFragment = ConfirmDialogFragment.newInstance(CONFIRM_TAG,
+          getResources().getString(R.string.autoplay_confirm_title),
+          getResources().getString(R.string.autoplay_confirm_text, event.getArtwork().getName()));
+      confirmDialogFragment.setCancelable(false);
+      confirmDialogFragment.show(getSupportFragmentManager(), ConfirmDialogFragment.TAG);
     }
   }
 

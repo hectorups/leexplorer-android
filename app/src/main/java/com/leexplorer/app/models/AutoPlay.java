@@ -64,6 +64,10 @@ public class AutoPlay {
     }
   }
 
+  public State getState() {
+    return state;
+  }
+
   public boolean wasArtworkPlayed(Artwork artwork) {
     return playedArtworks.contains(artwork);
   }

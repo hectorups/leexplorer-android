@@ -37,6 +37,12 @@
   </string>
   <string name="autoplay_notification_stop">Cancel</string>
   <string name="autoplay_notification_resume">Resume</string>
+  <string name="autoplay_confirm_title">Autoplay Artwork</string>
+  <string name="autoplay_confirm_text">Ready to play %1$s</string>
+  <string name="autoplay_confirm_ok">Play</string>
+  <string name="autoplay_confirm_skip">Skip</string>
+  <string name="autoplay_artwork_will_play">Audio will start playing shortly</string>
+  <string name="autoplay_audio_skipped">Finding next audio to play...</string>
 
   <!-- GALLERY SCREEN -->
   <string name="title_activity_galery_list">GaleryListActivity</string>
@@ -59,6 +65,8 @@
   <!-- CONFIRM DIALOG -->
   <string name="confirm_dialog_ok">Ok</string>
   <string name="confirm_dialog_cancel">Cancel</string>
+
+  <!-- SETTINGS SCREN -->
   <string name="app_settings">settings</string>
   <string name="settings_version">Version</string>
   <string name="settings_about">ABOUT</string>
@@ -66,7 +74,10 @@
   <string name="settings_feedback_description">Give us your feedback about Leexplorer</string>
   <string name="feedback_email_title">Leexplorer feedback</string>
   <string name="feedback_email_chooser">Send Feedback Email</string>
+
+  <!-- SHARE -->
   <string name="share_chooser">Choose where to share</string>
   <string name="share_artwork_description">Check out this amazing artwork</string>
+
 
 </resources>

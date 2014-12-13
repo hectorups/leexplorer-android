@@ -68,5 +68,11 @@
   <string name="feedback_email_title">Comentario acerca de Leexplorer</string>
   <string name="share_chooser">Elige donde compartir</string>
   <string name="share_artwork_description">Impresionante obra de arte</string>
+  <string name="autoplay_confirm_title">Autoguía</string>
+  <string name="autoplay_confirm_text">El audio de %1$s lista para empezar</string>
+  <string name="autoplay_confirm_ok">Escuchar</string>
+  <string name="autoplay_confirm_skip">Siguiente Audio</string>
+  <string name="autoplay_artwork_will_play">El audio empezará en unos instantes</string>
+  <string name="autoplay_audio_skipped">Buscando el siguiente audio...</string>
 
 </resources>

@@ -3,12 +3,12 @@ package com.leexplorer.app.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import com.leexplorer.app.R;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.ConfirmDialogResultEvent;
+import com.leexplorer.app.util.TextUtil;
 import com.squareup.otto.Bus;
 import javax.inject.Inject;
 
@@ -17,12 +17,16 @@ public class ConfirmDialogFragment extends DialogFragment {
   private static final String TITLE_EXTRA = "title";
   private static final String TEXT_EXTRA = "text";
   private static final String CALLER_EXTRA = "caller";
+  private static final String OK_EXTRA = "ok";
+  private static final String CANCEL_EXTRA = "cancel";
 
   @Inject Bus bus;
 
   private String title;
   private String text;
   private String caller;
+  private String ok;
+  private String cancel;
 
   public static ConfirmDialogFragment newInstance(String caller, String title, String text) {
     ConfirmDialogFragment f = new ConfirmDialogFragment();
@@ -37,6 +41,17 @@ public class ConfirmDialogFragment extends DialogFragment {
     return f;
   }
 
+  public static ConfirmDialogFragment newInstance(String caller, String title, String text,
+      String ok, String cancel) {
+    ConfirmDialogFragment f = newInstance(caller, title, text);
+    Bundle args = f.getArguments();
+    args.putString(OK_EXTRA, ok);
+    args.putString(CANCEL_EXTRA, cancel);
+    f.setArguments(args);
+
+    return f;
+  }
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     ((LeexplorerApplication) getActivity().getApplication()).inject(this);
@@ -46,10 +61,22 @@ public class ConfirmDialogFragment extends DialogFragment {
       title = savedInstanceState.getString(TITLE_EXTRA);
       text = savedInstanceState.getString(TEXT_EXTRA);
       caller = savedInstanceState.getString(CALLER_EXTRA);
+      ok = savedInstanceState.getString(OK_EXTRA);
+      cancel = savedInstanceState.getString(CANCEL_EXTRA);
     } else {
       title = getArguments().getString(TITLE_EXTRA);
       text = getArguments().getString(TEXT_EXTRA);
       caller = getArguments().getString(CALLER_EXTRA);
+
+      ok = getArguments().getString(OK_EXTRA);
+      if(ok == null) {
+        ok = getResources().getString(R.string.confirm_dialog_ok);
+      }
+
+      cancel = getArguments().getString(CANCEL_EXTRA);
+      if(cancel != null) {
+        cancel = getResources().getString(R.string.confirm_dialog_cancel);;
+      }
     }
   }
 
@@ -65,26 +92,29 @@ public class ConfirmDialogFragment extends DialogFragment {
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
     alertDialogBuilder.setTitle(title);
     alertDialogBuilder.setMessage(text);
-
-    Resources resources = getActivity().getResources();
-    alertDialogBuilder.setPositiveButton(resources.getString(R.string.confirm_dialog_ok),
-        new DialogInterface.OnClickListener() {
-
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            bus.post(new ConfirmDialogResultEvent(caller));
-          }
-        });
-
-    alertDialogBuilder.setNegativeButton(resources.getString(R.string.confirm_dialog_cancel),
-        new DialogInterface.OnClickListener() {
-
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-          }
-        });
+    alertDialogBuilder.setPositiveButton(ok, onPositiveButtonListener());
+    alertDialogBuilder.setNegativeButton(cancel, onNegativeButtonListener());
 
     return alertDialogBuilder.create();
+  }
+
+  public DialogInterface.OnClickListener onPositiveButtonListener() {
+    return new DialogInterface.OnClickListener() {
+
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        bus.post(new ConfirmDialogResultEvent(caller, true));
+      }
+    };
+  }
+
+  public DialogInterface.OnClickListener onNegativeButtonListener() {
+    return new DialogInterface.OnClickListener() {
+
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        bus.post(new ConfirmDialogResultEvent(caller, false));
+      }
+    };
   }
 }

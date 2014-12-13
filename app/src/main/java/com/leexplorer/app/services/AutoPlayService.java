@@ -22,6 +22,7 @@ import com.leexplorer.app.events.audio.AudioProgressEvent;
 import com.leexplorer.app.events.audio.AudioStartedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioStartedEvent;
+import com.leexplorer.app.events.autoplay.AutoPlayReadyToPlayEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
 import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
 import com.leexplorer.app.models.Artwork;
@@ -44,18 +45,19 @@ public class AutoPlayService extends BaseService {
   public static final int ACTION_START = 1;
   public static final int ACTION_STOP = 2;
   public static final int ACTION_CHECK_STATUS = 3;
+  public static final int ACTION_CONFIRM = 4;
+  public static final int ACTION_SKIP = 5;
   public static final String EXTRA_GALLERY = "gallery";
   public static final String EXTRA_ARTWORKS = "artworks";
 
   public enum Status {
-    RUNNING, PLAYING, OFF
+    RUNNING, PLAYING, OFF, WAITING_CONFIRMATION
   }
 
   @Inject ImageSourcePicker imageSourcePicker;
   private AutoPlay autoPlay;
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
-  private boolean waitingForConfirmation;
 
   static public void checkAutoplayStatus(Context context) {
     Log.d(TAG, "check autoplay status");
@@ -121,20 +123,19 @@ public class AutoPlayService extends BaseService {
           stop();
         }
         break;
-      case ACTION_CHECK_STATUS:
-        Status status;
-        Gallery currentGallery = null;
-        if (autoPlay == null) {
-          status = Status.OFF;
-        } else if (autoPlay.getCurrentlyPlaying() != null) {
-          status = Status.PLAYING;
-          currentGallery = autoPlay.getGallery();
-        } else {
-          status = Status.RUNNING;
-          currentGallery = autoPlay.getGallery();
+      case ACTION_CONFIRM:
+        if (autoPlay != null && autoPlay.getCurrentlyPlaying() != null) {
+          playAudio(autoPlay.getCurrentlyPlaying());
         }
-
-        bus.post(new AutoPlayStatusEvent(currentGallery, status));
+        break;
+      case ACTION_SKIP:
+        if (autoPlay != null && autoPlay.getCurrentlyPlaying() != null) {
+          autoPlay.setAsPlayingArtwork(null);
+        }
+        break;
+      case ACTION_CHECK_STATUS:
+        reportStatus();
+        break;
       default:
         return;
     }
@@ -282,7 +283,8 @@ public class AutoPlayService extends BaseService {
 
         // Play!!
         Log.d(TAG, "Ready to play " + artwork.getName());
-        playAudio(artwork);
+        autoPlay.setAsPlayingArtwork(artwork);
+        bus.post(new AutoPlayReadyToPlayEvent(artwork));
         break;
       }
     }
@@ -302,6 +304,24 @@ public class AutoPlayService extends BaseService {
     getApplicationContext().startService(i);
   }
 
+  private void reportStatus() {
+    Status status;
+    Gallery currentGallery = null;
+    if (autoPlay == null) {
+      status = Status.OFF;
+    } else if(autoPlay.getState() == AutoPlay.State.WaitingConfirmation) {
+      status = Status.WAITING_CONFIRMATION;
+    } else if (autoPlay.getCurrentlyPlaying() != null) {
+      status = Status.PLAYING;
+      currentGallery = autoPlay.getGallery();
+    } else {
+      status = Status.RUNNING;
+      currentGallery = autoPlay.getGallery();
+    }
+
+    bus.post(new AutoPlayStatusEvent(currentGallery, status));
+  }
+
   @Subscribe public void audioProgressReceiver(AudioProgressEvent event) {
     Artwork playingArtwork = event.getArtwork();
     if (autoPlay == null) {
@@ -315,7 +335,7 @@ public class AutoPlayService extends BaseService {
         prepareNotification();
       }
     } else {
-      if(autoPlay.belongsToPlaylist(playingArtwork)) {
+      if (autoPlay.belongsToPlaylist(playingArtwork)) {
         autoPlay.setAsPlayingArtwork(playingArtwork);
         autoPlay.setOnPause(event.getStatus() == MediaPlayerService.Status.Paused);
       } else {

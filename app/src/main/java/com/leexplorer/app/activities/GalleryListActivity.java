@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 import com.leexplorer.app.R;
 import com.leexplorer.app.events.ConfirmDialogResultEvent;
 import com.leexplorer.app.fragments.ConfirmDialogFragment;
@@ -141,8 +140,7 @@ public class GalleryListActivity extends BaseActivity
   }
 
   @Subscribe public void onConfirmOk(ConfirmDialogResultEvent event) {
-    if (event.getCaller().contentEquals(TAG)) {
-      Toast.makeText(this, "Confirm OK", Toast.LENGTH_SHORT).show();
+    if (event.getCaller().contentEquals(TAG) && event.getResult()) {
       enableBluetooth();
     }
   }

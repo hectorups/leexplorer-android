@@ -169,11 +169,9 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     @Subscribe public void onNetworkError(NetworkErrorEvent event) {
-      int messageId;
+      int messageId = R.string.error_no_connection;
       if (((LeexplorerApplication) getApplication()).isOnline()) {
-        messageId = R.string.error_problem_with_connection;
-      } else {
-        messageId = R.string.error_no_connection;
+        return;
       }
       CroutonCustomView.cancelAllCroutons();
       new CroutonCustomView(BaseActivity.this, messageId, 4000).show();

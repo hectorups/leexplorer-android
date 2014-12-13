@@ -20,10 +20,10 @@ import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.events.audio.AudioCompleteEvent;
 import com.leexplorer.app.events.audio.AudioProgressEvent;
 import com.leexplorer.app.events.audio.AudioStartedEvent;
-import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioStartedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
+import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.AutoPlay;
 import com.leexplorer.app.models.FilteredIBeacon;
@@ -55,6 +55,7 @@ public class AutoPlayService extends BaseService {
   private AutoPlay autoPlay;
   private Looper serviceLooper;
   private ServiceHandler serviceHandler;
+  private boolean waitingForConfirmation;
 
   static public void checkAutoplayStatus(Context context) {
     Log.d(TAG, "check autoplay status");
@@ -179,6 +180,7 @@ public class AutoPlayService extends BaseService {
               }
 
               @Override public void onBitmapFailed(Drawable errorDrawable) {
+                Log.e(TAG, "Gallery image for notification failed to load");
                 if (errorDrawable != null) {
                   eventReporter.logException(errorDrawable.toString());
                 } else {
@@ -222,6 +224,8 @@ public class AutoPlayService extends BaseService {
   }
 
   private void showNotification(Bitmap bitmap) {
+    Log.d(TAG, "Show autoplay notification");
+
     if (autoPlay == null) {
       return;
     }
@@ -304,15 +308,19 @@ public class AutoPlayService extends BaseService {
       return;
     }
 
-    if (autoPlay.getCurrentlyPlaying().equals(playingArtwork)) {
+    if (playingArtwork.equals(autoPlay.getCurrentlyPlaying())) {
       boolean oldOnPause = autoPlay.isOnPause();
-      autoPlay.setOnPause(event.getCurrentDuration() == autoPlay.getCurrentDuration());
-      autoPlay.setCurrentDuration(event.getCurrentDuration());
+      autoPlay.setOnPause(event.getStatus() == MediaPlayerService.Status.Paused);
       if (oldOnPause != autoPlay.isOnPause()) {
         prepareNotification();
       }
     } else {
-      autoPlay.setAsPlayingArtwork(playingArtwork);
+      if(autoPlay.belongsToPlaylist(playingArtwork)) {
+        autoPlay.setAsPlayingArtwork(playingArtwork);
+        autoPlay.setOnPause(event.getStatus() == MediaPlayerService.Status.Paused);
+      } else {
+        autoPlay.resetPlayingArtwork();
+      }
       prepareNotification();
     }
   }

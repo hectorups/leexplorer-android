@@ -8,21 +8,37 @@ public class AutoPlay {
   private List<Artwork> artworksPlayList;
   private List<Artwork> playedArtworks;
   private Artwork currentlyPlaying;
-  private long currentDuration;
-  private boolean onPause;
+  private State state;
+
+  public enum State {
+    Idle, WaitingConfirmation, Playing, Paused
+  }
 
   public AutoPlay(Gallery gallery, List<Artwork> artworksPlayList) {
     this.gallery = gallery;
     this.artworksPlayList = artworksPlayList;
     playedArtworks = new ArrayList<>();
+    state = State.Idle;
   }
 
   public void setAsPlayingArtwork(Artwork artwork) {
     resetPlayingArtwork();
+    if (!belongsToPlaylist(artwork)) {
+      return;
+    }
+
     if (!wasArtworkPlayed(artwork)) {
       playedArtworks.add(artwork);
     }
+
     currentlyPlaying = artwork;
+    state = State.WaitingConfirmation;
+  }
+
+  public void confirmedPlaying() {
+    if (currentlyPlaying != null) {
+      state = State.Playing;
+    }
   }
 
   public boolean isFinished() {
@@ -31,31 +47,28 @@ public class AutoPlay {
 
   public void resetPlayingArtwork() {
     currentlyPlaying = null;
-    currentDuration = 0;
-    onPause = false;
+    state = State.Idle;
   }
 
   public boolean isOnPause() {
-    return onPause;
+    return state == State.Paused;
+  }
+
+  public boolean isWaitingForConfirmation() {
+    return state == State.WaitingConfirmation;
   }
 
   public void setOnPause(boolean onPause) {
-    this.onPause = onPause;
-  }
-
-  public void setCurrentDuration(long currentDuration) {
-    this.currentDuration = currentDuration;
-  }
-
-  public long getCurrentDuration() {
-    return currentDuration;
+    if (currentlyPlaying != null) {
+      state = onPause ? State.Paused : State.Playing;
+    }
   }
 
   public boolean wasArtworkPlayed(Artwork artwork) {
     return playedArtworks.contains(artwork);
   }
 
-  public boolean artworkBelongsToPlaylist(Artwork artwork) {
+  public boolean belongsToPlaylist(Artwork artwork) {
     return artworksPlayList.contains(artwork);
   }
 
@@ -65,10 +78,6 @@ public class AutoPlay {
 
   public List<Artwork> getArtworksPlayList() {
     return artworksPlayList;
-  }
-
-  public void setArtworksPlayList(List<Artwork> artworksPlayList) {
-    this.artworksPlayList = artworksPlayList;
   }
 
   public Gallery getGallery() {

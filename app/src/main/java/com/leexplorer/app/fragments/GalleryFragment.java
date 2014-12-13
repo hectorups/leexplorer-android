@@ -29,7 +29,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.ShareEvent;
-import com.leexplorer.app.events.artwork.LoadArtworksEvent;
+import com.leexplorer.app.events.artworks.LoadArtworksEvent;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.ImageShareTarget;

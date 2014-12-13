@@ -1,4 +1,4 @@
-package com.leexplorer.app.events.artwork;
+package com.leexplorer.app.events.artworks;
 
 import com.leexplorer.app.models.Artwork;
 import java.util.List;

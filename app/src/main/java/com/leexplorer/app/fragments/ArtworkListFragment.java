@@ -23,7 +23,7 @@ import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.core.RepeatableRunnable;
-import com.leexplorer.app.events.artwork.ArtworkClickedEvent;
+import com.leexplorer.app.events.artworks.ArtworkClickedEvent;
 import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
 import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.events.audio.AudioProgressEvent;

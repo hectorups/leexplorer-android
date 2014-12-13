@@ -36,6 +36,7 @@ import rx.schedulers.Schedulers;
 public class GalleryListFragment extends BaseFragment {
   private static final String TAG = "com.leexplorer.galleryListFragment";
   private static final String GALLERIES_KEY = "galleries";
+  private static final String GALLERIES_LOADING_KEY = "galleries_loading";
   public Callbacks callbacks;
   @Inject Client client;
   @Inject Bus bus;
@@ -43,6 +44,7 @@ public class GalleryListFragment extends BaseFragment {
   @InjectView(R.id.srGalleries) SwipeRefreshLayout swipeView;
   private List<Gallery> galleries;
   private GalleryAdapter galleryAdapter;
+  private boolean galleriesLoading;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -50,13 +52,14 @@ public class GalleryListFragment extends BaseFragment {
 
     if (savedInstanceState != null) {
       galleries = savedInstanceState.getParcelableArrayList(GALLERIES_KEY);
+      galleriesLoading = savedInstanceState.getBoolean(GALLERIES_LOADING_KEY, false);
     } else {
       galleries = new ArrayList<>();
+      galleriesLoading = false;
     }
 
     galleryAdapter = new GalleryAdapter(this, galleries);
   }
-
 
   @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,14 +81,15 @@ public class GalleryListFragment extends BaseFragment {
       }
     });
 
-    swipeView.setColorSchemeResources(R.color.refresh_progress_1,
-        R.color.refresh_progress_2,
+    swipeView.setColorSchemeResources(R.color.refresh_progress_1, R.color.refresh_progress_2,
         R.color.refresh_progress_3);
   }
 
   @Override public void onResume() {
     super.onResume();
-    if (galleries.size() == 0) {
+    if (galleriesLoading) {
+      bus.post(new MainLoadingIndicator(true));
+    } else if (galleries.size() == 0) {
       loadGalleries();
     }
   }
@@ -93,6 +97,11 @@ public class GalleryListFragment extends BaseFragment {
   @Override public void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelableArrayList(GALLERIES_KEY, new ArrayList<Parcelable>(galleries));
+  }
+
+  @Override public void onPause() {
+    bus.post(new MainLoadingIndicator(false));
+    super.onPause();
   }
 
   @Override
@@ -116,6 +125,11 @@ public class GalleryListFragment extends BaseFragment {
 
   private void loadGalleries() {
     //Get data from Api or DB
+    if (galleriesLoading) {
+      return;
+    }
+
+    galleriesLoading = true;
     if (((LeexplorerApplication) getActivity().getApplicationContext()).isOnline()) {
       loadGalleryListFromApi();
     } else {
@@ -124,7 +138,7 @@ public class GalleryListFragment extends BaseFragment {
   }
 
   private void loadGalleryListFromApi() {
-    if(!swipeView.isRefreshing()) {
+    if (!swipeView.isRefreshing()) {
       bus.post(new MainLoadingIndicator(true));
     }
 
@@ -134,11 +148,9 @@ public class GalleryListFragment extends BaseFragment {
         .subscribe(new Observer<ArrayList<Gallery>>() {
           @Override
           public void onCompleted() {
-            if(!swipeView.isRefreshing()) {
-              bus.post(new MainLoadingIndicator(false));
-            } else {
-              swipeView.setRefreshing(false);
-            }
+            bus.post(new MainLoadingIndicator(false));
+            swipeView.setRefreshing(false);
+            galleriesLoading = false;
           }
 
           @Override
@@ -193,6 +205,7 @@ public class GalleryListFragment extends BaseFragment {
         .subscribe(new Observer<List<Gallery>>() {
           @Override public void onCompleted() {
             swipeView.setRefreshing(false);
+            galleriesLoading = false;
           }
 
           @Override public void onError(Throwable throwable) {

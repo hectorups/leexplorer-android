@@ -13,7 +13,7 @@ public class FilePathGenerator {
     return new File(Environment.getExternalStorageDirectory() + "/" + AppConstants.APP_FOLDER);
   }
 
-  public static void checkAppDirectory() {
+  public static void createAppDicrectoryIfNecessary() {
     File testDirectory = appDirectory();
     if (!testDirectory.exists() && !testDirectory.mkdir()) {
       Log.e(TAG, "Directory couldnt be created");
@@ -24,7 +24,7 @@ public class FilePathGenerator {
     return new File(appDirectory().toString() + "/" + galleryId);
   }
 
-  public static void checkGalleryDirectory(String galleryId) {
+  public static void createGalleryDicrectoryIfNecessary(String galleryId) {
     File galleryDirectory = galleryDirectory(galleryId);
     if (!galleryDirectory.exists() && !galleryDirectory.mkdir()) {
       Log.e(TAG, "Directory couldnt be created");
@@ -40,19 +40,17 @@ public class FilePathGenerator {
     return false;
   }
 
-  private static String getFileName(String galleryId, String url, String prefix) {
-    checkGalleryDirectory(galleryId);
-    File theFile = new File(url);
-    String fileName = theFile.getName().replaceAll("[^a-zA-Z0-9.-]", "_");
-    return galleryDirectory(galleryId) + "/" + prefix + fileName + "." + getBestFormat();
+  private static String getFileName(String galleryId, String mediaId, String prefix) {
+    createGalleryDicrectoryIfNecessary(galleryId);
+    return galleryDirectory(galleryId) + "/" + prefix + mediaId + "." + getBestFormat();
   }
 
-  public static String getFileName(String galleryId, String url, Version version) {
-    return getFileName(galleryId, url, version == Version.SMALL ? "s_" : "");
+  public static String getFileName(String galleryId, String mediaId, Version version) {
+    return getFileName(galleryId, mediaId, version == Version.SMALL ? "s_" : "");
   }
 
-  public static String getFileName(String galleryId, String url) {
-    return getFileName(galleryId, url, Version.NORMAL);
+  public static String getFileName(String galleryId, String mediaId) {
+    return getFileName(galleryId, mediaId, Version.NORMAL);
   }
 
   public static String getBestFormat() {

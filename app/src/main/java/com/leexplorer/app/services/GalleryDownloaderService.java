@@ -69,7 +69,7 @@ public class GalleryDownloaderService extends IntentService {
 
     gallery = intent.getParcelableExtra(EXTRA_GALLERY);
 
-    FilePathGenerator.checkAppDirectory();
+    FilePathGenerator.createAppDicrectoryIfNecessary();
 
     prepareNotification();
 
@@ -104,18 +104,23 @@ public class GalleryDownloaderService extends IntentService {
     if (artwork.getImageId() != null) {
 
       int maxSize = (int) getResources().getDimension(R.dimen.thumbor_large);
-      String url = imageSourcePicker.getUrl(artwork.getImageId(), maxSize, artwork.getImageWidth(),
+      String imageUrl = imageSourcePicker.getUrl(artwork.getImageId(), maxSize, artwork.getImageWidth(),
           artwork.getImageHeight(), ImageSourcePicker.Mode.Limit);
+      String imagePath = FilePathGenerator.getFileName(artwork.getGalleryId(), artwork.getImageId());
+      saveUrl(imageUrl, imagePath);
 
-      String imagePath = saveFile(artwork, url);
-      String resizedImagePath = FilePathGenerator.getFileName(artwork.getGalleryId(), url,
-          FilePathGenerator.Version.SMALL);
+      String resizedImagePath =
+          FilePathGenerator.getFileName(artwork.getGalleryId(), artwork.getImageId(),
+              FilePathGenerator.Version.SMALL);
       int smallSize = (int) getResources().getDimension(R.dimen.thumbor_small);
       ImageResizer.resizeImage(imagePath, resizedImagePath, smallSize);
     }
 
     if (artwork.getAudioId() != null) {
-      saveFile(artwork, audioSourcePicker.getUrl(artwork.getAudioId()));
+      String audioUrl = audioSourcePicker.getUrl(artwork.getAudioId());
+      String audioPath =
+          FilePathGenerator.getFileName(artwork.getGalleryId(), artwork.getAudioId());
+      saveUrl(audioUrl, audioPath);
     }
   }
 
@@ -135,11 +140,10 @@ public class GalleryDownloaderService extends IntentService {
     return total;
   }
 
-  private String saveFile(Artwork artwork, String url) throws IOException {
+  private void saveUrl(String url, String fileName) throws IOException {
+    Log.d(TAG, "Downloading " + url + " in " + fileName);
     downloadProgress.setCurrentFile(downloadProgress.getCurrentFile() + 1);
-    String fileName = FilePathGenerator.getFileName(artwork.getGalleryId(), url);
     fileDownloader.downloadToFile(fileName, new URL(url), downloadProgress);
-    return fileName;
   }
 
   private void prepareNotification() {

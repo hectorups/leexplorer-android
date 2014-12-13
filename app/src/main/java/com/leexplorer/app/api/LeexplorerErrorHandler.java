@@ -12,6 +12,7 @@ import com.leexplorer.app.events.NetworkErrorEvent;
 import com.squareup.otto.Bus;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import retrofit.ErrorHandler;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -32,7 +33,7 @@ public class LeexplorerErrorHandler implements ErrorHandler {
 
     Response response = cause.getResponse();
 
-    if (cause.isNetworkError()) {
+    if (cause.isNetworkError() && cause.getCause() instanceof SocketTimeoutException) {
       bus.post(new NetworkErrorEvent());
     } else {
       eventReporter.logException(cause);

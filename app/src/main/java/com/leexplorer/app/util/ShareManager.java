@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.Parcelable;
 import com.leexplorer.app.R;
-import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.events.ShareEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +12,11 @@ import java.util.List;
 public class ShareManager {
 
   private Context context;
+
+  private static final String[] ALLOWED_SHARED_PACKAGE_NAMES = {
+      "facebook", "twitter", "mail", "com.google.android.gm", "instagram", "pinterest", "yahoo",
+      "whatsapp"
+  };
 
   public ShareManager(Context context) {
     this.context = context;
@@ -28,7 +32,7 @@ public class ShareManager {
     for (ResolveInfo candidate : candidates) {
       String packageName = candidate.activityInfo.packageName;
       boolean allowed = false;
-      for (String allowedPackage : AppConstants.ALLOWED_SHARED_PACKAGE_NAMES) {
+      for (String allowedPackage : ALLOWED_SHARED_PACKAGE_NAMES) {
         if (packageName.contains(allowedPackage)) {
           allowed = true;
           break;
@@ -53,11 +57,11 @@ public class ShareManager {
       targets.add(target);
     }
 
-    Intent chooser = Intent.createChooser(targets.remove(0), context.getString(R.string.share_chooser));
+    Intent chooser =
+        Intent.createChooser(targets.remove(0), context.getString(R.string.share_chooser));
     chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targets.toArray(new Parcelable[] {
     }));
 
     return chooser;
   }
-
 }

@@ -38,11 +38,6 @@ public class AppConstants {
 
   public static final String FEEDBACK_EMAIL = "hectorups@gmail.com";
 
-  public static final String[] ALLOWED_SHARED_PACKAGE_NAMES = {
-      "facebook", "twitter", "mail", "com.google.android.gm", "instagram", "pinterest", "yahoo",
-      "whatsapp"
-  };
-
   static {
     FACILITIES_IMG_MAP.put("accessibility", R.drawable.ic_facilities_accessibility);
     FACILITIES_IMG_MAP.put("wifi", R.drawable.ic_facilities_wifi);

@@ -148,6 +148,7 @@ public class ArtworkListFragment extends BaseFragment {
   public void onPause() {
     bus.unregister(this);
     statusChecker.stop();
+    currentlyPlaying = null;
     super.onPause();
   }
 

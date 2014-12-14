@@ -54,6 +54,8 @@
     <item name="progress_text_size">16sp</item>
     <item name="progress_reached_bar_height">4dp</item>
     <item name="progress_unreached_bar_height">2dp</item>
+    <item name="progress_text_color">@color/le_blue</item>
+    <item name="progress_reached_color">@color/le_blue</item>
   </style>
 
   <style name="LE.GalleryProfileIcon">

@@ -40,7 +40,6 @@ import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import javax.inject.Inject;
 
@@ -170,7 +169,11 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     @Subscribe public void onBuildKilled(BuildKilledEvent event) {
-      new CroutonCustomView(BaseActivity.this, R.string.error_app_too_old).show();
+      CroutonCustomView crouton =
+          new CroutonCustomView(BaseActivity.this, R.string.error_app_too_old);
+      crouton.setBackgroundColorResourceId(R.color.le_red);
+      crouton.setResourceImageId(R.drawable.ic_action_bt_warning);
+      crouton.show();
     }
 
     @Subscribe public void onNetworkError(NetworkErrorEvent event) {
@@ -179,7 +182,10 @@ public abstract class BaseActivity extends ActionBarActivity {
         return;
       }
       CroutonCustomView.cancelAllCroutons();
-      new CroutonCustomView(BaseActivity.this, messageId, 4000).show();
+      CroutonCustomView crouton = new CroutonCustomView(BaseActivity.this, messageId);
+      crouton.setBackgroundColorResourceId(R.color.le_red);
+      crouton.setResourceImageId(R.drawable.ic_action_bt_warning);
+      crouton.show();
     }
 
     @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
@@ -211,15 +217,19 @@ public abstract class BaseActivity extends ActionBarActivity {
 
     @Subscribe public void onConfirmResult(ConfirmDialogResultEvent event) {
       if (event.getCaller().contentEquals(CONFIRM_TAG)) {
+        CroutonCustomView crouton;
         Intent i = new Intent(BaseActivity.this, AutoPlayService.class);
         if (event.getResult()) {
-          Crouton.makeText(BaseActivity.this, R.string.autoplay_artwork_will_play, Style.CONFIRM)
-              .show();
+          crouton = CroutonCustomView.make(BaseActivity.this, R.string.autoplay_artwork_will_play);
+          crouton.setDuration(4000);
           i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_CONFIRM);
         } else {
-          Crouton.makeText(BaseActivity.this, R.string.autoplay_audio_skipped, Style.INFO).show();
+          crouton = CroutonCustomView.make(BaseActivity.this, R.string.autoplay_audio_skipped);
           i.putExtra(AutoPlayService.EXTRA_ACTION, AutoPlayService.ACTION_SKIP);
         }
+
+        crouton.setResourceImageId(R.drawable.ic_autoplay_white);
+        crouton.show();
         BaseActivity.this.startService(i);
       }
     }
@@ -227,7 +237,9 @@ public abstract class BaseActivity extends ActionBarActivity {
     @Subscribe public void onAutoplayReadyToPlay(AutoPlayReadyToPlayEvent event) {
       ConfirmDialogFragment confirmDialogFragment = ConfirmDialogFragment.newInstance(CONFIRM_TAG,
           getResources().getString(R.string.autoplay_confirm_title),
-          getResources().getString(R.string.autoplay_confirm_text, event.getArtwork().getName()));
+          getResources().getString(R.string.autoplay_confirm_text, event.getArtwork().getName()),
+          getResources().getString(R.string.autoplay_confirm_ok),
+          getResources().getString(R.string.autoplay_confirm_skip));
       confirmDialogFragment.setCancelable(false);
       confirmDialogFragment.show(getSupportFragmentManager(), ConfirmDialogFragment.TAG);
     }

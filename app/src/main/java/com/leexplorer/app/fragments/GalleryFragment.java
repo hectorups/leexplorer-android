@@ -35,6 +35,7 @@ import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.ImageShareTarget;
 import com.leexplorer.app.util.TextUtil;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
+import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Callback;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
@@ -107,7 +108,7 @@ public class GalleryFragment extends BaseFragment {
         int percentage = intent.getIntExtra(GalleryDownloaderService.CURRENT_PERCENTAGE, 0);
         if (percentage == 100) {
           stopDownload();
-          Crouton.makeText(getActivity(), R.string.gallery_downloaded, Style.CONFIRM).show();
+          CroutonCustomView.make(getActivity(), R.string.gallery_downloaded).show();
         } else {
           setupDownload(percentage);
         }

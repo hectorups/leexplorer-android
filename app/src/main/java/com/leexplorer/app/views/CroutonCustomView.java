@@ -1,8 +1,10 @@
 package com.leexplorer.app.views;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -13,25 +15,36 @@ import de.keyboardsurfer.android.widget.crouton.Crouton;
 public class CroutonCustomView {
 
   @InjectView(R.id.message_text) TextView messageText;
+  @InjectView(R.id.message_image) ImageView messageImage;
 
   private Activity activity;
   private int duration;
   private int messageId;
-  private int fragmentId;
+  private int backgroundColorResourceId;
+  private Integer resourceImageId;
+
+
+  public static CroutonCustomView make(Activity activity, int messageId) {
+    return new CroutonCustomView(activity, messageId);
+  }
 
   public CroutonCustomView(Activity activity, int messageId) {
-    this(activity, messageId, 2000, 0);
-  }
-
-  public CroutonCustomView(Activity activity, int messageId, int duration) {
-    this(activity, messageId, duration, 0);
-  }
-
-  public CroutonCustomView(Activity activity, int messageId, int duration, int fragmentId) {
     this.activity = activity;
-    this.fragmentId = fragmentId;
-    this.duration = duration;
     this.messageId = messageId;
+    this.backgroundColorResourceId = R.color.le_blue;
+    this.duration = 3000;
+  }
+
+  public void setDuration(int duration) {
+    this.duration = duration;
+  }
+
+  public void setResourceImageId(Integer resourceImageId) {
+    this.resourceImageId = resourceImageId;
+  }
+
+  public void setBackgroundColorResourceId(int backgroundColorResourceId) {
+    this.backgroundColorResourceId = backgroundColorResourceId;
   }
 
   public static void cancelAllCroutons() {
@@ -44,14 +57,18 @@ public class CroutonCustomView {
     View rootView = inflater.inflate(R.layout.crouton_message, null);
     ButterKnife.inject(this, rootView);
 
-    messageText.setText(getText());
+    Resources resources = activity.getApplicationContext().getResources();
+    rootView.setBackgroundColor(resources.getColor(backgroundColorResourceId));
+    messageText.setText(resources.getString(messageId));
+
+    if (resourceImageId != null) {
+      messageImage.setImageDrawable(resources.getDrawable(resourceImageId));
+    } else {
+      messageImage.setVisibility(View.GONE);
+    }
 
     Configuration croutonConfiguration = new Configuration.Builder().setDuration(duration).build();
 
-    Crouton.make(activity, rootView, fragmentId, croutonConfiguration).show();
-  }
-
-  private String getText() {
-    return activity.getApplicationContext().getString(messageId);
+    Crouton.make(activity, rootView, 0, croutonConfiguration).show();
   }
 }

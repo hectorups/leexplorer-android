@@ -309,7 +309,7 @@ public class AutoPlayService extends BaseService {
     Gallery currentGallery = null;
     if (autoPlay == null) {
       status = Status.OFF;
-    } else if(autoPlay.getState() == AutoPlay.State.WaitingConfirmation) {
+    } else if (autoPlay.getState() == AutoPlay.State.WaitingConfirmation) {
       status = Status.WAITING_CONFIRMATION;
     } else if (autoPlay.getCurrentlyPlaying() != null) {
       status = Status.PLAYING;
@@ -349,7 +349,7 @@ public class AutoPlayService extends BaseService {
     Log.d(TAG, "Audio completed " + event.getArtwork().getName());
     if (autoPlay != null) {
 
-      if (autoPlay.getCurrentlyPlaying().equals(event.getArtwork())) {
+      if (event.getArtwork().equals(autoPlay.getCurrentlyPlaying())) {
         autoPlay.resetPlayingArtwork();
         forceScan();
       }

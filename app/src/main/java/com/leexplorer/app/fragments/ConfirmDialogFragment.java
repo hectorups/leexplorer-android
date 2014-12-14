@@ -76,7 +76,7 @@ public class ConfirmDialogFragment extends DialogFragment {
 
       cancel = getArguments().getString(CANCEL_EXTRA);
       if(cancel == null) {
-        cancel = getResources().getString(R.string.confirm_dialog_cancel);;
+        cancel = getResources().getString(R.string.confirm_dialog_cancel);
       }
     }
   }

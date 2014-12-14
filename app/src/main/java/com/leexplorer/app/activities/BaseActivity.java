@@ -169,11 +169,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     @Subscribe public void onBuildKilled(BuildKilledEvent event) {
-      CroutonCustomView crouton =
-          new CroutonCustomView(BaseActivity.this, R.string.error_app_too_old);
-      crouton.setBackgroundColorResourceId(R.color.le_red);
-      crouton.setResourceImageId(R.drawable.ic_action_bt_warning);
-      crouton.show();
+      CroutonCustomView.makeError(BaseActivity.this, R.string.error_app_too_old).show();
     }
 
     @Subscribe public void onNetworkError(NetworkErrorEvent event) {
@@ -182,10 +178,7 @@ public abstract class BaseActivity extends ActionBarActivity {
         return;
       }
       CroutonCustomView.cancelAllCroutons();
-      CroutonCustomView crouton = new CroutonCustomView(BaseActivity.this, messageId);
-      crouton.setBackgroundColorResourceId(R.color.le_red);
-      crouton.setResourceImageId(R.drawable.ic_action_bt_warning);
-      crouton.show();
+      CroutonCustomView.makeError(BaseActivity.this, messageId).show();
     }
 
     @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
@@ -240,6 +233,7 @@ public abstract class BaseActivity extends ActionBarActivity {
           getResources().getString(R.string.autoplay_confirm_text, event.getArtwork().getName()),
           getResources().getString(R.string.autoplay_confirm_ok),
           getResources().getString(R.string.autoplay_confirm_skip));
+
       confirmDialogFragment.setCancelable(false);
       confirmDialogFragment.show(getSupportFragmentManager(), ConfirmDialogFragment.TAG);
     }

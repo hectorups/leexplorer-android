@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -26,6 +27,14 @@ public class CroutonCustomView {
 
   public static CroutonCustomView make(Activity activity, int messageId) {
     return new CroutonCustomView(activity, messageId);
+  }
+
+  public static CroutonCustomView makeError(Activity activity, int messageId) {
+    CroutonCustomView crouton = new CroutonCustomView(activity, messageId);
+    crouton.setBackgroundColorResourceId(R.color.le_red);
+    crouton.setResourceImageId(R.drawable.ic_action_bt_warning);
+
+    return crouton;
   }
 
   public CroutonCustomView(Activity activity, int messageId) {
@@ -61,6 +70,12 @@ public class CroutonCustomView {
     rootView.setBackgroundColor(resources.getColor(backgroundColorResourceId));
     messageText.setText(resources.getString(messageId));
 
+    int viewGroupId = 0;
+    View fragmentView = activity.findViewById(R.id.container);
+    if(fragmentView != null && fragmentView instanceof ViewGroup) {
+      viewGroupId = R.id.container;
+    }
+
     if (resourceImageId != null) {
       messageImage.setImageDrawable(resources.getDrawable(resourceImageId));
     } else {
@@ -69,6 +84,6 @@ public class CroutonCustomView {
 
     Configuration croutonConfiguration = new Configuration.Builder().setDuration(duration).build();
 
-    Crouton.make(activity, rootView, 0, croutonConfiguration).show();
+    Crouton.make(activity, rootView, viewGroupId, croutonConfiguration).show();
   }
 }

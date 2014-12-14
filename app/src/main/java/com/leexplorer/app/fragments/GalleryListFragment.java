@@ -21,6 +21,7 @@ import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.LocationService;
 import com.leexplorer.app.util.GalleryComparator;
+import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.Collections;

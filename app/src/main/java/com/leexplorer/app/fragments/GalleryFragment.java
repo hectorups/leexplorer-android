@@ -29,17 +29,14 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.ShareEvent;
-import com.leexplorer.app.events.artworks.LoadArtworksEvent;
-import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.events.artworks.LoadArtworksEvent;import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.ImageShareTarget;
-import com.leexplorer.app.util.TextUtil;
+import com.leexplorer.app.util.RippleClick;import com.leexplorer.app.util.TextUtil;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
 import com.squareup.picasso.Callback;
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 import javax.inject.Inject;
 
 import static com.leexplorer.app.core.AppConstants.FACILITIES_IMG_MAP;
@@ -52,6 +49,7 @@ public class GalleryFragment extends BaseFragment {
 
   @Inject Bus bus;
   @Inject ImageSourcePicker imageSourcePicker;
+  @Inject RippleClick rippleClick;
 
   @InjectView(R.id.ivGalleryDetail) ImageView ivGalleryDetail;
   @InjectView(R.id.txDetailAddress) TextView txDetailAddress;
@@ -266,7 +264,11 @@ public class GalleryFragment extends BaseFragment {
 
   @OnClick({ R.id.ivGalleryDetail, R.id.exploreCollectionBtn })
   public void loadArtworks(View view) {
-    bus.post(new LoadArtworksEvent(gallery));
+    rippleClick.run(new Runnable() {
+      @Override public void run() {
+        bus.post(new LoadArtworksEvent(gallery));
+      }
+    });
   }
 
   @OnClick(R.id.llGalleryDetailLocation)

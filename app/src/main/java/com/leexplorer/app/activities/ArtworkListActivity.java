@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
-public class ArtworkListActivity extends BaseActivity implements ArtworkListFragment.Callbacks {
+public class ArtworkListActivity extends BaseActivity {
   public static final String EXTRA_GALLERY = "extra_gallery";
   public static final String EXTRA_FROM_NOTIFICATION = "extra_from_notification";
   public static final int ARTWORK_DETAIL_REQUEST = 0;

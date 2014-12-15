@@ -23,7 +23,7 @@ import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.core.RepeatableRunnable;
-import com.leexplorer.app.events.artworks.ArtworkClickedEvent;
+import com.leexplorer.app.events.LoadingEvent;import com.leexplorer.app.events.artworks.ArtworkClickedEvent;
 import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
 import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.events.audio.AudioProgressEvent;
@@ -52,6 +52,7 @@ import rx.schedulers.Schedulers;
 public class ArtworkListFragment extends BaseFragment {
 
   private static final String ARTWORK_LIST_KEY = "arwork_list";
+  private static final String ARTWORKS_LOADING_KEY = "artworks_loading";
   private static final String BEACONS_KEY = "beacons";
   private static final String GALLERY_KEY = "gallery";
   private static final String TAG = "com.leexplorer.artworklistfragement";
@@ -62,12 +63,11 @@ public class ArtworkListFragment extends BaseFragment {
   @InjectView(R.id.sgvArtworks) StaggeredGridView sgvArtworks;
   @InjectView(R.id.btnAutoplay) FloatingActionButton btnAutoplay;
 
-  public Callbacks callbacks;
   protected ArtworkAdapter artworkAdapter;
   private List<Artwork> artworks;
   private List<FilteredIBeacon> beacons;
   private Artwork currentlyPlaying;
-  private boolean artworksLoaded;
+  private boolean artworksLoading;
   private boolean scaningBeacons;
   private MenuItem menuReresh;
   private Gallery gallery;
@@ -98,24 +98,6 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   @Override
-  public void onAttach(Activity activity) {
-    super.onAttach(activity);
-
-    if (activity instanceof Callbacks) {
-      callbacks = (Callbacks) activity;
-    } else {
-      throw new ClassCastException(
-          activity.toString() + " must implement ArtworkListFragment.Callbacks");
-    }
-  }
-
-  @Override
-  public void onDetach() {
-    callbacks = null;
-    super.onDetach();
-  }
-
-  @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
@@ -125,11 +107,12 @@ public class ArtworkListFragment extends BaseFragment {
       artworks = savedInstanceState.getParcelableArrayList(ARTWORK_LIST_KEY);
       beacons = savedInstanceState.getParcelableArrayList(BEACONS_KEY);
       gallery = savedInstanceState.getParcelable(GALLERY_KEY);
-      artworksLoaded = true;
+      artworksLoading = savedInstanceState.getBoolean(ARTWORKS_LOADING_KEY, false);
     } else {
       artworks = new ArrayList<>();
       beacons = new ArrayList<>();
       gallery = getArguments().getParcelable(EXTRA_GALLERY);
+      artworksLoading = false;
     }
   }
 
@@ -137,9 +120,12 @@ public class ArtworkListFragment extends BaseFragment {
   public void onResume() {
     super.onResume();
     bus.register(this);
-    if (artworks.size() == 0) {
+    if (artworksLoading) {
+      bus.post(new MainLoadingIndicator(true));
+    } else if (artworks.size() == 0) {
       loadArtworkList();
     }
+
     statusChecker.run();
     AutoPlayService.checkAutoplayStatus(getActivity());
   }
@@ -172,6 +158,7 @@ public class ArtworkListFragment extends BaseFragment {
     savedInstanceState.putParcelableArrayList(ARTWORK_LIST_KEY, new ArrayList<>(artworks));
     savedInstanceState.putParcelableArrayList(BEACONS_KEY, new ArrayList<Parcelable>(beacons));
     savedInstanceState.putParcelable(GALLERY_KEY, gallery);
+    savedInstanceState.putBoolean(ARTWORKS_LOADING_KEY, artworksLoading);
   }
 
   @Override
@@ -207,14 +194,16 @@ public class ArtworkListFragment extends BaseFragment {
   }
 
   private void loadArtworkList() {
+    if (artworksLoading) {
+      return;
+    }
+
     // Get data from Api or DB
     if (((LeexplorerApplication) getActivity().getApplicationContext()).isOnline()) {
       loadArtworkListFromApi();
     } else {
       loadArtworkListFromDB();
     }
-
-    artworksLoaded = true;
   }
 
   private void loadArtworkListFromApi() {
@@ -226,6 +215,7 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribe(new Observer<ArrayList<Artwork>>() {
           @Override
           public void onCompleted() {
+            artworksLoading = false;
             bus.post(new MainLoadingIndicator(false));
           }
 
@@ -268,17 +258,11 @@ public class ArtworkListFragment extends BaseFragment {
             updateAdapterDataset(aws);
           }
         }));
-
-    if (callbacks != null) {
-      callbacks.onLoading(false);
-    }
   }
 
   private void refreshArtworks() {
-    if (artworksLoaded) {
+    if (!artworksLoading) {
       refreshArtworkAdapter();
-    } else {
-      loadArtworkList();
     }
   }
 
@@ -318,9 +302,7 @@ public class ArtworkListFragment extends BaseFragment {
       return;
     }
 
-    if (callbacks != null) {
-      callbacks.onLoading(true);
-    }
+    bus.post(new LoadingEvent(true));
     if (menuReresh != null) {
       menuReresh.setVisible(false);
     }
@@ -335,10 +317,6 @@ public class ArtworkListFragment extends BaseFragment {
 
   public void onArtworkClicked(Artwork artwork) {
     bus.post(new ArtworkClickedEvent(artwork, artworks));
-  }
-
-  public interface Callbacks {
-    void onLoading(boolean loading);
   }
 
   public void startAutoplay() {
@@ -406,9 +384,7 @@ public class ArtworkListFragment extends BaseFragment {
     // scanBeacons call
     if (scaningBeacons) {
       scaningBeacons = false;
-      if (callbacks != null) {
-        callbacks.onLoading(false);
-      }
+      bus.post(new LoadingEvent(false));
       if (menuReresh != null) {
         menuReresh.setVisible(true);
       }

@@ -29,7 +29,7 @@ import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
-import com.leexplorer.app.util.ShareManager;
+import com.leexplorer.app.util.RippleClick;import com.leexplorer.app.util.ShareManager;
 import com.leexplorer.app.util.ble.BluetoothCrashResolver;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.leexplorer.app.util.offline.FileDownloader;
@@ -185,6 +185,10 @@ public class LeexplorerModule {
 
   @Provides @Singleton ShareManager privideShareManager(LeexplorerApplication application) {
     return new ShareManager(application);
+  }
+
+  @Provides @Singleton RippleClick rippleClick(LeexplorerApplication application) {
+    return new RippleClick(application);
   }
 }
 

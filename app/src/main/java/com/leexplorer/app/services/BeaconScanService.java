@@ -211,6 +211,7 @@ public class BeaconScanService extends IntentService {
     bus.post(new BeaconsScanResultEvent(beaconWithLatestDistance));
   }
 
+  @SuppressWarnings("PMD")
   private void sendNotification() {
     Gallery gallery = unseenGallery();
     if (gallery == null) {

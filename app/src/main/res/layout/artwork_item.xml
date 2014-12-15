@@ -1,15 +1,24 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ripple="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_height="match_parent">
 
   <!-- BACKGROUND -->
-
-  <com.etsy.android.grid.util.DynamicHeightImageView
-      android:id="@+id/ivArtworkThumb"
+  <com.andexert.library.RippleView
+      android:id="@+id/rippleExplore"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:scaleType="centerCrop"/>
+      android:layout_gravity="bottom"
+      ripple:rv_color="@color/le_white"
+      ripple:rv_centered="true">
+
+    <com.etsy.android.grid.util.DynamicHeightImageView
+        android:id="@+id/ivArtworkThumb"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+
+  </com.andexert.library.RippleView>
 
   <!-- SIGNAL INDICATOR -->
 

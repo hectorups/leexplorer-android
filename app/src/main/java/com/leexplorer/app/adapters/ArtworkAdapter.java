@@ -22,11 +22,11 @@ import butterknife.OnClick;
 import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.core.AppConstants;
-import com.leexplorer.app.fragments.ArtworkListFragment;
+import com.leexplorer.app.events.artworks.LoadArtworksEvent;import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService.Status;
 import com.leexplorer.app.util.ArtDate;
-import com.leexplorer.app.util.offline.ImageSourcePicker;
+import com.leexplorer.app.util.RippleClick;import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.leexplorer.app.util.transformations.AspectRationDummyTransformation;
 import java.util.List;
 import javax.inject.Inject;
@@ -167,8 +167,12 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
 
     @OnClick(R.id.ivArtworkThumb)
     public void onClickArtwork(View view) {
-      Artwork artwork = (Artwork) view.getTag();
-      fragment.onArtworkClicked(artwork);
+      final Artwork artwork = (Artwork) view.getTag();
+      RippleClick.run(fragment.getActivity(), new Runnable() {
+        @Override public void run() {
+          fragment.onArtworkClicked(artwork);
+        }
+      });
     }
   }
 }

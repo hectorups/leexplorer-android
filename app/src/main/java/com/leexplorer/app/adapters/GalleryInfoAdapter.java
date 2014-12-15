@@ -17,9 +17,6 @@ import com.leexplorer.app.util.offline.ImageSourcePicker;
 import java.util.HashMap;
 import javax.inject.Inject;
 
-/**
- * Created by hectormonserrate on 01/03/14.
- */
 public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
   public static final int THUMNAIL_SIZE = R.dimen.thumbor_small;
   @Inject ImageSourcePicker imageSourcePicker;

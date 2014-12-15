@@ -4,14 +4,10 @@ import android.content.Context;
 import com.leexplorer.app.R;
 
 public class RippleClick {
-  Context context;
-
-  public RippleClick(Context context) {
-    this.context = context;
-  }
-
-  public void run(Runnable runnable) {
+  public static void run(Context context, Runnable runnable) {
     final android.os.Handler handler = new android.os.Handler();
-    handler.postDelayed(runnable, context.getResources().getInteger(R.integer.ripple_duration));
+    int duration =
+        (int) Math.abs(context.getResources().getInteger(R.integer.ripple_duration) * 1.6);
+    handler.postDelayed(runnable, duration);
   }
 }

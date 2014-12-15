@@ -10,12 +10,9 @@ import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
-import com.leexplorer.app.util.offline.ImageSourcePicker;
+import com.leexplorer.app.util.RippleClick;import com.leexplorer.app.util.offline.ImageSourcePicker;
 import javax.inject.Inject;
 
-/**
- * Created by hectormonserrate on 11/05/14.
- */
 public class GalleryPagerAdapter extends CircularPagerAdapter<String> {
   @Inject ImageSourcePicker imageSourcePicker;
 
@@ -43,13 +40,6 @@ public class GalleryPagerAdapter extends CircularPagerAdapter<String> {
 
     imageSourcePicker.getRequestCreator(gallery.getGalleryId(), getItems().get(position),
         R.dimen.thumbor_medium).placeholder(R.drawable.image_place_holder).into(ivGalleryImage);
-
-    ivGalleryImage.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        fragment.callbacks.loadGalleryDetails(gallery);
-      }
-    });
 
     container.addView(layout);
     return layout;

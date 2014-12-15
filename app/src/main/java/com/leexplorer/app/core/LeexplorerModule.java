@@ -186,9 +186,5 @@ public class LeexplorerModule {
   @Provides @Singleton ShareManager privideShareManager(LeexplorerApplication application) {
     return new ShareManager(application);
   }
-
-  @Provides @Singleton RippleClick rippleClick(LeexplorerApplication application) {
-    return new RippleClick(application);
-  }
 }
 

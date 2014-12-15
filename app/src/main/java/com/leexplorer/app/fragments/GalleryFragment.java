@@ -49,7 +49,6 @@ public class GalleryFragment extends BaseFragment {
 
   @Inject Bus bus;
   @Inject ImageSourcePicker imageSourcePicker;
-  @Inject RippleClick rippleClick;
 
   @InjectView(R.id.ivGalleryDetail) ImageView ivGalleryDetail;
   @InjectView(R.id.txDetailAddress) TextView txDetailAddress;
@@ -264,7 +263,7 @@ public class GalleryFragment extends BaseFragment {
 
   @OnClick({ R.id.ivGalleryDetail, R.id.exploreCollectionBtn })
   public void loadArtworks(View view) {
-    rippleClick.run(new Runnable() {
+    RippleClick.run(getActivity(), new Runnable() {
       @Override public void run() {
         bus.post(new LoadArtworksEvent(gallery));
       }

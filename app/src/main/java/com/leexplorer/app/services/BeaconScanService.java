@@ -174,9 +174,10 @@ public class BeaconScanService extends IntentService {
     endSearch();
     broadcastBeacons();
 
-    if (currentMode == Mode.BACKGROUND) {
-      sendNotification();
-    }
+    // Comment this out for now
+    //if (currentMode == Mode.BACKGROUND) {
+    //  sendNotification();
+    //}
   }
 
   private void setBluetoothAdapter() {

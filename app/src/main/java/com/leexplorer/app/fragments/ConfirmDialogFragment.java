@@ -86,6 +86,8 @@ public class ConfirmDialogFragment extends DialogFragment {
     outState.putString(TITLE_EXTRA, title);
     outState.putString(TEXT_EXTRA, text);
     outState.putString(CALLER_EXTRA, caller);
+    outState.putString(OK_EXTRA, ok);
+    outState.putString(CANCEL_EXTRA, cancel);
   }
 
   @Override

@@ -63,7 +63,7 @@ android {
 }
 
 dependencies {
-  compile 'com.android.support:appcompat-v7:21.0.0'
+  compile 'com.android.support:appcompat-v7:21.0.3'
   compile 'com.squareup.picasso:picasso:2.4.0'
   compile 'com.netflix.rxjava:rxjava-core:0.20.0-RC6'
   compile 'com.netflix.rxjava:rxjava-android:0.20.0-RC6'
@@ -71,7 +71,8 @@ dependencies {
   compile 'com.squareup.retrofit:retrofit:1.8.0'
   compile 'com.google.code.gson:gson:2.3'
   compile 'com.etsy.android.grid:library:1.0.5'
-  compile 'com.google.android.gms:play-services:6.1.71'
+  compile 'com.google.android.gms:play-services-maps:6.5.87'
+  compile 'com.google.android.gms:play-services-location:6.5.87'
   compile project(':paralloidviews')
   compile fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
   compile 'com.squareup.dagger:dagger:1.2.2'

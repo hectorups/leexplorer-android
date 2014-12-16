@@ -9,8 +9,7 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:layout_gravity="bottom"
-      ripple:rv_color="@color/le_white"
-      ripple:rv_centered="true">
+      style="@style/LE.RippleView">
 
     <com.etsy.android.grid.util.DynamicHeightImageView
         android:id="@+id/ivArtworkThumb"

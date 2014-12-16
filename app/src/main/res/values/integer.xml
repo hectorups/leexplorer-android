@@ -1,4 +1,4 @@
 <resources>
   <integer name="slide_time">700</integer>
-  <integer name="ripple_duration">400</integer>
+  <integer name="ripple_duration">300</integer>
 </resources>

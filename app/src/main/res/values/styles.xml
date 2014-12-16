@@ -11,19 +11,16 @@
   <style name="LE.HeadlineText" parent="LE.TextStyle">
     <item name="android:textSize">24sp</item>
     <item name="android:textStyle">bold</item>
-    <item name="fontPath">fonts/Museo700-Regular.otf</item>
   </style>
 
   <style name="LE.ProfileText.Normal" parent="LE.TextStyle">
     <item name="android:textColor">@color/le_dark_grey</item>
     <item name="android:textSize">17sp</item>
     <item name="android:textStyle">normal</item>
-    <item name="fontPath">fonts/Museo300-Regular.otf</item>
   </style>
 
   <style name="LE.ListText" parent="LE.TextStyle">
     <item name="android:textColor">@color/le_white</item>
-    <item name="fontPath">fonts/Museo500-Regular.otf</item>
   </style>
 
   <!-- Profile Styles -->
@@ -66,7 +63,6 @@
   </style>
 
   <style name="LE.GalleryProfileIconLabel">
-    <item name="fontPath">fonts/Museo300-Regular.otf</item>
     <item name="android:layout_width">wrap_content</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:gravity">center_vertical</item>
@@ -93,13 +89,18 @@
     <item name="android:textColor">@color/le_white</item>
     <item name="android:textSize">24sp</item>
   <item name="android:textStyle">bold</item>
-    <item name="fontPath">fonts/Museo300-Regular.otf</item>
   </style>
 
   <!-- Crouton Message -->
   <style name="LE.CroutonText">
     <item name="android:textSize">19sp</item>
-    <item name="fontPath">fonts/Museo500-Regular.otf</item>
+  </style>
+
+  <!-- Rippleeffect -->
+  <style name="LE.RippleView">
+    <item name="rv_rippleDuration">@integer/ripple_duration</item>
+    <item name="rv_color">@color/le_white</item>
+    <item name="rv_centered">false</item>
   </style>
 
 </resources>

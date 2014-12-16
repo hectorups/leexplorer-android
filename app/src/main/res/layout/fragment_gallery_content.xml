@@ -7,6 +7,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
+    <!-- Gallery Header -->
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -90,11 +91,14 @@
 
       </FrameLayout>
 
+      <!-- Gallery Body -->
       <LinearLayout
           android:id="@+id/llGalleryDetail"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_marginTop="10dp"
+          android:layout_marginTop="@dimen/widget_gap"
+          android:layout_marginLeft="@dimen/widget_gap"
+          android:layout_marginRight="@dimen/widget_gap"
           android:orientation="vertical"
           android:paddingBottom="@dimen/explore_collection_button_height"
           >
@@ -161,8 +165,7 @@
       android:layout_width="match_parent"
       android:layout_height="@dimen/explore_collection_button_height"
       android:layout_gravity="bottom"
-      ripple:rv_color="@color/le_red"
-      ripple:rv_centered="true">
+      style="@style/LE.RippleView">
 
     <Button
         android:id="@+id/exploreCollectionBtn"

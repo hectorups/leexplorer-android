@@ -1,3 +1,7 @@
+2014-12-16
+
+* Add Android L ripple effect and bug fixes
+
 2014-12-14
 
 * Add confirmation to autoplay

@@ -65,6 +65,7 @@ public class GalleryListFragment extends BaseFragment {
   @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
+
     View view = inflater.inflate(R.layout.fragment_gallery_list, container, false);
     ButterKnife.inject(this, view);
 
@@ -150,7 +151,9 @@ public class GalleryListFragment extends BaseFragment {
           @Override
           public void onCompleted() {
             bus.post(new MainLoadingIndicator(false));
-            swipeView.setRefreshing(false);
+            if(swipeView != null) {
+              swipeView.setRefreshing(false);
+            }
             galleriesLoading = false;
           }
 

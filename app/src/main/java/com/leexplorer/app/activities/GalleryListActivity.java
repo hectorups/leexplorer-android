@@ -58,7 +58,7 @@ public class GalleryListActivity extends BaseActivity
     }
 
     FragmentManager fm = getSupportFragmentManager();
-    Fragment fragment = fm.findFragmentByTag(LIST_FRAGMENT_TAG);
+    Fragment fragment = fm.findFragmentById(R.id.flGalleryListView);
 
     if (fragment == null) {
       fragment = new GalleryListFragment();
@@ -160,9 +160,12 @@ public class GalleryListActivity extends BaseActivity
     int id = item.getItemId();
 
     FragmentManager fm = getSupportFragmentManager();
-    GalleryListFragment listFragment =
-        (GalleryListFragment) fm.findFragmentByTag(LIST_FRAGMENT_TAG);
-    GalleryMapFragment mapFragment = (GalleryMapFragment) fm.findFragmentByTag(MAP_FRAGMENT_TAG);
+    Fragment currentFragment = fm.findFragmentById(R.id.flGalleryListView);
+    GalleryListFragment listFragment = null;
+
+    if(currentFragment instanceof  GalleryListFragment) {
+      listFragment = (GalleryListFragment) currentFragment;
+    }
 
     switch (id) {
       case R.id.menuSettings:
@@ -176,32 +179,37 @@ public class GalleryListActivity extends BaseActivity
             .show(getSupportFragmentManager(), ConfirmDialogFragment.TAG);
         break;
       case R.id.menuMap:
-        if (mapFragment == null) {
-          mapFragment = GalleryMapFragment.newInstance(listFragment.getGalleries());
+        menuFragmentOn = true;
+        updateMenuIcon();
+
+        if(listFragment == null) {
+          return true;
+        }
+        List<Gallery> galleries = listFragment.getGalleries();
+        if(galleries.size() == 0) {
+          return true;
         }
 
+        GalleryMapFragment mapFragment = GalleryMapFragment.newInstance(galleries);
         getSupportFragmentManager().beginTransaction()
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
             .replace(R.id.flGalleryListView, mapFragment, MAP_FRAGMENT_TAG)
             .commit();
 
-        menuFragmentOn = true;
-        updateMenuIcon();
-
         return true;
       case R.id.menuList:
-        if (listFragment == null) {
-          listFragment = new GalleryListFragment();
+        menuFragmentOn = false;
+        updateMenuIcon();
+        if (listFragment != null) {
+          return true;
         }
-
+        listFragment = new GalleryListFragment();
         getSupportFragmentManager().beginTransaction()
             .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
             .replace(R.id.flGalleryListView, listFragment, LIST_FRAGMENT_TAG)
             .commit();
 
-        menuFragmentOn = false;
-        updateMenuIcon();
         return true;
     }
     return super.onOptionsItemSelected(item);

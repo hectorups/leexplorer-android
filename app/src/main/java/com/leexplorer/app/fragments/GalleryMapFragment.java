@@ -36,9 +36,6 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
-/**
- * Created by hectormonserrate on 28/02/14.
- */
 public class GalleryMapFragment extends SupportMapFragment {
   private static final String TAG = "com.leexplorer.galleryMapFragment";
   private static final String EXTRA_GALLERIES = "extra_galleries";
@@ -60,9 +57,9 @@ public class GalleryMapFragment extends SupportMapFragment {
   private int markerWidth;
   private float lastZoom;
 
-  public static GalleryMapFragment newInstance(ArrayList<Gallery> galleries) {
+  public static GalleryMapFragment newInstance(List<Gallery> galleries) {
     Bundle args = new Bundle();
-    args.putParcelableArrayList(EXTRA_GALLERIES, galleries);
+    args.putParcelableArrayList(EXTRA_GALLERIES, new ArrayList<>(galleries));
 
     GalleryMapFragment fragment = new GalleryMapFragment();
     fragment.setArguments(args);

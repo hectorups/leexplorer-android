@@ -49,10 +49,9 @@ public class BeaconScanService extends IntentService {
       "com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION";
   public static final String SERVICE_NAME = "beaconscan-serviceFromScanRecord";
   public static final String PERM_PRIVATE = "com.leexplorer.beaconscanservice.PRIVATE";
-  private static final int INTERVAL_AUTOPLAY = 10 * 1000;
-  private static final int INTERVAL_FOREGROUND = 30 * 1000;
-  private static final int INTERVAL_BACKGROUND = 4 * 60 * 1000;
-  // Don't drain the battery when in bg!
+  private static final int INTERVAL_AUTOPLAY = 5 * 1000;
+  private static final int INTERVAL_FOREGROUND = 15 * 1000;
+  private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000;
   private static final int SCAN_PERIOD = 4000;
   private static final String TAG = "com.leexplorer.app.services.beaconscanservice";
   private static final String LOG_SEPARATOR = " - ";

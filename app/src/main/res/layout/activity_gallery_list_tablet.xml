@@ -21,12 +21,14 @@
           />
 
       <include layout="@layout/main_progress_bar"/>
-    </FrameLayout>
 
-    <ImageView android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:src="@drawable/vertical_divider"
-        />
+      <View
+          android:layout_width="10dp"
+          android:layout_height="match_parent"
+          android:layout_gravity="right"
+          android:background="@drawable/shadow_left" />
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/flGalleryDetailView"

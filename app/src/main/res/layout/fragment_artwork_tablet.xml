@@ -24,6 +24,11 @@
         android:layout_height="wrap_content"
         layout="@layout/artwork_label"/>
 
+    <View
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="@drawable/shadow_left" />
   </FrameLayout>
 
   <!-- Contents -->

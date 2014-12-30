@@ -34,6 +34,7 @@ import com.leexplorer.app.fragments.ConfirmDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
+import com.leexplorer.app.services.LocationService;
 import com.leexplorer.app.util.ShareManager;
 import com.leexplorer.app.util.Tint;
 import com.leexplorer.app.views.CroutonCustomView;
@@ -123,6 +124,11 @@ public abstract class BaseActivity extends ActionBarActivity {
       String ns = Context.NOTIFICATION_SERVICE;
       NotificationManager notificationManager = (NotificationManager) getSystemService(ns);
       notificationManager.cancel(0);
+    }
+
+    if (!LocationService.isRunning()) {
+      Intent intent = new Intent(this, LocationService.class);
+      startService(intent);
     }
   }
 

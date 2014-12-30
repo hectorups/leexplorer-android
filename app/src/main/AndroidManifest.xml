@@ -37,21 +37,23 @@
         android:value="1"/>
 
     <service
-        android:name="com.leexplorer.app.services.MediaPlayerService"
+        android:name=".services.MediaPlayerService"
         android:exported="false"/>
 
-    <service android:name="com.leexplorer.app.services.AutoPlayService"
-      android:exported="false"/>
-
-    <service
-        android:name="com.leexplorer.app.services.BeaconScanService"
+    <service android:name=".services.AutoPlayService"
         android:exported="false"/>
 
     <service
-        android:name="com.leexplorer.app.services.GalleryDownloaderService"
+        android:name=".services.BeaconScanService"
         android:exported="false"/>
 
-    <receiver android:name="com.leexplorer.app.receivers.StartupReceiver">
+    <service
+        android:name=".services.GalleryDownloaderService"
+        android:exported="false"/>
+
+    <service android:name=".services.LocationService" android:exported="false"/>
+
+    <receiver android:name=".receivers.StartupReceiver">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED"/>
       </intent-filter>
@@ -73,12 +75,12 @@
       </intent-filter>
     </receiver>
 
-    <activity android:name="com.leexplorer.app.activities.AppPreferencesActivity"
-      android:label="@string/app_settings"
+    <activity android:name=".activities.AppPreferencesActivity"
+        android:label="@string/app_settings"
         android:parentActivityName=".activities.GalleryListActivity"/>
 
     <activity
-        android:name="com.leexplorer.app.activities.ArtworkListActivity"
+        android:name=".activities.ArtworkListActivity"
         android:label="@string/app_name"
         android:parentActivityName=".activities.GalleryActivity">
       <intent-filter>
@@ -87,7 +89,7 @@
     </activity>
 
     <activity
-        android:name="com.leexplorer.app.activities.ArtworkActivity"
+        android:name=".activities.ArtworkActivity"
         android:parentActivityName=".activities.ArtworkListActivity"
         android:label="@string/title_activity_artwork">
       <intent-filter>
@@ -96,7 +98,7 @@
     </activity>
 
     <activity
-        android:name="com.leexplorer.app.activities.GalleryListActivity"
+        android:name=".activities.GalleryListActivity"
         android:label="@string/app_name">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -106,12 +108,12 @@
     </activity>
 
     <activity
-        android:name="com.leexplorer.app.activities.GalleryActivity"
+        android:name=".activities.GalleryActivity"
         android:parentActivityName=".activities.GalleryListActivity"
         android:label="@string/app_name"/>
 
     <activity
-        android:name="com.leexplorer.app.activities.FullScreenImageActivity"
+        android:name=".activities.FullScreenImageActivity"
         android:parentActivityName=".activities.ArtworkActivity"
         android:label="@string/app_name"/>
 

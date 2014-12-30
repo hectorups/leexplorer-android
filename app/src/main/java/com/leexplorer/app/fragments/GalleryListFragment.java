@@ -16,12 +16,12 @@ import butterknife.InjectView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.api.Client;
+import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.models.Gallery;
-import com.leexplorer.app.services.LocationService;
 import com.leexplorer.app.util.GalleryComparator;
-import com.leexplorer.app.views.CroutonCustomView;
+import com.leexplorer.app.util.PreferenceUtils;
 import com.squareup.otto.Bus;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -151,7 +151,7 @@ public class GalleryListFragment extends BaseFragment {
           @Override
           public void onCompleted() {
             bus.post(new MainLoadingIndicator(false));
-            if(swipeView != null) {
+            if (swipeView != null) {
               swipeView.setRefreshing(false);
             }
             galleriesLoading = false;
@@ -173,10 +173,15 @@ public class GalleryListFragment extends BaseFragment {
 
   private void updateAdapterDataset(List<Gallery> galleries) {
     this.galleries.clear();
-    LocationService service = new LocationService(getActivity());
     Location currentLocation = null;
-    if (service.isLocationAvailable()) {
-      currentLocation = service.getLocation();
+    Double latitude =
+        PreferenceUtils.getDouble(getActivity(), AppConstants.KEY_LAST_KNOWN_LATITUDE, null);
+    Double longitude =
+        PreferenceUtils.getDouble(getActivity(), AppConstants.KEY_LAST_KNOWN_LONGITUDE, null);
+    if(latitude != null && longitude != null) {
+      currentLocation = new Location("local");
+      currentLocation.setLongitude(longitude);
+      currentLocation.setLatitude(latitude);
     }
 
     for (Gallery gallery : galleries) {
@@ -188,7 +193,7 @@ public class GalleryListFragment extends BaseFragment {
       }
       this.galleries.add(gallery);
     }
-    Collections.sort(galleries, new GalleryComparator());
+    Collections.sort(this.galleries, new GalleryComparator());
     galleryAdapter.notifyDataSetChanged();
 
     if (callbacks != null) {

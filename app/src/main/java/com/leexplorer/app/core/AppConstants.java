@@ -14,6 +14,13 @@ public class AppConstants {
 
   public static final Map<String, Integer> FACILITIES_IMG_MAP = new HashMap<>();
 
+  // Preferences
+
+  public static final String KEY_LAST_KNOWN_LATITUDE =
+      "com.leexplorer.KEY_LAST_KNOWN_LATITUDE";
+  public static final String KEY_LAST_KNOWN_LONGITUDE =
+      "com.leexplorer.KEY_LAST_KNOWN_LONGITUDE";
+
   // Network
   public static final int CONNECT_TIMEOUT = 2;
   public static final int READ_TIMEOUT = 35;

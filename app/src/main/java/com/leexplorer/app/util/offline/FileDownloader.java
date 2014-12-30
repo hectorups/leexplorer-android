@@ -8,9 +8,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by hectormonserrate on 13/05/14.
- */
 public class FileDownloader {
   public static final String TAG = "FileDownloader";
   OkUrlFactory urlFactory;

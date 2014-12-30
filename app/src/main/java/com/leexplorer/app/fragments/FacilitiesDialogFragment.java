@@ -15,9 +15,6 @@ import java.util.List;
 
 import static com.leexplorer.app.core.AppConstants.FACILITIES_IMG_MAP;
 
-/**
- * Created by deepakdhiman on 3/3/14.
- */
 public class FacilitiesDialogFragment extends BaseDialogFragment {
   private final static String TAG = "leexplorer.com.facilitiesDialogFragment";
 

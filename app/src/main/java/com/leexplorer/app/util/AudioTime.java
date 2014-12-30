@@ -1,8 +1,5 @@
 package com.leexplorer.app.util;
 
-/**
- * Created by hectormonserrate on 18/02/14.
- */
 public class AudioTime {
 
   public static String milliSecondsToTimer(long milliseconds) {

@@ -2,9 +2,6 @@ package com.leexplorer.app.events.audio;
 
 import com.leexplorer.app.models.Artwork;
 
-/**
- * Created by hectormonserrate on 26/07/14.
- */
 public class AudioCompleteEvent {
   Artwork artwork;
 

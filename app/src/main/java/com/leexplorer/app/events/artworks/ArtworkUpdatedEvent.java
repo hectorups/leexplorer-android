@@ -2,9 +2,6 @@ package com.leexplorer.app.events.artworks;
 
 import com.leexplorer.app.models.Artwork;
 
-/**
- * Created by hectormonserrate on 08/06/14.
- */
 public class ArtworkUpdatedEvent {
   private Artwork artwork;
 

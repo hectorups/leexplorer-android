@@ -18,9 +18,6 @@ import java.util.List;
 
 import static com.leexplorer.app.core.AppConstants.FACILITIES_LABEL_MAP;
 
-/**
- * Created by deepakdhiman on 3/3/14.
- */
 public class FacilitiesAdapter extends ArrayAdapter<Facility> {
 
   FacilitiesDialogFragment fragment;

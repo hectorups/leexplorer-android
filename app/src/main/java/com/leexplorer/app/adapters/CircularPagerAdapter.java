@@ -7,9 +7,6 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by hectormonserrate on 18/05/14.
- */
 public class CircularPagerAdapter<T> extends PagerAdapter {
 
   private List<T> items;

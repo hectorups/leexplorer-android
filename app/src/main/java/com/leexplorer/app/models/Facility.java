@@ -1,8 +1,5 @@
 package com.leexplorer.app.models;
 
-/**
- * Created by deepakdhiman on 3/4/14.
- */
 public class Facility {
 
   private String facilityName;

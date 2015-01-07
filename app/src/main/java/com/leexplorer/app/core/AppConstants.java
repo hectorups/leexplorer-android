@@ -30,8 +30,8 @@ public class AppConstants {
   public static final int PROXY_PORT = 8887;
 
   // Digital Ocean
-  public static final String API_URL = "https://leexplorer.herokuapp.com";
-  public static final String STAGING_API_URL = "http://leexplorer.herokuapp.com";
+  public static final String API_URL = "https://api.leexplorer.com";
+  public static final String STAGING_API_URL = "http://api.leexplorer.com";
 
   public static final String CLOUDINARY_CLOUD_NAME = "leexplorer";
 

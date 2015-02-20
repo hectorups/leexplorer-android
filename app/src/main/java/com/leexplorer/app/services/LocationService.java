@@ -19,7 +19,7 @@ public class LocationService extends Service
     implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
     LocationListener {
 
-  private static final String TAG = "com.leexplorer.app.services.LocationService";
+  private static final String TAG = "LocationService";
   private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 100; // meters
   private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
   private GoogleApiClient googleApiClient;
@@ -32,7 +32,7 @@ public class LocationService extends Service
     super.onCreate();
     Log.d(TAG, "onCreate");
     initializeClient();
-    isRunning = true;
+    setIsRunning(true);
   }
 
   @Override
@@ -44,8 +44,12 @@ public class LocationService extends Service
   @Override
   public void onDestroy() {
     googleApiClient.disconnect();
-    isRunning = false;
+    setIsRunning(false);
     super.onDestroy();
+  }
+
+  public static void setIsRunning(boolean value) {
+    isRunning = value;
   }
 
   public void initializeClient() {

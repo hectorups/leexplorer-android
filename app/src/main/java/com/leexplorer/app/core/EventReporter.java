@@ -17,10 +17,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EventReporter {
+  private static final String TAG = EventReporter.class.getName();
   MixpanelAPI mixpanel;
   Tracker gaTracker;
-
-  private static final String TAG = "eventreporter";
 
   private static final String KEY_BUILD_NUMBER = "build_number";
   private static final String KEY_DEBUG = "debug_mode";
@@ -79,6 +78,7 @@ public class EventReporter {
   }
 
   public void logException(Throwable exception) {
+    Log.e(TAG, exception.toString());
     Crashlytics.logException(exception);
   }
 

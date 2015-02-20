@@ -18,6 +18,7 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 
 public class ArtworkActivity extends BaseActivity {
+  public static final String TAG = "ArtworkActivity"; 
   public static final String EXTRA_ARTWORK = "extra_artwork";
   public static final String EXTRA_ARTWORKS = "extra_artworks";
 
@@ -91,8 +92,8 @@ public class ArtworkActivity extends BaseActivity {
     // Set page in ViewPager
     setTitle(artwork.getName());
     for (int i = 0; i < artworks.size(); i++) {
-      Artwork aw = artworks.get(i);
-      if (artwork.equals(aw)) {
+      Artwork artwork2 = artworks.get(i);
+      if (artwork.equals(artwork2)) {
         viewPager.setCurrentItem(i);
         break;
       }

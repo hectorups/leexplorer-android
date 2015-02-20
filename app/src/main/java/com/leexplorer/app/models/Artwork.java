@@ -23,7 +23,7 @@ public class Artwork extends Model implements Parcelable {
 
   @Column(name = "name")
   private String name;
-  @Column(name = "artworkId")
+  @Column(name = "artworkId", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
   private String artworkId;
   @Column(name = "majorminor", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
   private String majorminor;
@@ -63,7 +63,7 @@ public class Artwork extends Model implements Parcelable {
 
     String majorminor =
         String.valueOf(Majorminor.longFromMajorminor(apiArtwork.major, apiArtwork.minor));
-    artwork = findByMajorminor(majorminor);
+    artwork = findById(apiArtwork.artworkId);
 
     if (artwork == null) {
       artwork = new Artwork();
@@ -107,6 +107,10 @@ public class Artwork extends Model implements Parcelable {
 
   public static Artwork findByMajorminor(String majorminor) {
     return new Select().from(Artwork.class).where("majorminor = ?", majorminor).executeSingle();
+  }
+
+  public static Artwork findById(String id) {
+    return new Select().from(Artwork.class).where("artworkId = ?", id).executeSingle();
   }
 
   public String getAudioId() {
@@ -250,7 +254,7 @@ public class Artwork extends Model implements Parcelable {
 
     Artwork artwork = (Artwork) o;
 
-    if (!majorminor.contentEquals(artwork.majorminor)) {
+    if (!artworkId.contentEquals(artwork.artworkId)) {
       return false;
     }
 
@@ -259,7 +263,7 @@ public class Artwork extends Model implements Parcelable {
 
   @Override
   public int hashCode() {
-    return majorminor.hashCode();
+    return artworkId.hashCode();
   }
 
   public void like() {

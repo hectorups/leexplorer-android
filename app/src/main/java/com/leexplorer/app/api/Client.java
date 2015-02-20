@@ -38,8 +38,8 @@ public class Client {
               if (BuildConfig.FAKE_DATA) {
                 artworks = FakeData.getArtworks();
               } else {
-                for (Artwork aaw : service.getArtworks(galleryId)) {
-                  artworks.add(com.leexplorer.app.models.Artwork.fromJsonModel(aaw));
+                for (Artwork apiArtwork : service.getArtworks(galleryId)) {
+                  artworks.add(com.leexplorer.app.models.Artwork.fromJsonModel(apiArtwork));
                 }
               }
 
@@ -47,8 +47,8 @@ public class Client {
 
               try {
                 // Persist Artworks...
-                for (com.leexplorer.app.models.Artwork aw : artworks) {
-                  aw.save();
+                for (com.leexplorer.app.models.Artwork artwork : artworks) {
+                  artwork.save();
                 }
               } catch (Exception e) {
                 e.printStackTrace();

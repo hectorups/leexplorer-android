@@ -229,8 +229,8 @@ public class ArtworkListFragment extends BaseFragment {
           }
 
           @Override
-          public void onNext(ArrayList<Artwork> aws) {
-            updateAdapterDataset(aws);
+          public void onNext(ArrayList<Artwork> artworks) {
+            updateAdapterDataset(artworks);
           }
         }));
   }
@@ -254,8 +254,8 @@ public class ArtworkListFragment extends BaseFragment {
           }
 
           @Override
-          public void onNext(ArrayList<Artwork> aws) {
-            updateAdapterDataset(aws);
+          public void onNext(ArrayList<Artwork> artworks) {
+            updateAdapterDataset(artworks);
           }
         }));
   }
@@ -270,11 +270,11 @@ public class ArtworkListFragment extends BaseFragment {
     return TAG;
   }
 
-  public void updateAdapterDataset(List<Artwork> aws) {
+  public void updateAdapterDataset(List<Artwork> artworks) {
     Log.d("BeaconArtworkUpdater", "RESET ARTWORKS!!!");
-    artworks.clear();
-    for (Artwork aw : aws) {
-      artworks.add(aw);
+    this.artworks.clear();
+    for (Artwork artwork : artworks) {
+      this.artworks.add(artwork);
     }
     refreshArtworkAdapter();
     scanBeacons();

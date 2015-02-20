@@ -78,9 +78,9 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private boolean waitingForShareImage = false;
   private Uri shareImage;
 
-  public static ArtworkFragment newInstance(Artwork aw) {
+  public static ArtworkFragment newInstance(Artwork artwork) {
     Bundle args = new Bundle();
-    args.putParcelable(EXTRA_ARTWORK, aw);
+    args.putParcelable(EXTRA_ARTWORK, artwork);
     ArtworkFragment fragment = new ArtworkFragment();
     fragment.setArguments(args);
 

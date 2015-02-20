@@ -45,7 +45,7 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import javax.inject.Inject;
 
 public abstract class BaseActivity extends ActionBarActivity {
-  public static final String TAG = "com.leexplorer.activities.baseactivity";
+  public static final String TAG = "baseactivity";
   public static final String CONFIRM_TAG = TAG + "_confirm";
   // This Receiver is ON when the activity is displaying. When on it catches the notification
   // before NotificationReceiver does and cancels it.

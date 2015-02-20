@@ -26,7 +26,7 @@ public class AppConstants {
   public static final int READ_TIMEOUT = 35;
   public static final int NETWORK_CACHE = 10 * 1024 * 1024;
   public static final String HMAC_KEY = "rAs12345ti";
-  public static final String PROXY = null; //"10.0.0.7";
+  public static final String PROXY = null; //"10.0.0.4";
   public static final int PROXY_PORT = 8887;
 
   // Digital Ocean

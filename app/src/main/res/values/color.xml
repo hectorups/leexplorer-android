@@ -20,6 +20,7 @@
   <color name="le_black_transparent">#99000000</color>
   <color name="le_black_more_transparent">#29000000</color>
   <color name="le_black_very_transparent">#20000000</color>
+  <color name="le_shadow">@color/le_black_transparent</color>
 
   <color name="le_navy">#363e48</color>
   <color name="le_slate">#6E6F72</color>

@@ -50,6 +50,8 @@ public class Artwork extends Model implements Parcelable {
   private String audioId;
   @Column(name = "gallery_id")
   private String galleryId;
+  @Column(name = "published_description")
+  private String publishedDescription;
 
   private double distance;
   private MediaPlayerService.Status status;
@@ -83,6 +85,7 @@ public class Artwork extends Model implements Parcelable {
         apiArtwork.publishedAt != null ? setDateFromString(apiArtwork.publishedAt) : null;
     artwork.audioId = apiArtwork.getAudio() != null ? apiArtwork.getAudio().publicId : null;
     artwork.galleryId = apiArtwork.galleryId;
+    artwork.publishedDescription = apiArtwork.publishedDescription;
 
     return artwork;
   }
@@ -190,6 +193,10 @@ public class Artwork extends Model implements Parcelable {
 
   public void setLikesCount(int likesCount) {
     this.likesCount = likesCount;
+  }
+
+  public String getPublishedDescription() {
+    return publishedDescription;
   }
 
   public Distance getNormalizedDistance() {
@@ -330,6 +337,7 @@ public class Artwork extends Model implements Parcelable {
     dest.writeDouble(distance);
     dest.writeString(galleryId);
     dest.writeString(artworkId);
+    dest.writeString(publishedDescription);
   }
 
   protected Artwork(Parcel in) {
@@ -350,6 +358,7 @@ public class Artwork extends Model implements Parcelable {
     distance = in.readDouble();
     galleryId = in.readString();
     artworkId = in.readString();
+    publishedDescription = in.readString();
   }
 
   public static enum Distance {

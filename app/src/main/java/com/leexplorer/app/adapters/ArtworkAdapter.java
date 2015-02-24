@@ -71,7 +71,11 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     holder.tvName.setEllipsize(TextUtils.TruncateAt.END);
     holder.tvAuthor.setText(artwork.getAuthor());
 
-    String dateText = ArtDate.shortDate(artwork.getPublishedAt());
+    String dateText = artwork.getPublishedDescription();
+    if(TextUtils.isEmpty(dateText)) {
+      dateText = ArtDate.shortDate(artwork.getPublishedAt());
+    }
+
     if (!TextUtils.isEmpty(dateText)) {
       holder.tvDate.setText(" - " + dateText);
     }

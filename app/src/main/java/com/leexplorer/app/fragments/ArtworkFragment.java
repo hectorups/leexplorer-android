@@ -205,7 +205,11 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
 
   private void setupUI() {
     tvAuthorAndDate.setText(artwork.getAuthor());
-    String dateText = ArtDate.shortDate(artwork.getPublishedAt());
+    String dateText = artwork.getPublishedDescription();
+    if(TextUtils.isEmpty(dateText)) {
+      dateText = ArtDate.shortDate(artwork.getPublishedAt());
+    }
+
     if (!TextUtils.isEmpty(dateText)) {
       tvAuthorAndDate.setText(tvAuthorAndDate.getText() + " - " + dateText);
     }

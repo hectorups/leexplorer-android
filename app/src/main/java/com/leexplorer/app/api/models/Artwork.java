@@ -28,6 +28,9 @@ public class Artwork {
   @SerializedName("likes_count")
   public int likesCount;
 
+  @SerializedName("published_description")
+  public String publishedDescription;
+
   public MediaFile audio;
 
   public MediaFile getAudio() {

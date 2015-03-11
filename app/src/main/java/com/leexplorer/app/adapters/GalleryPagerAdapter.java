@@ -10,7 +10,8 @@ import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
-import com.leexplorer.app.util.RippleClick;import com.leexplorer.app.util.offline.ImageSourcePicker;
+import com.leexplorer.app.util.RippleClick;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import javax.inject.Inject;
 
 public class GalleryPagerAdapter extends CircularPagerAdapter<String> {
@@ -39,7 +40,11 @@ public class GalleryPagerAdapter extends CircularPagerAdapter<String> {
     ImageView ivGalleryImage = (ImageView) layout.findViewById(R.id.ivGallery);
 
     imageSourcePicker.getRequestCreator(gallery.getGalleryId(), getItems().get(position),
-        R.dimen.thumbor_medium).placeholder(R.drawable.image_place_holder).into(ivGalleryImage);
+        R.dimen.thumbor_medium)
+        .fit()
+        .centerCrop()
+        .placeholder(R.drawable.image_place_holder)
+        .into(ivGalleryImage);
 
     container.addView(layout);
     return layout;

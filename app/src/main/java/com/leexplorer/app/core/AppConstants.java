@@ -31,7 +31,7 @@ public class AppConstants {
 
   // Digital Ocean
   public static final String API_URL = "http://api.leexplorer.com";
-  public static final String STAGING_API_URL = "api.leexplorer.com";
+  //public static final String STAGING_API_URL = "http://api.leexplorer.com";
 
   public static final String CLOUDINARY_CLOUD_NAME = "leexplorer";
 
@@ -63,7 +63,8 @@ public class AppConstants {
   public static final String GOOGLE_ANALYTICS_ID = "UA-53532539-1";
 
   public static String getEndpoint() {
-    return isProduction() ? API_URL : STAGING_API_URL;
+    //return isProduction() ? API_URL : STAGING_API_URL;
+    return API_URL;
   }
 
   public static boolean isDebug() {

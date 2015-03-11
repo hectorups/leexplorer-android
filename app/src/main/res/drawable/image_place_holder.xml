@@ -1,3 +1,5 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-  <solid android:color="@color/le_light_grey_bg"/>
-</shape>
+<bitmap
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/placeholder_pattern_gray"
+    android:tileMode="repeat"
+    android:dither="true" />

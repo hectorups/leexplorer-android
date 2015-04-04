@@ -29,7 +29,8 @@ import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.services.MediaPlayerService;
-import com.leexplorer.app.util.RippleClick;import com.leexplorer.app.util.ShareManager;
+import com.leexplorer.app.util.RippleClick;
+import com.leexplorer.app.util.ShareManager;
 import com.leexplorer.app.util.ble.BluetoothCrashResolver;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.leexplorer.app.util.offline.FileDownloader;
@@ -75,13 +76,9 @@ public class LeexplorerModule {
   }
 
   @Provides @Singleton Cache provideCache() {
-    try {
-      Cache responseCache =
-          new Cache(new File(application.getCacheDir(), "okhttp"), AppConstants.NETWORK_CACHE);
-      return responseCache;
-    } catch (IOException e) {
-      return null;
-    }
+    Cache responseCache =
+        new Cache(new File(application.getCacheDir(), "okhttp"), AppConstants.NETWORK_CACHE);
+    return responseCache;
   }
 
   @Provides @Singleton Bus provideBus() {

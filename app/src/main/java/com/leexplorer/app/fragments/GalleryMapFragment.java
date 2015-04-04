@@ -37,7 +37,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 public class GalleryMapFragment extends SupportMapFragment {
-  private static final String TAG = "com.leexplorer.galleryMapFragment";
+  private static final String TAG = "GalleryMapFragment";
   private static final String EXTRA_GALLERIES = "extra_galleries";
   private static final String EXTRA_BUNDLE = "bundle";
   private static final double MIN_LAT_BOUNDS = 0.2;
@@ -84,11 +84,6 @@ public class GalleryMapFragment extends SupportMapFragment {
   public void onDetach() {
     super.onDetach();
     callbacks = null;
-  }
-
-  @Override public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    eventReporter.screenViewed(TAG);
   }
 
   @Override

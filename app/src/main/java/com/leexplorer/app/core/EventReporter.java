@@ -3,7 +3,6 @@ package com.leexplorer.app.core;
 import android.content.Context;
 import android.util.Log;
 import com.crashlytics.android.Crashlytics;
-import com.google.analytics.tracking.android.MapBuilder;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -19,7 +18,6 @@ import org.json.JSONObject;
 public class EventReporter {
   private static final String TAG = EventReporter.class.getName();
   MixpanelAPI mixpanel;
-  Tracker gaTracker;
 
   private static final String KEY_BUILD_NUMBER = "build_number";
   private static final String KEY_DEBUG = "debug_mode";
@@ -46,17 +44,12 @@ public class EventReporter {
 
     // Mixpanel
     mixpanel = MixpanelAPI.getInstance(context, AppConstants.MIXPANEL_TOKEN);
-
-    // GA
-    gaTracker = GoogleAnalytics.getInstance(context).newTracker(AppConstants.GOOGLE_ANALYTICS_ID);
-    gaTracker.enableAutoActivityTracking(true);
   }
 
   private void logUserEvent(final String event, final Map<String, String> attrs) {
     Log.d(TAG, "UserEvent:" + event);
     Crashlytics.log("UserEvent:" + event);
     mixpanel.track(event, mapToJson(attrs));
-    gaTracker.send(MapBuilder.createEvent("event", event, null, null).build());
   }
 
   private JSONObject mapToJson(Map<String, String> attrs) {
@@ -114,10 +107,5 @@ public class EventReporter {
     attrs.put(ATTR_GALLERY_ID, gallery.getGalleryId());
     attrs.put(ATTR_GALLERY_NAME, gallery.getGalleryId());
     logUserEvent(EVENT_GALLERY_DOWNLOADED, attrs);
-  }
-
-  public void screenViewed(String tag) {
-    gaTracker.setScreenName(tag);
-    gaTracker.send(new HitBuilders.AppViewBuilder().build());
   }
 }

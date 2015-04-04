@@ -52,11 +52,6 @@ abstract public class BaseFragment extends Fragment {
     super.onDestroy();
   }
 
-  @Override public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    eventReporter.screenViewed(getScreenName());
-  }
-
   @Override public void onDestroyView() {
     super.onDestroyView();
     ButterKnife.reset(this);

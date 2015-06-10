@@ -6,7 +6,7 @@
     android:layout_height="80dp"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
-    wheel:barColor="@color/le_blue"
-    wheel:fillRadius="true"
-    wheel:barWidth="@dimen/progress_indicator_thickness"
-    wheel:progressIndeterminate="true"/>
+    wheel:matProg_barColor="@color/le_blue"
+    wheel:matProg_fillRadius="true"
+    wheel:matProg_barWidth="@dimen/progress_indicator_thickness"
+    wheel:matProg_progressIndeterminate="true"/>

@@ -13,6 +13,7 @@ import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.GalleryActivity;
 import com.leexplorer.app.api.Client;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.models.Artwork;
@@ -61,7 +62,7 @@ public class GalleryDownloaderService extends IntentService {
 
   @Override public void onCreate() {
     super.onCreate();
-    ((LeexplorerApplication) getApplicationContext()).inject(this);
+    ((LeexplorerApplication) getApplicationContext()).getComponent().inject(this);
   }
 
   @Override protected void onHandleIntent(Intent intent) {

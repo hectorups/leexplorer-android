@@ -89,6 +89,7 @@ public class GalleryMapFragment extends SupportMapFragment {
   @Override
   public void onCreate(final Bundle state) {
     super.onCreate(state);
+    ((LeexplorerApplication) getActivity().getApplicationContext()).getComponent().inject(this);
 
     Bitmap marker =
         BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.ic_map_pin);
@@ -108,7 +109,6 @@ public class GalleryMapFragment extends SupportMapFragment {
       galleries = new ArrayList<>();
     }
 
-    ((LeexplorerApplication) getActivity().getApplicationContext()).inject(this);
   }
 
   @Override public void onSaveInstanceState(Bundle outState) {

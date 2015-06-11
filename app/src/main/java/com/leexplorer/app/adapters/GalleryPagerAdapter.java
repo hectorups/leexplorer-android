@@ -18,7 +18,6 @@ public class GalleryPagerAdapter extends CircularPagerAdapter<String> {
   @Inject ImageSourcePicker imageSourcePicker;
 
   Gallery gallery;
-  GalleryListFragment fragment;
   private LayoutInflater inflater;
 
   public GalleryPagerAdapter(GalleryListFragment fragment, final ViewPager pager, Gallery gallery) {
@@ -27,10 +26,9 @@ public class GalleryPagerAdapter extends CircularPagerAdapter<String> {
     setupCircularPagerAdapter(pager, gallery.getArtworkImageIds());
 
     this.gallery = gallery;
-    this.fragment = fragment;
     this.inflater = LayoutInflater.from(fragment.getActivity());
 
-    ((LeexplorerApplication) fragment.getActivity().getApplicationContext()).inject(this);
+    ((LeexplorerApplication) fragment.getActivity().getApplicationContext()).getComponent().inject(this);
   }
 
   @Override

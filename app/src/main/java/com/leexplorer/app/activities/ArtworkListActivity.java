@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.artworks.ArtworkClickedEvent;
 import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
@@ -48,6 +49,11 @@ public class ArtworkListActivity extends BaseActivity {
       fm.beginTransaction().add(R.id.container, fragment).commit();
     }
 
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override public boolean showHomeButton() {

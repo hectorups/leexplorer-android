@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.models.Gallery;
 
@@ -32,6 +33,11 @@ public class GalleryActivity extends BaseActivity {
       fm.beginTransaction().add(R.id.flGalleryDetailView, fragment).commit();
     }
 
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override public boolean showHomeButton() {

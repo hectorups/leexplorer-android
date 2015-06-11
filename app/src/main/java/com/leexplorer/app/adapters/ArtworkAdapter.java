@@ -22,6 +22,7 @@ import butterknife.OnClick;
 import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.core.AppConstants;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.artworks.LoadArtworksEvent;import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService.Status;
@@ -39,6 +40,11 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
   public ArtworkAdapter(ArtworkListFragment fragment, List<Artwork> objects) {
     super(fragment.getActivity(), objects);
     this.fragment = fragment;
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override

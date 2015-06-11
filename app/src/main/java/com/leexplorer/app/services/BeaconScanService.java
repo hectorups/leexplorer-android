@@ -24,6 +24,7 @@ import com.leexplorer.app.activities.GalleryListActivity;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.api.models.Artwork;
 import com.leexplorer.app.core.AppConstants;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
@@ -39,8 +40,8 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.inject.Inject;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-public class BeaconScanService extends IntentService {
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2) public class BeaconScanService
+    extends IntentService {
   public enum Mode {
     AUTOPLAY, FOREGROUND, BACKGROUND
   }
@@ -53,7 +54,7 @@ public class BeaconScanService extends IntentService {
   private static final int INTERVAL_FOREGROUND = 15 * 1000;
   private static final int INTERVAL_BACKGROUND = 5 * 60 * 1000;
   private static final int SCAN_PERIOD = 4000;
-  private static final String TAG = "com.leexplorer.app.services.beaconscanservice";
+  private static final String TAG = "BeaconScanService";
   private static final String LOG_SEPARATOR = " - ";
 
   @Inject Client client;
@@ -66,8 +67,7 @@ public class BeaconScanService extends IntentService {
   private static Mode currentMode = Mode.BACKGROUND;
 
   private BluetoothAdapter.LeScanCallback leScanCallback = new BluetoothAdapter.LeScanCallback() {
-    @Override
-    public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+    @Override public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
       IBeacon iBeacon = IBeacon.fromScanData(scanRecord, rssi);
 
       if (iBeacon == null || !isLeBeacon(iBeacon)) {
@@ -99,7 +99,7 @@ public class BeaconScanService extends IntentService {
         beacons.get(majorminor).addAdvertisement(iBeacon);
       }
 
-      bluetoothCrashResolver.notifyScannedDevice(device,leScanCallback);
+      bluetoothCrashResolver.notifyScannedDevice(device, leScanCallback);
     }
   };
 
@@ -139,7 +139,7 @@ public class BeaconScanService extends IntentService {
 
   @Override public void onCreate() {
     super.onCreate();
-    ((LeexplorerApplication) getApplicationContext()).inject(this);
+    ((LeexplorerApplication) getApplicationContext()).getComponent().inject(this);
     bluetoothCrashResolver.start();
   }
 
@@ -148,8 +148,7 @@ public class BeaconScanService extends IntentService {
     super.onDestroy();
   }
 
-  @Override
-  protected void onHandleIntent(Intent intent) {
+  @Override protected void onHandleIntent(Intent intent) {
     Log.d(TAG, "Intent received");
 
     setBluetoothAdapter();
@@ -203,15 +202,14 @@ public class BeaconScanService extends IntentService {
   }
 
   private void broadcastBeacons() {
-    ArrayList<FilteredIBeacon> beaconWithLatestDistance =  new ArrayList<>(beacons.values());
-    for(FilteredIBeacon beacon : beaconWithLatestDistance) {
+    ArrayList<FilteredIBeacon> beaconWithLatestDistance = new ArrayList<>(beacons.values());
+    for (FilteredIBeacon beacon : beaconWithLatestDistance) {
       beacon.calculateDistance();
     }
     bus.post(new BeaconsScanResultEvent(beaconWithLatestDistance));
   }
 
-  @SuppressWarnings("PMD")
-  private void sendNotification() {
+  @SuppressWarnings("PMD") private void sendNotification() {
     Gallery gallery = unseenGallery();
     if (gallery == null) {
       return;

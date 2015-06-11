@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import butterknife.ButterKnife;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import java.lang.reflect.Field;
@@ -12,7 +13,7 @@ import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 abstract public class BaseFragment extends Fragment {
-  private static final String TAG = "com.leexplorer.app.fragments.BaseFragment";
+  private static final String TAG = "BaseFragment";
   private final CompositeSubscription compositeSubscription = new CompositeSubscription();
   @Inject EventReporter eventReporter;
 
@@ -29,8 +30,7 @@ abstract public class BaseFragment extends Fragment {
     sChildFragmentManagerField = f;
   }
 
-  @Override
-  public void onDetach() {
+  @Override public void onDetach() {
     super.onDetach();
 
     if (sChildFragmentManagerField != null) {
@@ -44,8 +44,10 @@ abstract public class BaseFragment extends Fragment {
 
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ((LeexplorerApplication) getActivity().getApplication()).inject(this);
+    injectComponent(((LeexplorerApplication) getActivity().getApplicationContext()).getComponent());
   }
+
+  abstract protected void injectComponent(ApplicationComponent component);
 
   @Override public void onDestroy() {
     compositeSubscription.unsubscribe();

@@ -26,6 +26,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.ShareEvent;
@@ -90,6 +91,11 @@ public class GalleryFragment extends BaseFragment {
     }
 
     setHasOptionsMenu(true);
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   private BroadcastReceiver downloadProgressReceiver = new BroadcastReceiver() {
@@ -223,8 +229,7 @@ public class GalleryFragment extends BaseFragment {
 
     StringBuffer languages = new StringBuffer();
     for (String language : gallery.getLanguages()) {
-      languages.append(languages.length() == 0 ? "" : ", ")
-          .append(TextUtil.capitalizeFirstLetter(language));
+      languages.append(languages.length() == 0 ? "" : ", ").append(TextUtil.capitalizeFirstLetter(language));
     }
     txLanguage.setText(languages.toString());
 

@@ -21,6 +21,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.AppConstants;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.core.RepeatableRunnable;
 import com.leexplorer.app.events.LoadingEvent;import com.leexplorer.app.events.artworks.ArtworkClickedEvent;
@@ -114,6 +115,11 @@ public class ArtworkListFragment extends BaseFragment {
       gallery = getArguments().getParcelable(EXTRA_GALLERY);
       artworksLoading = false;
     }
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override

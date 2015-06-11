@@ -23,6 +23,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.ShareEvent;
 import com.leexplorer.app.events.artworks.FullScreenImageEvent;
@@ -100,6 +101,11 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
       audioStatus = Status.Idle;
     }
     setHasOptionsMenu(true);
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override

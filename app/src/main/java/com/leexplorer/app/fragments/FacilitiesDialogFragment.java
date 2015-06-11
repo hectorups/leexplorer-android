@@ -9,6 +9,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.FacilitiesAdapter;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.models.Facility;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,11 @@ public class FacilitiesDialogFragment extends BaseDialogFragment {
       facilities.add(new Facility(facilityStr, FACILITIES_IMG_MAP.get(facilityStr)));
     }
     facilitiesAdapter = new FacilitiesAdapter(this, facilities);
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   public View onCreateView(LayoutInflater inflater, ViewGroup container,

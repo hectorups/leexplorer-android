@@ -10,6 +10,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import com.andexert.library.RippleView;import com.leexplorer.app.R;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.fragments.GalleryListFragment;
@@ -26,7 +27,11 @@ public class GalleryAdapter extends LeBaseAdapter<Gallery> {
   public GalleryAdapter(GalleryListFragment fragment, List<Gallery> galleries) {
     super(fragment.getActivity(), galleries);
     this.fragment = fragment;
-    ((LeexplorerApplication) fragment.getActivity().getApplicationContext()).inject(this);
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override

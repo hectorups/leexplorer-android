@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import butterknife.ButterKnife;
 import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.ArtworkViewPagerAdapter;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.artworks.ArtworkUpdatedEvent;
 import com.leexplorer.app.events.artworks.FullScreenImageEvent;
 import com.leexplorer.app.models.Artwork;
@@ -24,6 +25,11 @@ public class ArtworkActivity extends BaseActivity {
 
   private ArrayList<Artwork> artworks;
   private ViewPager viewPager;
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
+  }
 
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);

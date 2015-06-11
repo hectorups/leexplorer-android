@@ -57,6 +57,12 @@ android {
     }
   }
 
+  packagingOptions {
+    exclude 'META-INF/services/javax.annotation.processing.Processor'
+    exclude 'LICENSE.txt'
+    exclude 'META-INF/LICENSE.txt'
+  }
+
   lintOptions {
     abortOnError false
   }
@@ -64,7 +70,8 @@ android {
 
 dependencies {
   // Core
-  compile 'com.android.support:appcompat-v7:22.2.0'
+  compile ('com.android.support:appcompat-v7:22.1.1')
+
   compile 'com.google.android.gms:play-services-maps:7.5.0'
   compile 'com.google.android.gms:play-services-location:7.5.0'
   compile 'com.squareup.picasso:picasso:2.5.2'
@@ -73,9 +80,10 @@ dependencies {
   compile 'com.jakewharton:butterknife:6.1.0'
   compile 'com.squareup.retrofit:retrofit:1.9.0'
   compile 'com.google.code.gson:gson:2.3.1'
-  compile 'com.squareup.dagger:dagger:1.2.2'
-  apt 'com.squareup.dagger:dagger-compiler:1.2.2'
-  compile 'com.squareup.okhttp:okhttp:2.4.0'
+  compile('com.google.dagger:dagger:2.0.1')
+  apt 'com.google.dagger:dagger-compiler:2.0.1'
+  compile 'org.glassfish:javax.annotation:10.0-b28'
+  compile 'com.squareup.okhttp:okhttp:2.4.0' 
   compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
   compile 'com.squareup:otto:1.3.7'
   compile 'com.cloudinary:cloudinary-android:1.2.0'

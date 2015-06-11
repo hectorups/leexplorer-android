@@ -29,7 +29,7 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
     mGalleries = images;
     mContext = c;
 
-    ((LeexplorerApplication) mContext.getApplicationContext()).inject(this);
+    ((LeexplorerApplication) mContext.getApplicationContext()).getComponent().inject(this);
   }
 
   @Override

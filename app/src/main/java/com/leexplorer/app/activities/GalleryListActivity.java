@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.ConfirmDialogResultEvent;
 import com.leexplorer.app.fragments.ConfirmDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
@@ -68,6 +69,11 @@ public class GalleryListActivity extends BaseActivity
     if (isTabletMode() && gallery != null) {
       loadGalleryDetails(gallery);
     }
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override public void onResume() {

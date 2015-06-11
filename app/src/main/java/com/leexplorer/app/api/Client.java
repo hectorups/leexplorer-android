@@ -17,7 +17,7 @@ public class Client {
   @Inject RestAdapter restAdapter;
 
   public Client(final LeexplorerApplication application) {
-    application.inject(this);
+    application.getComponent().inject(this);
     service = restAdapter.create(LeexplorerService.class);
   }
 

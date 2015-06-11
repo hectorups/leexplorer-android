@@ -6,14 +6,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.activeandroid.ActiveAndroid;
 import com.crashlytics.android.Crashlytics;
-import dagger.ObjectGraph;
 import io.fabric.sdk.android.Fabric;
-import java.util.Arrays;
-import java.util.List;
 
 public class LeexplorerApplication extends Application {
-
-  private ObjectGraph graph;
+  private ApplicationComponent component;
 
   public boolean isOnline() {
     ConnectivityManager cm =
@@ -25,27 +21,19 @@ public class LeexplorerApplication extends Application {
     return false;
   }
 
-  @Override
-  public void onCreate() {
+  @Override public void onCreate() {
     super.onCreate();
     Fabric.with(this, new Crashlytics());
-
-    graph = ObjectGraph.create(getModules().toArray());
-
     ActiveAndroid.initialize(this);
+    component = ApplicationComponent.Initializer.init(this);
   }
 
-  @Override
-  public void onTerminate() {
+  @Override public void onTerminate() {
     ActiveAndroid.dispose();
     super.onTerminate();
   }
 
-  protected List<Object> getModules() {
-    return Arrays.<Object>asList(new LeexplorerModule(this));
-  }
-
-  public void inject(Object object) {
-    graph.inject(object);
+  public ApplicationComponent getComponent() {
+    return component;
   }
 }

@@ -17,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.BuildKilledEvent;
@@ -45,7 +46,7 @@ import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
 import javax.inject.Inject;
 
 public abstract class BaseActivity extends ActionBarActivity {
-  public static final String TAG = "baseactivity";
+  public static final String TAG = "BaseActivity";
   public static final String CONFIRM_TAG = TAG + "_confirm";
   // This Receiver is ON when the activity is displaying. When on it catches the notification
   // before NotificationReceiver does and cancels it.
@@ -70,8 +71,10 @@ public abstract class BaseActivity extends ActionBarActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    ((LeexplorerApplication) getApplication()).inject(this);
+    injectComponent(((LeexplorerApplication) getApplication()).getComponent());
   }
+
+  abstract protected void injectComponent(ApplicationComponent component);
 
   @Override protected void onDestroy() {
     Crouton.cancelAllCroutons();

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.picasso.Picasso;
@@ -76,6 +77,11 @@ public class FullScreenImageActivity extends BaseActivity {
     showProgress(true);
 
     imageSourcePicker.getRequestCreator(artwork).into(target);
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
 

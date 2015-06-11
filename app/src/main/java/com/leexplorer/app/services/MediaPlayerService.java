@@ -19,6 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkActivity;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.events.audio.AudioCompleteEvent;
 import com.leexplorer.app.events.audio.AudioProgressEvent;
@@ -88,6 +89,11 @@ public class MediaPlayerService extends BaseService {
     serviceLooper = thread.getLooper();
     serviceHandler = new ServiceHandler(serviceLooper);
     status = Status.Idle;
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override

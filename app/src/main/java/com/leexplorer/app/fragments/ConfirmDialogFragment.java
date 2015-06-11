@@ -55,7 +55,7 @@ public class ConfirmDialogFragment extends DialogFragment {
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
-    ((LeexplorerApplication) getActivity().getApplication()).inject(this);
+    ((LeexplorerApplication) getActivity().getApplication()).getComponent().inject(this);
     super.onCreate(savedInstanceState);
 
     if (savedInstanceState != null) {

@@ -17,6 +17,7 @@ import com.leexplorer.app.R;
 import com.leexplorer.app.adapters.GalleryAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.AppConstants;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.MainLoadingIndicator;
 import com.leexplorer.app.models.Gallery;
@@ -60,6 +61,11 @@ public class GalleryListFragment extends BaseFragment {
     }
 
     galleryAdapter = new GalleryAdapter(this, galleries);
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @TargetApi(Build.VERSION_CODES.HONEYCOMB) @Override

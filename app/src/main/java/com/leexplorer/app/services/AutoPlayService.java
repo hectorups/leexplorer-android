@@ -17,6 +17,7 @@ import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.ArtworkListActivity;
 import com.leexplorer.app.core.AppConstants;
+import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.audio.AudioCompleteEvent;
 import com.leexplorer.app.events.audio.AudioProgressEvent;
 import com.leexplorer.app.events.audio.AudioStartedEvent;
@@ -86,6 +87,11 @@ public class AutoPlayService extends BaseService {
 
     serviceLooper = thread.getLooper();
     serviceHandler = new ServiceHandler(serviceLooper);
+  }
+
+  @Override
+  protected void injectComponent(ApplicationComponent component) {
+    component.inject(this);
   }
 
   @Override public IBinder onBind(Intent intent) {

@@ -6,8 +6,7 @@ import java.util.Comparator;
 
 public class GalleryComparator implements Comparator<Gallery>, Serializable {
 
-  @Override
-  public int compare(Gallery gallery, Gallery gallery2) {
+  @Override public int compare(Gallery gallery, Gallery gallery2) {
     if (gallery.getDistanceFromCurrentLocation() == gallery2.getDistanceFromCurrentLocation()) {
       return 0;
     } else if (gallery.getDistanceFromCurrentLocation()

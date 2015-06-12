@@ -16,42 +16,28 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-@Table(name = "images")
-public class Artwork extends Model implements Parcelable {
+@Table(name = "images") public class Artwork extends Model implements Parcelable {
 
   private static final double OUT_OF_RANGE_VALUE = 9999.0;
 
-  @Column(name = "name")
-  private String name;
+  @Column(name = "name") private String name;
   @Column(name = "artworkId", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
   private String artworkId;
   @Column(name = "majorminor", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
   private String majorminor;
-  @Column(name = "description")
-  private String description;
-  @Column(name = "published_at")
-  private Date publishedAt;
-  @Column(name = "author")
-  private String author;
-  @Column(name = "image_id")
-  private String imageId;
-  @Column(name = "image_width")
-  private int imageWidth;
-  @Column(name = "image_height")
-  private int imageHeight;
-  @Column(name = "likes_count")
-  private int likesCount;
+  @Column(name = "description") private String description;
+  @Column(name = "published_at") private Date publishedAt;
+  @Column(name = "author") private String author;
+  @Column(name = "image_id") private String imageId;
+  @Column(name = "image_width") private int imageWidth;
+  @Column(name = "image_height") private int imageHeight;
+  @Column(name = "likes_count") private int likesCount;
   // if user has seen this beacon on his phone
-  @Column(name = "known")
-  private boolean known;
-  @Column(name = "i_liked")
-  private boolean iLiked;
-  @Column(name = "audio_id")
-  private String audioId;
-  @Column(name = "gallery_id")
-  private String galleryId;
-  @Column(name = "published_description")
-  private String publishedDescription;
+  @Column(name = "known") private boolean known;
+  @Column(name = "i_liked") private boolean iLiked;
+  @Column(name = "audio_id") private String audioId;
+  @Column(name = "gallery_id") private String galleryId;
+  @Column(name = "published_description") private String publishedDescription;
 
   private double distance;
   private MediaPlayerService.Status status;
@@ -205,16 +191,17 @@ public class Artwork extends Model implements Parcelable {
       return Distance.OUT_OF_RANGE;
     }
 
-    switch (IBeacon.calculateProximity(distance)) {
-      case IBeacon.PROXIMITY_UNKNOWN:
-        return Distance.OUT_OF_RANGE;
-      case IBeacon.PROXIMITY_IMMEDIATE:
-        return Distance.IMMEDIATE;
-      case IBeacon.PROXIMITY_NEAR:
-        return Distance.CLOSE;
-      default:
-        return Distance.FAR;
+    if (distance < 0) {
+      return Distance.OUT_OF_RANGE;
     }
+    if (distance < 0.5) {
+      return Distance.IMMEDIATE;
+    }
+    if (distance <= 4.0) {
+      return Distance.CLOSE;
+    }
+
+    return Distance.FAR;
   }
 
   public double getDistance() {
@@ -253,8 +240,7 @@ public class Artwork extends Model implements Parcelable {
     this.status = status;
   }
 
-  @Override
-  public boolean equals(Object o) {
+  @Override public boolean equals(Object o) {
     if (!(o instanceof Artwork)) {
       return false;
     }
@@ -268,8 +254,7 @@ public class Artwork extends Model implements Parcelable {
     return true;
   }
 
-  @Override
-  public int hashCode() {
+  @Override public int hashCode() {
     return artworkId.hashCode();
   }
 
@@ -301,26 +286,22 @@ public class Artwork extends Model implements Parcelable {
     return galleryId;
   }
 
-  @Override
-  public int describeContents() {
+  @Override public int describeContents() {
     return 0;
   }
 
-  @SuppressWarnings("unused")
-  public static final Parcelable.Creator<Artwork> CREATOR = new Parcelable.Creator<Artwork>() {
-    @Override
-    public Artwork createFromParcel(Parcel in) {
-      return new Artwork(in);
-    }
+  @SuppressWarnings("unused") public static final Parcelable.Creator<Artwork> CREATOR =
+      new Parcelable.Creator<Artwork>() {
+        @Override public Artwork createFromParcel(Parcel in) {
+          return new Artwork(in);
+        }
 
-    @Override
-    public Artwork[] newArray(int size) {
-      return new Artwork[size];
-    }
-  };
+        @Override public Artwork[] newArray(int size) {
+          return new Artwork[size];
+        }
+      };
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
+  @Override public void writeToParcel(Parcel dest, int flags) {
     dest.writeLong(getId());
     dest.writeString(name);
     dest.writeString(majorminor);
@@ -369,8 +350,7 @@ public class Artwork extends Model implements Parcelable {
   }
 
   public static class ArtworkComparable implements Comparator<Artwork>, Serializable {
-    @Override
-    public int compare(Artwork aw1, Artwork aw2) {
+    @Override public int compare(Artwork aw1, Artwork aw2) {
       double distance1 = aw1.getDistance();
       double distance2 = aw2.getDistance();
 

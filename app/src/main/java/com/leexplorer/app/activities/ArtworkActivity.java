@@ -19,15 +19,14 @@ import com.squareup.otto.Subscribe;
 import java.util.ArrayList;
 
 public class ArtworkActivity extends BaseActivity {
-  public static final String TAG = "ArtworkActivity"; 
+  public static final String TAG = "ArtworkActivity";
   public static final String EXTRA_ARTWORK = "extra_artwork";
   public static final String EXTRA_ARTWORKS = "extra_artworks";
 
   private ArrayList<Artwork> artworks;
   private ViewPager viewPager;
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
@@ -51,13 +50,12 @@ public class ArtworkActivity extends BaseActivity {
     super.onNewIntent(intent);
     Log.d(TAG, "onNewIntent");
     Artwork artwork = intent.getParcelableExtra(EXTRA_ARTWORK);
-    if(artwork != null) {
+    if (artwork != null) {
       setViewPagerPage(artwork);
     }
   }
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_artwork);
     setupActionBar();
@@ -106,8 +104,7 @@ public class ArtworkActivity extends BaseActivity {
     }
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
         onBackPressed();

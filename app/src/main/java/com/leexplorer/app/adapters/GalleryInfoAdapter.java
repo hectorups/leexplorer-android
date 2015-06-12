@@ -10,8 +10,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import java.util.HashMap;
@@ -32,13 +32,11 @@ public class GalleryInfoAdapter implements GoogleMap.InfoWindowAdapter {
     ((LeexplorerApplication) mContext.getApplicationContext()).getComponent().inject(this);
   }
 
-  @Override
-  public View getInfoContents(Marker marker) {
+  @Override public View getInfoContents(Marker marker) {
     return null;
   }
 
-  @Override
-  public View getInfoWindow(Marker marker) {
+  @Override public View getInfoWindow(Marker marker) {
     // Getting view from the layout file
     View v = mInflater.inflate(R.layout.gallery_info_window, null);
     ViewHolder holder = new ViewHolder(v);

@@ -1,7 +1,6 @@
 package com.leexplorer.app.util.ble;
 
 import com.leexplorer.app.models.Artwork;
-import com.leexplorer.app.models.FilteredIBeacon;
 import java.util.List;
 import org.altbeacon.beacon.Beacon;
 

@@ -33,8 +33,7 @@ public class FacilitiesDialogFragment extends BaseDialogFragment {
     return frag;
   }
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     List<Facility> facilities = new ArrayList<Facility>();
     List<String> facilitiesStr = getArguments().getStringArrayList("facilities");
@@ -44,8 +43,7 @@ public class FacilitiesDialogFragment extends BaseDialogFragment {
     facilitiesAdapter = new FacilitiesAdapter(this, facilities);
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 

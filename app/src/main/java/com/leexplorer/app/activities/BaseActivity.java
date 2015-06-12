@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +17,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import com.leexplorer.app.R;
-import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
@@ -33,7 +31,6 @@ import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.events.artworks.LoadArtworksEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayReadyToPlayEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
-import com.leexplorer.app.events.beacon.AltBeaconsScanResultEvent;
 import com.leexplorer.app.fragments.ConfirmDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.services.AutoPlayService;
@@ -46,14 +43,7 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
-import java.util.Collection;
 import javax.inject.Inject;
-import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconConsumer;
-import org.altbeacon.beacon.BeaconManager;
-import org.altbeacon.beacon.Identifier;
-import org.altbeacon.beacon.RangeNotifier;
-import org.altbeacon.beacon.Region;
 
 public abstract class BaseActivity extends ActionBarActivity {
   public static final String TAG = "BaseActivity";
@@ -69,8 +59,7 @@ public abstract class BaseActivity extends ActionBarActivity {
   private final EventHandler eventhandler = new EventHandler();
 
   private BroadcastReceiver onShowNotification = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
+    @Override public void onReceive(Context context, Intent intent) {
       Log.i(TAG, "canceling notification");
       setResultCode(Activity.RESULT_CANCELED);
     }
@@ -78,8 +67,7 @@ public abstract class BaseActivity extends ActionBarActivity {
 
   private int processesLoading = 0;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     injectComponent(((LeexplorerApplication) getApplication()).getComponent());
     BeaconScanService.startService(this);
@@ -124,8 +112,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
   }
 
-  @Override
-  public void onResume() {
+  @Override public void onResume() {
     super.onResume();
     bus.register(eventhandler);
 
@@ -146,8 +133,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
   }
 
-  @Override
-  public void onPause() {
+  @Override public void onPause() {
     bus.unregister(eventhandler);
     unregisterReceiver(onShowNotification);
     super.onPause();
@@ -252,8 +238,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
   }
 
-  @Override
-  public boolean onKeyDown(int keyCode, KeyEvent event) {
+  @Override public boolean onKeyDown(int keyCode, KeyEvent event) {
     if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
       bus.post(new VolumeChangeEvent(false));
       return true;

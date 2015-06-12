@@ -21,6 +21,4 @@ public final class PreferenceUtils {
     }
     return Double.longBitsToDouble(sharedPreferences.getLong(key, 0));
   }
-
-
 }

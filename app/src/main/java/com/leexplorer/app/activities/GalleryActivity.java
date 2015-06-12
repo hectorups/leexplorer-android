@@ -12,8 +12,7 @@ public class GalleryActivity extends BaseActivity {
   public static final String GALLERY_KEY = "gallery";
   private Gallery gallery;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_gallery);
     setupActionBar();
@@ -32,11 +31,9 @@ public class GalleryActivity extends BaseActivity {
       fragment = GalleryFragment.newInstance(gallery);
       fm.beginTransaction().add(R.id.flGalleryDetailView, fragment).commit();
     }
-
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
@@ -49,11 +46,9 @@ public class GalleryActivity extends BaseActivity {
     outState.putParcelable(GALLERY_KEY, gallery);
   }
 
-  @Override
-  public void onBackPressed() {
+  @Override public void onBackPressed() {
     super.onBackPressed();
     finish();
     overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
   }
-
 }

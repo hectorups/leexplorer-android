@@ -24,7 +24,6 @@ public class CroutonCustomView {
   private int backgroundColorResourceId;
   private Integer resourceImageId;
 
-
   public static CroutonCustomView make(Activity activity, int messageId) {
     return new CroutonCustomView(activity, messageId);
   }
@@ -72,7 +71,7 @@ public class CroutonCustomView {
 
     int viewGroupId = 0;
     View fragmentView = activity.findViewById(R.id.container);
-    if(fragmentView != null && fragmentView instanceof ViewGroup) {
+    if (fragmentView != null && fragmentView instanceof ViewGroup) {
       viewGroupId = R.id.container;
     }
 

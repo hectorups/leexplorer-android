@@ -13,7 +13,6 @@ import android.util.Log;
 import com.leexplorer.app.R;
 import com.leexplorer.app.activities.GalleryActivity;
 import com.leexplorer.app.api.Client;
-import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.models.Artwork;
@@ -105,9 +104,11 @@ public class GalleryDownloaderService extends IntentService {
     if (artwork.getImageId() != null) {
 
       int maxSize = (int) getResources().getDimension(R.dimen.thumbor_large);
-      String imageUrl = imageSourcePicker.getUrl(artwork.getImageId(), maxSize, artwork.getImageWidth(),
-          artwork.getImageHeight(), ImageSourcePicker.Mode.Limit);
-      String imagePath = FilePathGenerator.getFileName(artwork.getGalleryId(), artwork.getImageId());
+      String imageUrl =
+          imageSourcePicker.getUrl(artwork.getImageId(), maxSize, artwork.getImageWidth(),
+              artwork.getImageHeight(), ImageSourcePicker.Mode.Limit);
+      String imagePath =
+          FilePathGenerator.getFileName(artwork.getGalleryId(), artwork.getImageId());
       saveUrl(imageUrl, imagePath);
 
       String resizedImagePath =

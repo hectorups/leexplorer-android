@@ -35,14 +35,12 @@ public class LocationService extends Service
     setIsRunning(true);
   }
 
-  @Override
-  public int onStartCommand(Intent intent, int flags, int startId) {
+  @Override public int onStartCommand(Intent intent, int flags, int startId) {
     Log.d(TAG, "onStartCommand " + startId + ": " + intent);
     return START_STICKY;
   }
 
-  @Override
-  public void onDestroy() {
+  @Override public void onDestroy() {
     googleApiClient.disconnect();
     setIsRunning(false);
     super.onDestroy();
@@ -65,17 +63,16 @@ public class LocationService extends Service
     return this.location;
   }
 
-  @Override
-  public void onConnected(Bundle bundle) {
+  @Override public void onConnected(Bundle bundle) {
     locationRequest = LocationRequest.create();
     locationRequest.setPriority(LocationRequest.PRIORITY_LOW_POWER);
     locationRequest.setInterval(MIN_TIME_BW_UPDATES);
     locationRequest.setSmallestDisplacement(MIN_DISTANCE_CHANGE_FOR_UPDATES);
 
-    Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
-        googleApiClient);
+    Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
     if (lastLocation != null) {
-      Log.d(TAG, "last location " + lastLocation.getLatitude() + ": " + lastLocation.getLongitude());
+      Log.d(TAG,
+          "last location " + lastLocation.getLatitude() + ": " + lastLocation.getLongitude());
       saveLocation(lastLocation);
     }
 
@@ -83,16 +80,13 @@ public class LocationService extends Service
         this);
   }
 
-  @Override
-  public void onConnectionSuspended(int i) {
+  @Override public void onConnectionSuspended(int i) {
   }
 
-  @Override
-  public void onConnectionFailed(ConnectionResult connectionResult) {
+  @Override public void onConnectionFailed(ConnectionResult connectionResult) {
   }
 
-  @Override
-  public void onLocationChanged(Location location) {
+  @Override public void onLocationChanged(Location location) {
     Log.d(TAG, "location update " + location.getLatitude() + ": " + location.getLongitude());
     saveLocation(location);
   }
@@ -107,8 +101,7 @@ public class LocationService extends Service
     return isRunning;
   }
 
-  @Override
-  public IBinder onBind(Intent intent) {
+  @Override public IBinder onBind(Intent intent) {
     return binder;
   }
 

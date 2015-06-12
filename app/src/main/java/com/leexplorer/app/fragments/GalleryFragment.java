@@ -30,10 +30,12 @@ import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.ShareEvent;
-import com.leexplorer.app.events.artworks.LoadArtworksEvent;import com.leexplorer.app.models.Gallery;
+import com.leexplorer.app.events.artworks.LoadArtworksEvent;
+import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.GalleryDownloaderService;
 import com.leexplorer.app.util.ImageShareTarget;
-import com.leexplorer.app.util.RippleClick;import com.leexplorer.app.util.TextUtil;
+import com.leexplorer.app.util.RippleClick;
+import com.leexplorer.app.util.TextUtil;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.leexplorer.app.views.CroutonCustomView;
 import com.squareup.otto.Bus;
@@ -78,8 +80,7 @@ public class GalleryFragment extends BaseFragment {
     return galleryFragment;
   }
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     if (savedInstanceState != null) {
@@ -93,14 +94,12 @@ public class GalleryFragment extends BaseFragment {
     setHasOptionsMenu(true);
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
   private BroadcastReceiver downloadProgressReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
+    @Override public void onReceive(Context context, Intent intent) {
       if (!downloading) {
         return;
       }
@@ -119,16 +118,14 @@ public class GalleryFragment extends BaseFragment {
     }
   };
 
-  @Override
-  public void onResume() {
+  @Override public void onResume() {
     super.onResume();
     IntentFilter filter = new IntentFilter(GalleryDownloaderService.ACTION);
     LocalBroadcastManager.getInstance(getActivity())
         .registerReceiver(downloadProgressReceiver, filter);
   }
 
-  @Override
-  public void onPause() {
+  @Override public void onPause() {
     LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(downloadProgressReceiver);
     super.onPause();
   }
@@ -140,8 +137,7 @@ public class GalleryFragment extends BaseFragment {
     outState.putBoolean(DOWNLOADING_KEY, downloading);
   }
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_gallery_content, container, false);
     ButterKnife.inject(this, view);
@@ -166,8 +162,7 @@ public class GalleryFragment extends BaseFragment {
     }
   }
 
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+  @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
     inflater.inflate(R.menu.gallery, menu);
   }
@@ -229,7 +224,8 @@ public class GalleryFragment extends BaseFragment {
 
     StringBuffer languages = new StringBuffer();
     for (String language : gallery.getLanguages()) {
-      languages.append(languages.length() == 0 ? "" : ", ").append(TextUtil.capitalizeFirstLetter(language));
+      languages.append(languages.length() == 0 ? "" : ", ")
+          .append(TextUtil.capitalizeFirstLetter(language));
     }
     txLanguage.setText(languages.toString());
 
@@ -275,13 +271,11 @@ public class GalleryFragment extends BaseFragment {
     });
   }
 
-  @OnClick(R.id.llGalleryDetailLocation)
-  public void onClickAddress(View view) {
+  @OnClick(R.id.llGalleryDetailLocation) public void onClickAddress(View view) {
     bus.post(new LoadMapEvent(String.valueOf(txDetailAddress.getText())));
   }
 
-  @OnClick(R.id.llFacilitiesImg)
-  public void showFacilitiesList(View v) {
+  @OnClick(R.id.llFacilitiesImg) public void showFacilitiesList(View v) {
     FragmentManager fm = getChildFragmentManager();
     FacilitiesDialogFragment dialog = FacilitiesDialogFragment.newInstance(gallery.getFacilities());
 

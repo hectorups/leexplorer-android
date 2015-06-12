@@ -67,8 +67,7 @@ public class GalleryMapFragment extends SupportMapFragment {
     return fragment;
   }
 
-  @Override
-  public void onAttach(Activity activity) {
+  @Override public void onAttach(Activity activity) {
     super.onAttach(activity);
 
     super.onAttach(activity);
@@ -80,14 +79,12 @@ public class GalleryMapFragment extends SupportMapFragment {
     }
   }
 
-  @Override
-  public void onDetach() {
+  @Override public void onDetach() {
     super.onDetach();
     callbacks = null;
   }
 
-  @Override
-  public void onCreate(final Bundle state) {
+  @Override public void onCreate(final Bundle state) {
     super.onCreate(state);
     ((LeexplorerApplication) getActivity().getApplicationContext()).getComponent().inject(this);
 
@@ -108,7 +105,6 @@ public class GalleryMapFragment extends SupportMapFragment {
     if (galleries == null) {
       galleries = new ArrayList<>();
     }
-
   }
 
   @Override public void onSaveInstanceState(Bundle outState) {
@@ -118,8 +114,7 @@ public class GalleryMapFragment extends SupportMapFragment {
     outState.putBundle(EXTRA_BUNDLE, b);
   }
 
-  @Override
-  public void onStart() {
+  @Override public void onStart() {
     super.onStart();
 
     showGalleries();
@@ -156,8 +151,7 @@ public class GalleryMapFragment extends SupportMapFragment {
     map.getUiSettings().setRotateGesturesEnabled(false);
     map.getUiSettings().setTiltGesturesEnabled(false);
     map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-      @Override
-      public boolean onMarkerClick(Marker marker) {
+      @Override public boolean onMarkerClick(Marker marker) {
         List<Gallery> galleries = markerGalleryHashMap.get(marker);
 
         if (galleries != null && galleries.size() == 1) {
@@ -176,8 +170,7 @@ public class GalleryMapFragment extends SupportMapFragment {
     });
 
     map.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-      @Override
-      public void onInfoWindowClick(Marker marker) {
+      @Override public void onInfoWindowClick(Marker marker) {
         List<Gallery> galleries = markerGalleryHashMap.get(marker);
         if (galleries.size() > 1) {
           LatLngBounds bounds = buildBounds(galleries);
@@ -197,8 +190,7 @@ public class GalleryMapFragment extends SupportMapFragment {
   private void setCameraListeningMode(boolean mapBuilt) {
     if (mapBuilt) {
       map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-        @Override
-        public void onCameraChange(CameraPosition cameraPosition) {
+        @Override public void onCameraChange(CameraPosition cameraPosition) {
 
           if (cameraPosition.zoom != lastZoom) {
             lastZoom = map.getCameraPosition().zoom;
@@ -208,8 +200,7 @@ public class GalleryMapFragment extends SupportMapFragment {
       });
     } else {
       map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-        @Override
-        public void onCameraChange(CameraPosition cameraPosition) {
+        @Override public void onCameraChange(CameraPosition cameraPosition) {
           // we were waiting for the map to be drawn before we could build the map
           buildMap();
           setCameraListeningMode(true);
@@ -434,14 +425,13 @@ public class GalleryMapFragment extends SupportMapFragment {
   /**
    * Creates a value animator for a given marker
    */
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-  private ValueAnimator createMarkerAnimation(final Marker marker, final LatLng finalPosition) {
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1) private ValueAnimator createMarkerAnimation(
+      final Marker marker, final LatLng finalPosition) {
 
     final LatLng startPosition = marker.getPosition();
     ValueAnimator valueAnimator = new ValueAnimator();
     valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-      @Override
-      public void onAnimationUpdate(ValueAnimator animation) {
+      @Override public void onAnimationUpdate(ValueAnimator animation) {
         float v = animation.getAnimatedFraction();
         LatLng newPosition = interpolateMarkerPosition(v, startPosition, finalPosition);
         marker.setPosition(newPosition);
@@ -504,8 +494,8 @@ public class GalleryMapFragment extends SupportMapFragment {
     void onGalleryMapClicked(Gallery gallery);
   }
 
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-  private static class MarkerAnimatorListener implements Animator.AnimatorListener {
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB) private static class MarkerAnimatorListener
+      implements Animator.AnimatorListener {
     private Marker marker;
     private LatLng finalPosition;
 
@@ -515,23 +505,19 @@ public class GalleryMapFragment extends SupportMapFragment {
       this.finalPosition = finalPosition;
     }
 
-    @Override
-    public void onAnimationStart(Animator animation) {
+    @Override public void onAnimationStart(Animator animation) {
 
     }
 
-    @Override
-    public void onAnimationEnd(Animator animation) {
+    @Override public void onAnimationEnd(Animator animation) {
       marker.setPosition(finalPosition);
     }
 
-    @Override
-    public void onAnimationCancel(Animator animation) {
+    @Override public void onAnimationCancel(Animator animation) {
       marker.setPosition(finalPosition);
     }
 
-    @Override
-    public void onAnimationRepeat(Animator animation) {
+    @Override public void onAnimationRepeat(Animator animation) {
 
     }
   }
@@ -596,19 +582,16 @@ public class GalleryMapFragment extends SupportMapFragment {
       this.marker = marker;
     }
 
-    @Override
-    public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+    @Override public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
       animateToOpenInfoWindow(marker);
     }
 
-    @Override
-    public void onBitmapFailed(Drawable d) {
+    @Override public void onBitmapFailed(Drawable d) {
       Log.e(TAG, "Failed to open infowindow");
       eventReporter.logException("Failed to open infowindow");
     }
 
-    @Override
-    public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
+    @Override public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
     }
   }
 }

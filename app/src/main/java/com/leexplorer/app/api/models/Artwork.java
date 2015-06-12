@@ -12,24 +12,19 @@ public class Artwork {
 
   public ImageFile image;
 
-  @SerializedName("gallery_id")
-  public String galleryId;
+  @SerializedName("gallery_id") public String galleryId;
 
-  @SerializedName("id")
-  public String artworkId;
+  @SerializedName("id") public String artworkId;
 
   public String name;
 
-  @SerializedName("published_at")
-  public String publishedAt;
+  @SerializedName("published_at") public String publishedAt;
 
   public String author;
 
-  @SerializedName("likes_count")
-  public int likesCount;
+  @SerializedName("likes_count") public int likesCount;
 
-  @SerializedName("published_description")
-  public String publishedDescription;
+  @SerializedName("published_description") public String publishedDescription;
 
   public MediaFile audio;
 

@@ -3,7 +3,7 @@ package com.leexplorer.app.exceptions;
 public class AudioException extends Exception {
   private String mp3;
 
-  public AudioException(String mp3){
+  public AudioException(String mp3) {
     this.mp3 = mp3;
   }
 

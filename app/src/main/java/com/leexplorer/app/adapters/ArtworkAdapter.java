@@ -23,11 +23,12 @@ import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.leexplorer.app.R;
 import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.ApplicationComponent;
-import com.leexplorer.app.events.artworks.LoadArtworksEvent;import com.leexplorer.app.fragments.ArtworkListFragment;
+import com.leexplorer.app.fragments.ArtworkListFragment;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.services.MediaPlayerService.Status;
 import com.leexplorer.app.util.ArtDate;
-import com.leexplorer.app.util.RippleClick;import com.leexplorer.app.util.offline.ImageSourcePicker;
+import com.leexplorer.app.util.RippleClick;
+import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.leexplorer.app.util.transformations.AspectRationDummyTransformation;
 import java.util.List;
 import javax.inject.Inject;
@@ -42,13 +43,11 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     this.fragment = fragment;
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
-  @Override
-  public View getView(int position, View view, ViewGroup parent) {
+  @Override public View getView(int position, View view, ViewGroup parent) {
     ViewHolder holder;
 
     if (view != null) {
@@ -78,7 +77,7 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
     holder.tvAuthor.setText(artwork.getAuthor());
 
     String dateText = artwork.getPublishedDescription();
-    if(TextUtils.isEmpty(dateText)) {
+    if (TextUtils.isEmpty(dateText)) {
       dateText = ArtDate.shortDate(artwork.getPublishedAt());
     }
 
@@ -176,8 +175,7 @@ public class ArtworkAdapter extends LeBaseAdapter<Artwork> {
       this.fragment = fragment;
     }
 
-    @OnClick(R.id.ivArtworkThumb)
-    public void onClickArtwork(View view) {
+    @OnClick(R.id.ivArtworkThumb) public void onClickArtwork(View view) {
       final Artwork artwork = (Artwork) view.getTag();
       RippleClick.run(fragment.getActivity(), new Runnable() {
         @Override public void run() {

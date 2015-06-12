@@ -9,8 +9,7 @@ public class ShareEvent {
   private Uri bmpUri;
   private String type;
 
-  public ShareEvent(String title, String description, String imageUrl,
-      String type, Uri bmpUri) {
+  public ShareEvent(String title, String description, String imageUrl, String type, Uri bmpUri) {
     this.title = title;
     this.description = description;
     this.url = imageUrl;

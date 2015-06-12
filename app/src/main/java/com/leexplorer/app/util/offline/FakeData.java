@@ -8,8 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-@SuppressWarnings("PMD")
-public class FakeData {
+@SuppressWarnings("PMD") public class FakeData {
 
   private static final String SCULPTURES = "Sculptures";
 
@@ -32,8 +31,7 @@ public class FakeData {
         new Gallery("2", "Aiguiere Gallery", "387 Gough St\nSan Francisco CA ", "Painting", 20,
             new ArrayList<String>(), "Mon-Fri: 9:40 AM - 5:00 PM\nSat, Sun: 10:00-3:00 PM",
             "Seniors: $20\nAdults: $25", new ArrayList<String>(),
-            "One of the most-recognized figures in 20th century art, Pablo Picasso (1881-1973) was a Spanish painter, sculptor, printmaker, ceramicist and stage designer. His early success, through the Blue Period (1901-1904) and Rose Period (1904-1906) led to the establishment of Cubism (1909-1912) – one of his major contributions to the art world. Picasso's personal life was as controversial as his work – he was known for his love affairs, often with studio models that became his muses. In addition to his many affairs, he had two wives and four children.")
-    );
+            "One of the most-recognized figures in 20th century art, Pablo Picasso (1881-1973) was a Spanish painter, sculptor, printmaker, ceramicist and stage designer. His early success, through the Blue Period (1901-1904) and Rose Period (1904-1906) led to the establishment of Cubism (1909-1912) – one of his major contributions to the art world. Picasso's personal life was as controversial as his work – he was known for his love affairs, often with studio models that became his muses. In addition to his many affairs, he had two wives and four children."));
     galleries.add(new Gallery("3", "My Gallery", "381 Gough St\nSan Francisco CA ", SCULPTURES, 10,
         new ArrayList<String>(), "Mon-Fri: 9:50 AM - 5:00 PM\nSat, Sun: 10:00-3:00 PM",
         "Adults: $25", new ArrayList<String>(),

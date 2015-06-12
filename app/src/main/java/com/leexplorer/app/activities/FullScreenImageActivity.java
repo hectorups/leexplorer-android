@@ -31,8 +31,7 @@ public class FullScreenImageActivity extends BaseActivity {
   private ImageView ivImage;
 
   private Target target = new Target() {
-    @Override
-    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+    @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
       ivImage.setImageBitmap(bitmap);
       new PhotoViewAttacher(ivImage);
       showProgress(false);
@@ -40,13 +39,11 @@ public class FullScreenImageActivity extends BaseActivity {
           FullScreenImageActivity.this.getResources().getColor(R.color.le_black));
     }
 
-    @Override
-    public void onBitmapFailed(Drawable d) {
+    @Override public void onBitmapFailed(Drawable d) {
       showProgress(false);
     }
 
-    @Override
-    public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
+    @Override public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
     }
   };
 
@@ -79,27 +76,24 @@ public class FullScreenImageActivity extends BaseActivity {
     imageSourcePicker.getRequestCreator(artwork).into(target);
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
-
 
   @Override protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putParcelable(EXTRA_ARTWORK, artwork);
   }
 
-  @TargetApi(11)
-  private void enableFullScreen(boolean enabled) {
+  @TargetApi(11) private void enableFullScreen(boolean enabled) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
       return;
     }
-    int newVisibility =  View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+    int newVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
 
-    if(enabled) {
+    if (enabled) {
       newVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN
           | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
           | View.SYSTEM_UI_FLAG_IMMERSIVE;

@@ -5,11 +5,9 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.View;
 import com.leexplorer.app.R;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.ConfirmDialogResultEvent;
-import com.leexplorer.app.util.TextUtil;
 import com.squareup.otto.Bus;
 import javax.inject.Inject;
 
@@ -53,8 +51,7 @@ public class ConfirmDialogFragment extends DialogFragment {
     return f;
   }
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     ((LeexplorerApplication) getActivity().getApplication()).getComponent().inject(this);
     super.onCreate(savedInstanceState);
 
@@ -70,12 +67,12 @@ public class ConfirmDialogFragment extends DialogFragment {
       caller = getArguments().getString(CALLER_EXTRA);
 
       ok = getArguments().getString(OK_EXTRA);
-      if(ok == null) {
+      if (ok == null) {
         ok = getResources().getString(R.string.confirm_dialog_ok);
       }
 
       cancel = getArguments().getString(CANCEL_EXTRA);
-      if(cancel == null) {
+      if (cancel == null) {
         cancel = getResources().getString(R.string.confirm_dialog_cancel);
       }
     }
@@ -90,8 +87,7 @@ public class ConfirmDialogFragment extends DialogFragment {
     outState.putString(CANCEL_EXTRA, cancel);
   }
 
-  @Override
-  public Dialog onCreateDialog(Bundle savedInstanceState) {
+  @Override public Dialog onCreateDialog(Bundle savedInstanceState) {
     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
     alertDialogBuilder.setTitle(title);
     alertDialogBuilder.setMessage(text);
@@ -104,8 +100,7 @@ public class ConfirmDialogFragment extends DialogFragment {
   public DialogInterface.OnClickListener onPositiveButtonListener() {
     return new DialogInterface.OnClickListener() {
 
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
+      @Override public void onClick(DialogInterface dialog, int which) {
         bus.post(new ConfirmDialogResultEvent(caller, true));
       }
     };
@@ -114,8 +109,7 @@ public class ConfirmDialogFragment extends DialogFragment {
   public DialogInterface.OnClickListener onNegativeButtonListener() {
     return new DialogInterface.OnClickListener() {
 
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
+      @Override public void onClick(DialogInterface dialog, int which) {
         bus.post(new ConfirmDialogResultEvent(caller, false));
       }
     };

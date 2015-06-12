@@ -23,8 +23,7 @@ public class LeexplorerOkClient extends OkClient {
     this.key = key;
   }
 
-  @Override
-  public Response execute(Request request) throws IOException {
+  @Override public Response execute(Request request) throws IOException {
     Request newRequest = sign(request);
     return super.execute(newRequest);
   }

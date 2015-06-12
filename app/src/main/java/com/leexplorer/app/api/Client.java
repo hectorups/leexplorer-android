@@ -29,8 +29,7 @@ public class Client {
       final String galleryId) {
     return Observable.create(
         new Observable.OnSubscribe<ArrayList<com.leexplorer.app.models.Artwork>>() {
-          @Override
-          public void call(
+          @Override public void call(
               Subscriber<? super ArrayList<com.leexplorer.app.models.Artwork>> subscriber) {
             try {
               ArrayList<com.leexplorer.app.models.Artwork> artworks = new ArrayList<>();
@@ -61,15 +60,13 @@ public class Client {
 
             return;
           }
-        }
-    );
+        });
   }
 
   public Observable<ArrayList<Gallery>> getGalleriesData() {
     return Observable.create(
         new Observable.OnSubscribe<ArrayList<com.leexplorer.app.models.Gallery>>() {
-          @Override
-          public void call(
+          @Override public void call(
               Subscriber<? super ArrayList<com.leexplorer.app.models.Gallery>> subscriber) {
             try {
               ArrayList<Gallery> galleries = new ArrayList<>();
@@ -96,7 +93,6 @@ public class Client {
 
             return;
           }
-        }
-    );
+        });
   }
 }

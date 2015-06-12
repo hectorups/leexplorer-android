@@ -21,11 +21,9 @@ public class Gallery {
 
   public String hours;
 
-  @SerializedName("price_description")
-  public String priceDescription;
+  @SerializedName("price_description") public String priceDescription;
 
-  @SerializedName("price_reference")
-  public int priceReference;
+  @SerializedName("price_reference") public int priceReference;
 
   public String description;
 

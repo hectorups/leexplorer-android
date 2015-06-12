@@ -38,8 +38,7 @@ public class GalleryListActivity extends BaseActivity
   private boolean menuFragmentOn;
   private Gallery gallery;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     if (savedInstanceState != null) {
@@ -71,8 +70,7 @@ public class GalleryListActivity extends BaseActivity
     }
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
@@ -86,14 +84,12 @@ public class GalleryListActivity extends BaseActivity
     super.onPause();
   }
 
-  @Override
-  public void onSaveInstanceState(Bundle savedInstanceState) {
+  @Override public void onSaveInstanceState(Bundle savedInstanceState) {
     savedInstanceState.putBoolean(MAP_FRAGMENT_ON, menuFragmentOn);
     super.onSaveInstanceState(savedInstanceState);
   }
 
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
+  @Override public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.gallery_list, menu);
 
@@ -107,8 +103,7 @@ public class GalleryListActivity extends BaseActivity
     return true;
   }
 
-  @TargetApi(18)
-  private void checkBluetoothConfiguration() {
+  @TargetApi(18) private void checkBluetoothConfiguration() {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
       showBluetoothWarningIcon(false);
       return;
@@ -151,8 +146,7 @@ public class GalleryListActivity extends BaseActivity
     }
   }
 
-  @TargetApi(18)
-  private void enableBluetooth() {
+  @TargetApi(18) private void enableBluetooth() {
     BluetoothManager bluetoothManager =
         (BluetoothManager) this.getSystemService(Context.BLUETOOTH_SERVICE);
     BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
@@ -161,15 +155,14 @@ public class GalleryListActivity extends BaseActivity
     showBluetoothWarningIcon(false);
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();
 
     FragmentManager fm = getSupportFragmentManager();
     Fragment currentFragment = fm.findFragmentById(R.id.flGalleryListView);
     GalleryListFragment listFragment = null;
 
-    if(currentFragment instanceof  GalleryListFragment) {
+    if (currentFragment instanceof GalleryListFragment) {
       listFragment = (GalleryListFragment) currentFragment;
     }
 
@@ -188,11 +181,11 @@ public class GalleryListActivity extends BaseActivity
         menuFragmentOn = true;
         updateMenuIcon();
 
-        if(listFragment == null) {
+        if (listFragment == null) {
           return true;
         }
         List<Gallery> galleries = listFragment.getGalleries();
-        if(galleries.size() == 0) {
+        if (galleries.size() == 0) {
           return true;
         }
 
@@ -221,8 +214,7 @@ public class GalleryListActivity extends BaseActivity
     return super.onOptionsItemSelected(item);
   }
 
-  @Override
-  public void loadGalleryDetails(Gallery gallery) {
+  @Override public void loadGalleryDetails(Gallery gallery) {
     FragmentManager fm = getSupportFragmentManager();
 
     if (isTabletMode()) {
@@ -244,8 +236,7 @@ public class GalleryListActivity extends BaseActivity
     }
   }
 
-  @Override
-  public void onGalleryMapClicked(Gallery gallery) {
+  @Override public void onGalleryMapClicked(Gallery gallery) {
     loadGalleryDetails(gallery);
   }
 

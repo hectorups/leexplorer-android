@@ -32,12 +32,10 @@ public class ImageShareTarget implements Target {
     this.callbacks = callbacks;
   }
 
-  @Override
-  public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
+  @Override public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
     // Do it in the bg so the ui feels fast
     compositeSubscription.add(Observable.create(new Observable.OnSubscribe<Uri>() {
-      @Override
-      public void call(Subscriber<? super Uri> subscriber) {
+      @Override public void call(Subscriber<? super Uri> subscriber) {
         Uri bmpUri;
         try {
           File file = new File(
@@ -65,19 +63,16 @@ public class ImageShareTarget implements Target {
           @Override public void onError(Throwable e) {
           }
 
-          @Override
-          public void onNext(Uri bmpUri) {
+          @Override public void onNext(Uri bmpUri) {
             // Construct a ShareIntent with link to image
             callbacks.readyToShare(bmpUri);
           }
         }));
   }
 
-  @Override
-  public void onBitmapFailed(Drawable d) {
+  @Override public void onBitmapFailed(Drawable d) {
   }
 
-  @Override
-  public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
+  @Override public void onPrepareLoad(android.graphics.drawable.Drawable drawable) {
   }
 }

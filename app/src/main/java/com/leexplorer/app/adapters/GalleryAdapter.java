@@ -1,7 +1,7 @@
 package com.leexplorer.app.adapters;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +9,14 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import com.andexert.library.RippleView;import com.leexplorer.app.R;
+import com.andexert.library.RippleView;
+import com.leexplorer.app.R;
 import com.leexplorer.app.core.ApplicationComponent;
-import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.events.LoadMapEvent;
 import com.leexplorer.app.fragments.GalleryListFragment;
 import com.leexplorer.app.models.Gallery;
-import com.leexplorer.app.util.RippleClick;import com.squareup.otto.Bus;
+import com.leexplorer.app.util.RippleClick;
+import com.squareup.otto.Bus;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -29,13 +30,11 @@ public class GalleryAdapter extends LeBaseAdapter<Gallery> {
     this.fragment = fragment;
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
-  @Override
-  public View getView(int position, View view, ViewGroup parent) {
+  @Override public View getView(int position, View view, ViewGroup parent) {
     ViewHolder holder;
     if (view != null) {
       holder = (ViewHolder) view.getTag();
@@ -78,13 +77,11 @@ public class GalleryAdapter extends LeBaseAdapter<Gallery> {
       this.fragment = fragment;
     }
 
-    @OnClick(R.id.llGalleryLocation)
-    public void onClickAddress(View view) {
+    @OnClick(R.id.llGalleryLocation) public void onClickAddress(View view) {
       bus.post(new LoadMapEvent(String.valueOf(txAddress.getText())));
     }
 
-    @OnClick(R.id.ripplePager)
-    public void onGalleryClick(View view) {
+    @OnClick(R.id.ripplePager) public void onGalleryClick(View view) {
       final Gallery gallery = (Gallery) view.getTag();
       RippleClick.run(fragment.getActivity(), new Runnable() {
         @Override public void run() {

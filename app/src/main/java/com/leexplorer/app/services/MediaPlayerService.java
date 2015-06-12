@@ -69,8 +69,7 @@ public class MediaPlayerService extends BaseService {
       super(looper);
     }
 
-    @Override
-    public void handleMessage(Message msg) {
+    @Override public void handleMessage(Message msg) {
       onHandleIntent((Intent) msg.obj);
     }
   }
@@ -79,8 +78,7 @@ public class MediaPlayerService extends BaseService {
     Idle, Playing, Paused
   }
 
-  @Override
-  public void onCreate() {
+  @Override public void onCreate() {
     super.onCreate();
 
     HandlerThread thread = new HandlerThread(TAG);
@@ -91,13 +89,11 @@ public class MediaPlayerService extends BaseService {
     status = Status.Idle;
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
-  @Override
-  public int onStartCommand(Intent intent, int flags, int startId) {
+  @Override public int onStartCommand(Intent intent, int flags, int startId) {
     super.onStartCommand(intent, flags, startId);
     Message message = serviceHandler.obtainMessage();
     message.arg1 = startId;
@@ -106,8 +102,7 @@ public class MediaPlayerService extends BaseService {
     return START_STICKY;
   }
 
-  @Override
-  public IBinder onBind(Intent intent) {
+  @Override public IBinder onBind(Intent intent) {
     return null;
   }
 
@@ -253,7 +248,7 @@ public class MediaPlayerService extends BaseService {
           stop();
         }
       });
-      mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+      mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
         @Override public void onPrepared(MediaPlayer mp) {
           status = Status.Playing;
           updateProgress();
@@ -262,10 +257,8 @@ public class MediaPlayerService extends BaseService {
       });
       mediaPlayer.start();
 
-
       eventReporter.artworkAudioPlayed(artwork);
     }
-
   }
 
   synchronized private void pause() {

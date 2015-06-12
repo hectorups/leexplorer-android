@@ -1,6 +1,5 @@
 package com.leexplorer.app.services;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -8,7 +7,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
@@ -27,7 +25,6 @@ import com.leexplorer.app.events.beacon.AltBeaconsScanResultEvent;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.ble.Majorminor;
 import com.squareup.otto.Bus;
-import java.util.ArrayList;
 import java.util.Collection;
 import javax.inject.Inject;
 import org.altbeacon.beacon.Beacon;
@@ -37,8 +34,7 @@ import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
-public class BeaconScanService extends Service
-    implements BeaconConsumer {
+public class BeaconScanService extends Service implements BeaconConsumer {
 
   public static final String ACTION_SHOW_NOTIFICATION =
       "com.leexplorer.services.beaconscanservice.SHOW_NOTIFICATION";
@@ -49,6 +45,7 @@ public class BeaconScanService extends Service
   @Inject Bus bus;
   @Inject EventReporter eventReporter;
   @Inject BeaconManager beaconManager;
+  private boolean calculatingIfNewBeacons;
 
   public static void startService(Context context) {
     Intent startServiceIntent = new Intent(context, BeaconScanService.class);
@@ -167,19 +164,34 @@ public class BeaconScanService extends Service
     return gallery;
   }
 
+  private void onBeaconRanged(Beacon beacon) {
+    Gallery gallery = galleryFromBeacon(beacon);
+    if (gallery != null && !gallery.isWasSeen()) {
+      sendNotification(gallery);
+    }
+  }
+
   @Override public void onBeaconServiceConnect() {
     Log.i(TAG, "Beacon Service Connected");
 
     beaconManager.setRangeNotifier(new RangeNotifier() {
       @Override public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-        Log.v(TAG, region.getUniqueId() +  " Beacons found: " + beacons.size());
+        Log.v(TAG, region.getUniqueId() + " Beacons found: " + beacons.size());
         bus.post(new AltBeaconsScanResultEvent(beacons));
+
+        if (!calculatingIfNewBeacons) {
+          calculatingIfNewBeacons = true;
+          for (Beacon beacon : beacons) {
+            onBeaconRanged(beacon);
+          }
+          calculatingIfNewBeacons = false;
+        }
       }
     });
 
     try {
-      beaconManager.startRangingBeaconsInRegion(
-          new Region("leexplorer", Identifier.parse(AppConstants.LE_UUID), null, null));
+      Region region = new Region("leexplorer", Identifier.parse(AppConstants.LE_UUID), null, null);
+      beaconManager.startRangingBeaconsInRegion(region);
     } catch (RemoteException e) {
       Log.e(TAG, e.toString());
     }

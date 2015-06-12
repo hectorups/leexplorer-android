@@ -16,10 +16,8 @@ public class AppConstants {
 
   // Preferences
 
-  public static final String KEY_LAST_KNOWN_LATITUDE =
-      "com.leexplorer.KEY_LAST_KNOWN_LATITUDE";
-  public static final String KEY_LAST_KNOWN_LONGITUDE =
-      "com.leexplorer.KEY_LAST_KNOWN_LONGITUDE";
+  public static final String KEY_LAST_KNOWN_LATITUDE = "com.leexplorer.KEY_LAST_KNOWN_LATITUDE";
+  public static final String KEY_LAST_KNOWN_LONGITUDE = "com.leexplorer.KEY_LAST_KNOWN_LONGITUDE";
 
   // Network
   public static final int CONNECT_TIMEOUT = 2;

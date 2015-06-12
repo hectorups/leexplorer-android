@@ -3,14 +3,11 @@ package com.leexplorer.app.core.modules;
 import android.net.Uri;
 import android.util.Log;
 import com.cloudinary.Cloudinary;
-import com.leexplorer.app.api.LeexplorerRequestInterceptor;
 import com.leexplorer.app.core.AndroidBus;
 import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
-import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.util.ShareManager;
-import com.leexplorer.app.util.ble.BluetoothCrashResolver;
 import com.leexplorer.app.util.offline.AudioSourcePicker;
 import com.leexplorer.app.util.offline.FileDownloader;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
@@ -24,7 +21,6 @@ import dagger.Provides;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Singleton;
-import retrofit.RequestInterceptor;
 
 @Module public final class SystemServiceModule {
 
@@ -71,15 +67,6 @@ import retrofit.RequestInterceptor;
 
   @Provides @Singleton EventReporter provideEventReported(LeexplorerApplication application) {
     return new EventReporter(application);
-  }
-
-  @Provides @Singleton HashMap<String, FilteredIBeacon> provideBeaconsFound() {
-    return new HashMap<>();
-  }
-
-  @Provides @Singleton BluetoothCrashResolver provideBluetoothCrashResolver(
-      LeexplorerApplication application) {
-    return new BluetoothCrashResolver(application);
   }
 
   @Provides @Singleton Cloudinary provideCloudinary() {

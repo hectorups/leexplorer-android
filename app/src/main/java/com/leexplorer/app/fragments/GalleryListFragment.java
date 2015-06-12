@@ -48,8 +48,7 @@ public class GalleryListFragment extends BaseFragment {
   private GalleryAdapter galleryAdapter;
   private boolean galleriesLoading;
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     if (savedInstanceState != null) {
@@ -63,8 +62,7 @@ public class GalleryListFragment extends BaseFragment {
     galleryAdapter = new GalleryAdapter(this, galleries);
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
@@ -83,8 +81,7 @@ public class GalleryListFragment extends BaseFragment {
 
   private void setupSwipe() {
     swipeView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-      @Override
-      public void onRefresh() {
+      @Override public void onRefresh() {
         loadGalleries();
       }
     });
@@ -112,8 +109,7 @@ public class GalleryListFragment extends BaseFragment {
     super.onPause();
   }
 
-  @Override
-  public void onAttach(Activity activity) {
+  @Override public void onAttach(Activity activity) {
     super.onAttach(activity);
 
     super.onAttach(activity);
@@ -125,8 +121,7 @@ public class GalleryListFragment extends BaseFragment {
     }
   }
 
-  @Override
-  public void onDetach() {
+  @Override public void onDetach() {
     super.onDetach();
     callbacks = null;
   }
@@ -154,8 +149,7 @@ public class GalleryListFragment extends BaseFragment {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Gallery>>() {
-          @Override
-          public void onCompleted() {
+          @Override public void onCompleted() {
             bus.post(new MainLoadingIndicator(false));
             if (swipeView != null) {
               swipeView.setRefreshing(false);
@@ -163,15 +157,13 @@ public class GalleryListFragment extends BaseFragment {
             galleriesLoading = false;
           }
 
-          @Override
-          public void onError(Throwable throwable) {
+          @Override public void onError(Throwable throwable) {
             eventReporter.logException(throwable);
             onCompleted();
             loadGalleryListFromDB();
           }
 
-          @Override
-          public void onNext(ArrayList<Gallery> galleries) {
+          @Override public void onNext(ArrayList<Gallery> galleries) {
             updateAdapterDataset(galleries);
           }
         }));
@@ -184,7 +176,7 @@ public class GalleryListFragment extends BaseFragment {
         PreferenceUtils.getDouble(getActivity(), AppConstants.KEY_LAST_KNOWN_LATITUDE, null);
     Double longitude =
         PreferenceUtils.getDouble(getActivity(), AppConstants.KEY_LAST_KNOWN_LONGITUDE, null);
-    if(latitude != null && longitude != null) {
+    if (latitude != null && longitude != null) {
       currentLocation = new Location("local");
       currentLocation.setLongitude(longitude);
       currentLocation.setLatitude(latitude);
@@ -209,8 +201,7 @@ public class GalleryListFragment extends BaseFragment {
 
   private void loadGalleryListFromDB() {
     addSubscription(Observable.create(new Observable.OnSubscribe<List<Gallery>>() {
-      @Override
-      public void call(Subscriber<? super List<Gallery>> subscriber) {
+      @Override public void call(Subscriber<? super List<Gallery>> subscriber) {
         subscriber.onNext(Gallery.getAll());
         subscriber.onCompleted();
       }

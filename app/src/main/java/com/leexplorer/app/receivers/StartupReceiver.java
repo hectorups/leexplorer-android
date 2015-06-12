@@ -11,8 +11,7 @@ import com.leexplorer.app.services.LocationService;
 public class StartupReceiver extends BroadcastReceiver {
   private static final String TAG = "startupreceiver";
 
-  @Override
-  public void onReceive(Context context, Intent intent) {
+  @Override public void onReceive(Context context, Intent intent) {
     Log.i(TAG, "Received broadcast intent: " + intent.getAction());
 
     Intent locationService = new Intent(context, LocationService.class);

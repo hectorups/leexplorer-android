@@ -88,8 +88,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     return fragment;
   }
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     if (savedInstanceState != null) {
       artwork = savedInstanceState.getParcelable(EXTRA_ARTWORK);
@@ -103,25 +102,21 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     setHasOptionsMenu(true);
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
-  @Override
-  public void onResume() {
+  @Override public void onResume() {
     super.onResume();
     bus.register(this);
   }
 
-  @Override
-  public void onPause() {
+  @Override public void onPause() {
     bus.unregister(this);
     super.onPause();
   }
 
-  @Override
-  public void onSaveInstanceState(Bundle savedInstanceState) {
+  @Override public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
     savedInstanceState.putLong(SAVED_CURRENT_DURAITON, audioCurrentDuration);
     savedInstanceState.putLong(SAVED_TOTAL_DURAITON, audioTotalDuration);
@@ -155,17 +150,14 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     } else {
       menuPlay.setVisible(false);
     }
-
   }
 
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+  @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
     inflater.inflate(R.menu.artwork, menu);
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
         navigateBack();
@@ -212,7 +204,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
   private void setupUI() {
     tvAuthorAndDate.setText(artwork.getAuthor());
     String dateText = artwork.getPublishedDescription();
-    if(TextUtils.isEmpty(dateText)) {
+    if (TextUtils.isEmpty(dateText)) {
       dateText = ArtDate.shortDate(artwork.getPublishedAt());
     }
 
@@ -308,8 +300,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     audioStatus = Status.Idle;
   }
 
-  @OnClick(R.id.btnPlay)
-  public void playAudio(View view) {
+  @OnClick(R.id.btnPlay) public void playAudio(View view) {
     updateSeekbar();
     if (audioStatus == Status.Idle) {
       bus.post(new LoadingEvent(true));
@@ -373,8 +364,7 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     }
   }
 
-  @OnClick(R.id.btnPause)
-  public void pauseAudio(View view) {
+  @OnClick(R.id.btnPause) public void pauseAudio(View view) {
     pause();
     audioStatus = Status.Paused;
     showAudio();
@@ -386,16 +376,13 @@ public class ArtworkFragment extends BaseFragment implements SeekBar.OnSeekBarCh
     getActivity().startService(i);
   }
 
-  @Override
-  public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+  @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
   }
 
-  @Override
-  public void onStartTrackingTouch(SeekBar seekBar) {
+  @Override public void onStartTrackingTouch(SeekBar seekBar) {
   }
 
-  @Override
-  public void onStopTrackingTouch(SeekBar seekBar) {
+  @Override public void onStopTrackingTouch(SeekBar seekBar) {
     if (audioStatus != Status.Playing) {
       return;
     }

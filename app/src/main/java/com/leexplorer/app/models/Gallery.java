@@ -15,35 +15,21 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name = "galleries")
-public class Gallery extends Model implements Parcelable {
+@Table(name = "galleries") public class Gallery extends Model implements Parcelable {
 
-  @Column(name = "gallery_id", unique = true)
-  private String galleryId;
-  @Column(name = "name")
-  private String name;
-  @Column(name = "address")
-  private String address;
-  @Column(name = "type")
-  private String type;
-  @Column(name = "price")
-  private float price;
-  @Column(name = "languages")
-  private String languages;
-  @Column(name = "hours")
-  private String hours;
-  @Column(name = "detailed_price")
-  private String detailedPrice;
-  @Column(name = "facilities")
-  private String facilities;
-  @Column(name = "description")
-  private String description;
-  @Column(name = "latitude")
-  private float latitude;
-  @Column(name = "longitude")
-  private float longitude;
-  @Column(name = "was_seen")
-  private boolean wasSeen;
+  @Column(name = "gallery_id", unique = true) private String galleryId;
+  @Column(name = "name") private String name;
+  @Column(name = "address") private String address;
+  @Column(name = "type") private String type;
+  @Column(name = "price") private float price;
+  @Column(name = "languages") private String languages;
+  @Column(name = "hours") private String hours;
+  @Column(name = "detailed_price") private String detailedPrice;
+  @Column(name = "facilities") private String facilities;
+  @Column(name = "description") private String description;
+  @Column(name = "latitude") private float latitude;
+  @Column(name = "longitude") private float longitude;
+  @Column(name = "was_seen") private boolean wasSeen;
   private double distanceFromCurrentLocation;
 
   private List<String> artworkImageIds;
@@ -88,7 +74,7 @@ public class Gallery extends Model implements Parcelable {
     gallery.setLatitude(apiGallery.latitude);
     gallery.setLongitude(apiGallery.longitude);
     gallery.artworkImageIds = new ArrayList<>();
-    for(ImageFile image : apiGallery.images) {
+    for (ImageFile image : apiGallery.images) {
       gallery.artworkImageIds.add(image.publicId);
     }
     return gallery;
@@ -105,13 +91,11 @@ public class Gallery extends Model implements Parcelable {
     return gallery.fillWithImages();
   }
 
-  @Override
-  public int describeContents() {
+  @Override public int describeContents() {
     return 0;
   }
 
-  @Override
-  public boolean equals(Object o) {
+  @Override public boolean equals(Object o) {
     if (!(o instanceof Gallery)) {
       return false;
     }
@@ -125,8 +109,7 @@ public class Gallery extends Model implements Parcelable {
     return true;
   }
 
-  @Override
-  public int hashCode() {
+  @Override public int hashCode() {
     return galleryId.hashCode();
   }
 
@@ -288,19 +271,16 @@ public class Gallery extends Model implements Parcelable {
   }
 
   public static final Parcelable.Creator<Gallery> CREATOR = new Parcelable.Creator<Gallery>() {
-    @Override
-    public Gallery createFromParcel(Parcel in) {
+    @Override public Gallery createFromParcel(Parcel in) {
       return new Gallery(in);
     }
 
-    @Override
-    public Gallery[] newArray(int size) {
+    @Override public Gallery[] newArray(int size) {
       return new Gallery[size];
     }
   };
 
-  @Override
-  public void writeToParcel(Parcel parcel, int i) {
+  @Override public void writeToParcel(Parcel parcel, int i) {
     parcel.writeString(galleryId);
     parcel.writeString(name);
     parcel.writeString(address);

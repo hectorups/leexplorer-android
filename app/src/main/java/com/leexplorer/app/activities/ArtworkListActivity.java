@@ -27,8 +27,7 @@ public class ArtworkListActivity extends BaseActivity {
 
   @Inject Bus bus;
 
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_artwork_list);
     setupActionBar();
@@ -48,11 +47,9 @@ public class ArtworkListActivity extends BaseActivity {
       fragment = ArtworkListFragment.newInstance(gallery);
       fm.beginTransaction().add(R.id.container, fragment).commit();
     }
-
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
@@ -75,8 +72,7 @@ public class ArtworkListActivity extends BaseActivity {
     outState.putParcelable(EXTRA_GALLERY, gallery);
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
 

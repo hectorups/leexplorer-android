@@ -9,7 +9,8 @@ public class AudioProgressEvent {
   private long currentDuration;
   private Status status;
 
-  public AudioProgressEvent(Artwork artwork, long totalDuration, long currentDuration, Status status) {
+  public AudioProgressEvent(Artwork artwork, long totalDuration, long currentDuration,
+      Status status) {
     this.artwork = artwork;
     this.totalDuration = totalDuration;
     this.currentDuration = currentDuration;

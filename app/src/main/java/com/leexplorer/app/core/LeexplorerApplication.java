@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import com.activeandroid.ActiveAndroid;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
@@ -12,6 +13,7 @@ import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 public class LeexplorerApplication extends Application {
   private ApplicationComponent component;
   private BackgroundPowerSaver backgroundPowerSaver;
+  public static final String TAG = "LeexplorerApplication";
 
   public boolean isOnline() {
     ConnectivityManager cm =
@@ -29,6 +31,7 @@ public class LeexplorerApplication extends Application {
     ActiveAndroid.initialize(this);
     component = ApplicationComponent.Initializer.init(this);
     backgroundPowerSaver = new BackgroundPowerSaver(this);
+    Log.v(TAG, backgroundPowerSaver.toString());
   }
 
   @Override public void onTerminate() {

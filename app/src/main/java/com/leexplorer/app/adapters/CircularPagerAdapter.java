@@ -30,8 +30,7 @@ public class CircularPagerAdapter<T> extends PagerAdapter {
 
       pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
-        @Override
-        public void onPageSelected(int position) {
+        @Override public void onPageSelected(int position) {
           currentPage = position;
         }
 
@@ -39,8 +38,7 @@ public class CircularPagerAdapter<T> extends PagerAdapter {
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         }
 
-        @Override
-        public void onPageScrollStateChanged(int state) {
+        @Override public void onPageScrollStateChanged(int state) {
           if (state == ViewPager.SCROLL_STATE_IDLE) {
             int pageCount = getCount();
             if (currentPage == 0) {
@@ -58,18 +56,15 @@ public class CircularPagerAdapter<T> extends PagerAdapter {
     return items;
   }
 
-  @Override
-  public int getCount() {
+  @Override public int getCount() {
     return items.size();
   }
 
-  @Override
-  public void destroyItem(ViewGroup container, int position, Object object) {
+  @Override public void destroyItem(ViewGroup container, int position, Object object) {
     container.removeView((View) object);
   }
 
-  @Override
-  public boolean isViewFromObject(View view, Object obj) {
+  @Override public boolean isViewFromObject(View view, Object obj) {
     return view.equals(obj);
   }
 }

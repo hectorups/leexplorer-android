@@ -10,5 +10,4 @@ public class LoadingEvent {
   public boolean isLoading() {
     return loading;
   }
-
 }

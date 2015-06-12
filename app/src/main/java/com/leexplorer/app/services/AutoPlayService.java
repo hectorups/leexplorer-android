@@ -25,22 +25,23 @@ import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioStartedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayReadyToPlayEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
-import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
+import com.leexplorer.app.events.beacon.AltBeaconsScanResultEvent;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.AutoPlay;
-import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.util.ble.BeaconArtworkUpdater;
 import com.leexplorer.app.util.offline.ImageSourcePicker;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import org.altbeacon.beacon.Beacon;
 
 public class AutoPlayService extends BaseService {
-  public static final String TAG = "com.leexplorer.services.AutoPlayService";
+  public static final String TAG = "AutoPlayService";
   private static final int NOTIFICATION_ID = 12;
   public static final String EXTRA_ACTION = "com.leexplorer.services.autoplayservice.action";
   public static final int ACTION_START = 1;
@@ -72,14 +73,12 @@ public class AutoPlayService extends BaseService {
       super(looper);
     }
 
-    @Override
-    public void handleMessage(Message msg) {
+    @Override public void handleMessage(Message msg) {
       onHandleIntent((Intent) msg.obj);
     }
   }
 
-  @Override
-  public void onCreate() {
+  @Override public void onCreate() {
     super.onCreate();
 
     HandlerThread thread = new HandlerThread(TAG);
@@ -89,8 +88,7 @@ public class AutoPlayService extends BaseService {
     serviceHandler = new ServiceHandler(serviceLooper);
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
@@ -98,8 +96,7 @@ public class AutoPlayService extends BaseService {
     return null;
   }
 
-  @Override
-  public int onStartCommand(Intent intent, int flags, int startId) {
+  @Override public int onStartCommand(Intent intent, int flags, int startId) {
     super.onStartCommand(intent, flags, startId);
     Message message = serviceHandler.obtainMessage();
     message.arg1 = startId;
@@ -151,15 +148,12 @@ public class AutoPlayService extends BaseService {
     Log.d(TAG, "START AUTOPLAY IN SERVICE, autoplaying? " + (artworks == null ? "no" : "yes"));
     autoPlay = new AutoPlay(gallery, artworks);
     prepareNotification();
-    BeaconScanService.setScannerAlarm(getApplicationContext(), BeaconScanService.Mode.AUTOPLAY);
     forceScan();
   }
 
   public void stop() {
     Log.d(TAG, "Stop autoplaying");
     clear();
-    // @TODO detect if its foreground or background
-    BeaconScanService.setScannerAlarm(getApplicationContext(), BeaconScanService.Mode.BACKGROUND);
   }
 
   private void clear() {
@@ -270,8 +264,9 @@ public class AutoPlayService extends BaseService {
     startForeground(NOTIFICATION_ID, notification);
   }
 
-  @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
-    List<FilteredIBeacon> newBeacons = event.getBeacons();
+  @Subscribe public void onBeaconsScanResult(AltBeaconsScanResultEvent event) {
+
+    ArrayList<Beacon> newBeacons = new ArrayList<>(event.getBeacons());
     Log.d(TAG, "onBeaconsScanResult: " + newBeacons.size());
 
     if (autoPlay == null || autoPlay.getCurrentlyPlaying() != null) {

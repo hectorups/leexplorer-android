@@ -7,9 +7,11 @@ import android.net.NetworkInfo;
 import com.activeandroid.ActiveAndroid;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
+import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 
 public class LeexplorerApplication extends Application {
   private ApplicationComponent component;
+  private BackgroundPowerSaver backgroundPowerSaver;
 
   public boolean isOnline() {
     ConnectivityManager cm =
@@ -26,6 +28,7 @@ public class LeexplorerApplication extends Application {
     Fabric.with(this, new Crashlytics());
     ActiveAndroid.initialize(this);
     component = ApplicationComponent.Initializer.init(this);
+    backgroundPowerSaver = new BackgroundPowerSaver(this);
   }
 
   @Override public void onTerminate() {

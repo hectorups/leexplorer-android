@@ -3,12 +3,12 @@ package com.leexplorer.app.util.ble;
 import com.leexplorer.app.models.Artwork;
 import com.leexplorer.app.models.FilteredIBeacon;
 import java.util.List;
+import org.altbeacon.beacon.Beacon;
 
 public class BeaconArtworkUpdater {
   public static final String TAG = "BeaconArtworkUpdater";
 
-  public static List<Artwork> updateDistances(List<Artwork> artworks,
-      List<FilteredIBeacon> beacons) {
+  public static List<Artwork> updateDistances(List<Artwork> artworks, List<Beacon> beacons) {
 
     // Reset Distance
     for (Artwork artwork : artworks) {
@@ -16,15 +16,14 @@ public class BeaconArtworkUpdater {
     }
 
     // Assign Distances according to beacons
-    for (FilteredIBeacon beacon : beacons) {
-      Double distance = beacon.getDistance();
-      if(distance == null) {
-        continue;
-      }
+    for (Beacon beacon : beacons) {
+      double distance = beacon.getDistance();
 
       for (Artwork artwork : artworks) {
-        if (artwork.getMajorminor().equals(beacon.getMajorminor())) {
-            artwork.setDistance(distance);
+        String beaconMajorMinor = String.valueOf(
+            Majorminor.longFromMajorminor(beacon.getId2().toInt(), beacon.getId3().toInt()));
+        if (artwork.getMajorminor().equals(beaconMajorMinor)) {
+          artwork.setDistance(distance);
         }
       }
     }
@@ -32,5 +31,6 @@ public class BeaconArtworkUpdater {
     return artworks;
   }
 
-  public static class ArtworkNullException extends Exception{}
+  public static class ArtworkNullException extends Exception {
+  }
 }

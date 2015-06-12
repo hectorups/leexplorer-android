@@ -1,6 +1,5 @@
 package com.leexplorer.app.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,14 +23,14 @@ import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.LeexplorerApplication;
 import com.leexplorer.app.core.RepeatableRunnable;
-import com.leexplorer.app.events.LoadingEvent;import com.leexplorer.app.events.artworks.ArtworkClickedEvent;
-import com.leexplorer.app.events.beacon.BeaconsScanResultEvent;
+import com.leexplorer.app.events.LoadingEvent;
 import com.leexplorer.app.events.MainLoadingIndicator;
+import com.leexplorer.app.events.artworks.ArtworkClickedEvent;
 import com.leexplorer.app.events.audio.AudioProgressEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayAudioFinishedEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
+import com.leexplorer.app.events.beacon.AltBeaconsScanResultEvent;
 import com.leexplorer.app.models.Artwork;
-import com.leexplorer.app.models.FilteredIBeacon;
 import com.leexplorer.app.models.Gallery;
 import com.leexplorer.app.services.AutoPlayService;
 import com.leexplorer.app.services.BeaconScanService;
@@ -44,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
+import org.altbeacon.beacon.Beacon;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -56,7 +56,7 @@ public class ArtworkListFragment extends BaseFragment {
   private static final String ARTWORKS_LOADING_KEY = "artworks_loading";
   private static final String BEACONS_KEY = "beacons";
   private static final String GALLERY_KEY = "gallery";
-  private static final String TAG = "com.leexplorer.artworklistfragement";
+  private static final String TAG = "ArtworkListFragment";
   private static final String EXTRA_GALLERY = "extra_gallery";
 
   @Inject Client client;
@@ -66,7 +66,7 @@ public class ArtworkListFragment extends BaseFragment {
 
   protected ArtworkAdapter artworkAdapter;
   private List<Artwork> artworks;
-  private List<FilteredIBeacon> beacons;
+  private List<Beacon> beacons;
   private Artwork currentlyPlaying;
   private boolean artworksLoading;
   private boolean scaningBeacons;
@@ -75,16 +75,14 @@ public class ArtworkListFragment extends BaseFragment {
   private final Handler handler = new Handler();
 
   RepeatableRunnable statusChecker = new RepeatableRunnable() {
-    @Override
-    public void run() {
+    @Override public void run() {
       if (artworks.size() > 0) {
         scanBeacons();
       }
       handler.postDelayed(this, AppConstants.MILSEC_ARTWORK_REFRESH);
     }
 
-    @Override
-    public void stop() {
+    @Override public void stop() {
       handler.removeCallbacks(this);
     }
   };
@@ -98,8 +96,7 @@ public class ArtworkListFragment extends BaseFragment {
     return fragment;
   }
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
+  @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
     scaningBeacons = false;
@@ -117,13 +114,11 @@ public class ArtworkListFragment extends BaseFragment {
     }
   }
 
-  @Override
-  protected void injectComponent(ApplicationComponent component) {
+  @Override protected void injectComponent(ApplicationComponent component) {
     component.inject(this);
   }
 
-  @Override
-  public void onResume() {
+  @Override public void onResume() {
     super.onResume();
     bus.register(this);
     if (artworksLoading) {
@@ -136,16 +131,14 @@ public class ArtworkListFragment extends BaseFragment {
     AutoPlayService.checkAutoplayStatus(getActivity());
   }
 
-  @Override
-  public void onPause() {
+  @Override public void onPause() {
     bus.unregister(this);
     statusChecker.stop();
     currentlyPlaying = null;
     super.onPause();
   }
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+  @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
     View rootView = inflater.inflate(R.layout.fragment_artwork_list_responsive, container, false);
 
@@ -158,8 +151,7 @@ public class ArtworkListFragment extends BaseFragment {
     return rootView;
   }
 
-  @Override
-  public void onSaveInstanceState(Bundle savedInstanceState) {
+  @Override public void onSaveInstanceState(Bundle savedInstanceState) {
     super.onSaveInstanceState(savedInstanceState);
     savedInstanceState.putParcelableArrayList(ARTWORK_LIST_KEY, new ArrayList<>(artworks));
     savedInstanceState.putParcelableArrayList(BEACONS_KEY, new ArrayList<Parcelable>(beacons));
@@ -167,15 +159,13 @@ public class ArtworkListFragment extends BaseFragment {
     savedInstanceState.putBoolean(ARTWORKS_LOADING_KEY, artworksLoading);
   }
 
-  @Override
-  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+  @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     super.onCreateOptionsMenu(menu, inflater);
     inflater.inflate(R.menu.artwork_list, menu);
     menuReresh = menu.findItem(R.id.menuRefresh);
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  @Override public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.menuRefresh:
         scanBeacons();
@@ -185,8 +175,7 @@ public class ArtworkListFragment extends BaseFragment {
     }
   }
 
-  @OnClick(R.id.btnAutoplay)
-  public void onAutoplay(View view) {
+  @OnClick(R.id.btnAutoplay) public void onAutoplay(View view) {
     startAutoplay();
     btnAutoplay.hide();
 
@@ -219,14 +208,12 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Artwork>>() {
-          @Override
-          public void onCompleted() {
+          @Override public void onCompleted() {
             artworksLoading = false;
             bus.post(new MainLoadingIndicator(false));
           }
 
-          @Override
-          public void onError(Throwable throwable) {
+          @Override public void onError(Throwable throwable) {
             eventReporter.logException(throwable);
             if (artworks == null || artworks.size() == 0) {
               loadArtworkListFromDB();
@@ -234,8 +221,7 @@ public class ArtworkListFragment extends BaseFragment {
             onCompleted();
           }
 
-          @Override
-          public void onNext(ArrayList<Artwork> artworks) {
+          @Override public void onNext(ArrayList<Artwork> artworks) {
             updateAdapterDataset(artworks);
           }
         }));
@@ -251,16 +237,13 @@ public class ArtworkListFragment extends BaseFragment {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Observer<ArrayList<Artwork>>() {
-          @Override
-          public void onCompleted() {
+          @Override public void onCompleted() {
           }
 
-          @Override
-          public void onError(Throwable throwable) {
+          @Override public void onError(Throwable throwable) {
           }
 
-          @Override
-          public void onNext(ArrayList<Artwork> artworks) {
+          @Override public void onNext(ArrayList<Artwork> artworks) {
             updateAdapterDataset(artworks);
           }
         }));
@@ -380,11 +363,9 @@ public class ArtworkListFragment extends BaseFragment {
     }
   }
 
-  @Subscribe public void onBeaconsScanResult(BeaconsScanResultEvent event) {
-    List<FilteredIBeacon> newBeacons = event.getBeacons();
-    Log.d(TAG, "Beacons detected: " + newBeacons.size());
+  @Subscribe public void onAltBeaconsScanResult(AltBeaconsScanResultEvent event) {
 
-    beacons = newBeacons;
+    beacons = new ArrayList(event.getBeacons());
 
     // If this is true, it means we are able to satisfy the
     // scanBeacons call

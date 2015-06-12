@@ -12,6 +12,7 @@ import com.leexplorer.app.adapters.GalleryInfoAdapter;
 import com.leexplorer.app.adapters.GalleryPagerAdapter;
 import com.leexplorer.app.api.Client;
 import com.leexplorer.app.core.modules.ApiModule;
+import com.leexplorer.app.core.modules.BeaconModule;
 import com.leexplorer.app.core.modules.SystemServiceModule;
 import com.leexplorer.app.fragments.ArtworkFragment;
 import com.leexplorer.app.fragments.ArtworkListFragment;
@@ -27,7 +28,7 @@ import com.leexplorer.app.services.MediaPlayerService;
 import dagger.Component;
 import javax.inject.Singleton;
 
-@Singleton @Component(modules = { ApiModule.class, SystemServiceModule.class })
+@Singleton @Component(modules = { ApiModule.class, SystemServiceModule.class, BeaconModule.class })
 public interface ApplicationComponent {
 
   void inject(GalleryFragment clazz);
@@ -77,6 +78,7 @@ public interface ApplicationComponent {
       return DaggerApplicationComponent.builder()
           .apiModule(new ApiModule((LeexplorerApplication) application))
           .systemServiceModule(new SystemServiceModule((LeexplorerApplication) application))
+          .beaconModule(new BeaconModule(application))
           .build();
     }
   }

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import com.leexplorer.app.R;
+import com.leexplorer.app.core.AppConstants;
 import com.leexplorer.app.core.ApplicationComponent;
 import com.leexplorer.app.core.EventReporter;
 import com.leexplorer.app.core.LeexplorerApplication;
@@ -31,6 +33,7 @@ import com.leexplorer.app.events.VolumeChangeEvent;
 import com.leexplorer.app.events.artworks.LoadArtworksEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayReadyToPlayEvent;
 import com.leexplorer.app.events.autoplay.AutoPlayStatusEvent;
+import com.leexplorer.app.events.beacon.AltBeaconsScanResultEvent;
 import com.leexplorer.app.fragments.ConfirmDialogFragment;
 import com.leexplorer.app.fragments.GalleryFragment;
 import com.leexplorer.app.services.AutoPlayService;
@@ -43,7 +46,14 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar;
+import java.util.Collection;
 import javax.inject.Inject;
+import org.altbeacon.beacon.Beacon;
+import org.altbeacon.beacon.BeaconConsumer;
+import org.altbeacon.beacon.BeaconManager;
+import org.altbeacon.beacon.Identifier;
+import org.altbeacon.beacon.RangeNotifier;
+import org.altbeacon.beacon.Region;
 
 public abstract class BaseActivity extends ActionBarActivity {
   public static final String TAG = "BaseActivity";
@@ -72,6 +82,7 @@ public abstract class BaseActivity extends ActionBarActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     injectComponent(((LeexplorerApplication) getApplication()).getComponent());
+    BeaconScanService.startService(this);
   }
 
   abstract protected void injectComponent(ApplicationComponent component);
@@ -137,12 +148,9 @@ public abstract class BaseActivity extends ActionBarActivity {
 
   @Override
   public void onPause() {
-    super.onPause();
     bus.unregister(eventhandler);
-
     unregisterReceiver(onShowNotification);
-
-    BeaconScanService.setScannerAlarm(this, BeaconScanService.Mode.BACKGROUND);
+    super.onPause();
   }
 
   public boolean isTabletMode() {
@@ -191,11 +199,7 @@ public abstract class BaseActivity extends ActionBarActivity {
     }
 
     @Subscribe public void onCheckAutoplayStatusEvent(AutoPlayStatusEvent event) {
-      if (event.getStatus() == AutoPlayService.Status.OFF) {
-        BeaconScanService.setScannerAlarm(BaseActivity.this, BeaconScanService.Mode.FOREGROUND);
-      } else {
-        BeaconScanService.setScannerAlarm(BaseActivity.this, BeaconScanService.Mode.AUTOPLAY);
-      }
+      // @todo: Remove this event
     }
 
     @Subscribe public void onMainLoadingIndicator(MainLoadingIndicator event) {

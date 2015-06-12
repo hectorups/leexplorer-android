@@ -74,6 +74,7 @@ dependencies {
 
   compile 'com.google.android.gms:play-services-maps:7.5.0'
   compile 'com.google.android.gms:play-services-location:7.5.0'
+  compile 'org.altbeacon:android-beacon-library:2.1.4'
   compile 'com.squareup.picasso:picasso:2.5.2'
   compile 'io.reactivex:rxjava:1.0.12'
   compile 'io.reactivex:rxandroid:0.24.0'

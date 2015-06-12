@@ -49,21 +49,17 @@ public class FilteredIBeacon implements Parcelable {
     return minor;
   }
 
-  @Override
-  public int describeContents() {
+  @Override public int describeContents() {
     return 0;
   }
 
-  @SuppressWarnings("unused")
-  public static final Parcelable.Creator<FilteredIBeacon> CREATOR =
+  @SuppressWarnings("unused") public static final Parcelable.Creator<FilteredIBeacon> CREATOR =
       new Parcelable.Creator<FilteredIBeacon>() {
-        @Override
-        public FilteredIBeacon createFromParcel(Parcel in) {
+        @Override public FilteredIBeacon createFromParcel(Parcel in) {
           return new FilteredIBeacon(in);
         }
 
-        @Override
-        public FilteredIBeacon[] newArray(int size) {
+        @Override public FilteredIBeacon[] newArray(int size) {
           return new FilteredIBeacon[size];
         }
       };
@@ -77,8 +73,7 @@ public class FilteredIBeacon implements Parcelable {
     txPower = in.readInt();
   }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
+  @Override public void writeToParcel(Parcel dest, int flags) {
     double dist = distance == null ? 0 : distance;
 
     dest.writeString(uuid);

@@ -9,7 +9,7 @@ import com.leexplorer.app.services.BeaconScanService;
 import com.leexplorer.app.services.LocationService;
 
 public class StartupReceiver extends BroadcastReceiver {
-  private static final String TAG = "com.leexplorer.services.receivers.startupreceiver";
+  private static final String TAG = "startupreceiver";
 
   @Override
   public void onReceive(Context context, Intent intent) {
@@ -22,6 +22,6 @@ public class StartupReceiver extends BroadcastReceiver {
       return;
     }
 
-    BeaconScanService.setScannerAlarm(context, BeaconScanService.Mode.BACKGROUND);
+    BeaconScanService.startService(context);
   }
 }
